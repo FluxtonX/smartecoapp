@@ -1,0 +1,430 @@
+import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
+
+class RewardsScreen extends StatefulWidget {
+  const RewardsScreen({super.key});
+
+  @override
+  State<RewardsScreen> createState() => _RewardsScreenState();
+}
+
+class _RewardsScreenState extends State<RewardsScreen> {
+  int _selectedTab = 0; // 0: Overview, 1: Redeem, 2: History
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          // Header
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                if (Navigator.canPop(context))
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                const Text(
+                  'EcoPoints Rewards',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(height: 1, color: Colors.grey.shade200),
+
+          // Tabs
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              children: [
+                _buildTab(0, 'Overview'),
+                const SizedBox(width: 8),
+                _buildTab(1, 'Redeem'),
+                const SizedBox(width: 8),
+                _buildTab(2, 'History'),
+              ],
+            ),
+          ),
+
+          // Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBalanceAndProgress(),
+                  const SizedBox(height: 24),
+                  if (_selectedTab == 0) _buildOverviewTab(),
+                  if (_selectedTab == 1) _buildRedeemTab(),
+                  if (_selectedTab == 2) _buildHistoryTab(),
+                  const SizedBox(height: 80), // Fab space
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(int index, String title) {
+    final isSelected = _selectedTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.orange : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : AppColors.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBalanceAndProgress() {
+    return Column(
+      children: [
+        // Balance Card
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          decoration: BoxDecoration(
+            color: Colors.orange.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.orange.shade200),
+          ),
+          child: Column(
+            children: const [
+              Text('Your Balance', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+              SizedBox(height: 8),
+              Text('2450', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              SizedBox(height: 4),
+              Text('EcoPoints', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        // Progress Card
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: const [
+                Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
+                SizedBox(width: 8),
+                Text('Eco Warrior', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              ],
+            ),
+            const Text('2450 / 5,000', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: 2450 / 5000,
+            backgroundColor: Colors.orange.shade100,
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+            minHeight: 8,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('2550 points to Eco Champion', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+        ),
+      ],
+    );
+  }
+
+  // ====================== OVERVIEW TAB ======================
+  Widget _buildOverviewTab() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Membership Tiers', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        const SizedBox(height: 12),
+        _buildTierCard(
+          title: 'Eco Starter',
+          points: '0 - 999 points',
+          icon: Icons.star_border,
+          iconColor: Colors.grey,
+          isCurrent: false,
+        ),
+        _buildTierCard(
+          title: 'Eco Warrior',
+          points: '1000 - 4999 points',
+          icon: Icons.workspace_premium_outlined,
+          iconColor: AppColors.primary,
+          isCurrent: true,
+        ),
+        _buildTierCard(
+          title: 'Eco Champion',
+          points: '5000+ points',
+          icon: Icons.emoji_events_outlined,
+          iconColor: Colors.orange,
+          isCurrent: false,
+        ),
+        const SizedBox(height: 24),
+        const Text('Ways to Earn', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        const SizedBox(height: 12),
+        _buildEarnCard(title: 'Schedule Pickup', subtitle: 'Earn per booking', points: '+50', icon: Icons.calendar_today_outlined, iconColor: AppColors.primary, iconBg: AppColors.primaryLight),
+        _buildEarnCard(title: 'Complete Pickup', subtitle: 'Earn per completion', points: '+100', icon: Icons.trending_up, iconColor: Colors.blue, iconBg: Colors.blue.shade50),
+        _buildEarnCard(title: 'Refer a Friend', subtitle: 'Both get points', points: '+150', icon: Icons.people_outline, iconColor: Colors.orange, iconBg: Colors.orange.shade50),
+        
+        const SizedBox(height: 24),
+        // Invite Friends container
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.group_add_outlined, color: AppColors.primary, size: 32),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                     const Text('Invite Friends', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
+                     const SizedBox(height: 4),
+                     const Text.rich(
+                       TextSpan(
+                         text: 'Share your code: ',
+                         style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                         children: [
+                           TextSpan(text: 'RAHMAT2024', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                         ],
+                       ),
+                     ),
+                     const SizedBox(height: 12),
+                     ElevatedButton(
+                       onPressed: () {},
+                       style: ElevatedButton.styleFrom(
+                         minimumSize: const Size(120, 36),
+                         padding: const EdgeInsets.symmetric(horizontal: 16),
+                         elevation: 0,
+                       ),
+                       child: const Text('Share Code'),
+                     ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTierCard({required String title, required String points, required IconData icon, required Color iconColor, required bool isCurrent}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: isCurrent ? AppColors.primary : Colors.grey.shade200, width: isCurrent ? 1.5 : 1),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: iconColor, size: 28),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(points, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              ],
+            ),
+          ),
+          if (isCurrent)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text('Current', style: TextStyle(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.bold)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEarnCard({required String title, required String subtitle, required String points, required IconData icon, required Color iconColor, required Color iconBg}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(8)),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(subtitle, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              ],
+            ),
+          ),
+          Text(points, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.success, fontSize: 14)),
+        ],
+      ),
+    );
+  }
+
+  // ====================== REDEEM TAB ======================
+  Widget _buildRedeemTab() {
+    return Column(
+      children: [
+        _buildRedeemCard(title: 'MTN Airtime', subtitle: '1,000 RWF airtime', points: '500', icon: Icons.phone_android, isLocked: false),
+        _buildRedeemCard(title: 'Coffee Voucher', subtitle: 'Free coffee at local cafes', points: '300', icon: Icons.coffee_outlined, isLocked: false),
+        _buildRedeemCard(title: 'Shopping Discount', subtitle: '10% off at partner stores', points: '800', icon: Icons.shopping_bag_outlined, isLocked: false),
+        _buildRedeemCard(title: 'Premium Features', subtitle: '1 month premium access', points: '1500', icon: Icons.bolt, isLocked: true),
+      ],
+    );
+  }
+
+  Widget _buildRedeemCard({required String title, required String subtitle, required String points, required IconData icon, required bool isLocked}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isLocked ? Colors.grey.shade100 : Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(8)
+            ),
+            child: Icon(icon, color: isLocked ? Colors.grey : Colors.orange, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: isLocked ? AppColors.textSecondary : AppColors.textPrimary)),
+                  Text(subtitle, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.card_giftcard, size: 14, color: isLocked ? Colors.grey : Colors.orange),
+                      const SizedBox(width: 4),
+                      Text('$points points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isLocked ? Colors.grey : Colors.black87)),
+                    ],
+                  ),
+               ],
+            ),
+          ),
+          if (isLocked)
+            Container(
+               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+               decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
+               child: const Text('Locked', style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold, fontSize: 12)),
+            )
+          else
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(80, 36),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+              ),
+              child: const Text('Redeem', style: TextStyle(fontSize: 12, color: Colors.white)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ====================== HISTORY TAB ======================
+  Widget _buildHistoryTab() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+         children: [
+           _buildHistoryItem('Scheduled pickup', '2 hours ago', '+50', true),
+           const Divider(height: 1),
+           _buildHistoryItem('Completed pickup', '1 day ago', '+100', true),
+           const Divider(height: 1),
+           _buildHistoryItem('Airtime voucher', '2 days ago', '-200', false),
+           const Divider(height: 1),
+           _buildHistoryItem('Referral bonus', '3 days ago', '+150', true),
+           const Divider(height: 1),
+           _buildHistoryItem('Weekly streak', '5 days ago', '+75', true),
+         ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryItem(String title, String time, String points, bool isPositive) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textPrimary)),
+                const SizedBox(height: 4),
+                Text(time, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+             ],
+           ),
+           Text(points, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isPositive ? AppColors.success : AppColors.error)),
+         ],
+      ),
+    );
+  }
+}

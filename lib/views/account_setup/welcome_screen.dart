@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import '../home/home_screen.dart'; // Just a placeholder
+import '../main_layout.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -86,7 +86,7 @@ class WelcomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
+                    MaterialPageRoute(builder: (_) => const MainLayout()),
                     (route) => false,
                   );
                 },

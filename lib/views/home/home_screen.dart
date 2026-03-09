@@ -1,16 +1,474 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
+import '../notifications/notifications_screen.dart';
+import '../pickup_scheduling/pickup_scheduling_screen.dart';
+import '../schedule_pickup/schedule_pickup_screen.dart';
+import 'widgets/bin_status_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+      backgroundColor: AppColors.background,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSchedulePickupButton(context),
+                  const SizedBox(height: 24),
+                  _buildQuickActions(),
+                  const SizedBox(height: 24),
+                  _buildActivePickupCard(context),
+                  const SizedBox(height: 24),
+                  _buildSmartBinsStatus(context),
+                  const SizedBox(height: 100), // Space for bottom nav
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      body: const Center(
-        child: Text('Home Screen (Work in progress)'),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 60, left: 16, right: 16, bottom: 20),
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.eco, color: Colors.white, size: 28),
+                  ),
+                  const SizedBox(width: 12),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Good Morning',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
+                      Text(
+                        'Rahmat',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.notifications_none, color: Colors.white),
+                        ),
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Container(
+                            height: 8,
+                            width: 8,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.person_outline, color: Colors.white),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildEcoPointsCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEcoPointsCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Your EcoPoints',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '2,450',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: const BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.card_giftcard, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'Eco Warrior',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              Text(
+                '2,450 / 5,000',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: const LinearProgressIndicator(
+              value: 0.49,
+              backgroundColor: Colors.white30,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              minHeight: 8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '550 points to Eco Champion tier',
+            style: TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSchedulePickupButton(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: TextButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PickupSchedulingScreen()),
+          );
+        },
+        icon: const Icon(Icons.calendar_today, color: AppColors.primary),
+        label: const Text(
+          'Schedule Pickup',
+          style: TextStyle(
+              color: AppColors.primary,
+              fontSize: 16,
+              fontWeight: FontWeight.bold),
+        ),
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    final actions = [
+      {'icon': Icons.calendar_today, 'label': 'Schedule', 'color': Colors.green},
+      {'icon': Icons.location_on, 'label': 'Track', 'color': Colors.blue},
+      {'icon': Icons.delete_outline, 'label': 'Smart Bins', 'color': Colors.grey},
+      {'icon': Icons.card_giftcard, 'label': 'Rewards', 'color': Colors.orange},
+    ];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: actions.map((action) {
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: (action['color'] as Color).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                action['icon'] as IconData,
+                color: action['color'] as Color,
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              action['label'] as String,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildActivePickupCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.location_on, color: Colors.blue, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'Active Pickup',
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'General waste collection',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    height: 8,
+                    width: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'En route',
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 120, // constrain the width so the button doesn't force infinite width due to global theme
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SchedulePickupScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                  ),
+                  child: const Text('Track Now', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmartBinsStatus(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Smart Bins Status',
+              style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: const Text(
+                'View All',
+                style: TextStyle(color: AppColors.primary),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _buildBinStatusItem(context, 'Compost', 'Organic Waste', 0.45, AppColors.compost, Icons.eco, '50L', '3 days ago', '15% per day'),
+              const SizedBox(width: 16),
+              _buildBinStatusItem(context, 'Recyclable', 'Recyclable Materials', 0.78, AppColors.recyclable, Icons.recycling, '75L', '5 days ago', '16% per day'),
+              const SizedBox(width: 16),
+              _buildBinStatusItem(context, 'E-Waste', 'Electronics & Batteries', 0.20, AppColors.eWaste, Icons.electrical_services, '30L', '10 days ago', '2% per day'),
+              const SizedBox(width: 16),
+              _buildBinStatusItem(context, 'Landfill', 'General Waste', 0.98, AppColors.landfill, Icons.delete_outline, '100L', '6 days ago', '15% per day', isAlert: true),
+              const SizedBox(width: 16),
+              _buildBinStatusItem(context, 'Hazardous', 'Hazardous Materials', 0.15, AppColors.hazardous, Icons.warning_amber_outlined, '20L', '15 days ago', '1% per day'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBinStatusItem(BuildContext context, String label, String subtitle, double percentage, Color color, IconData icon, String capacity, String lastEmptied, String avgFillRate, {bool isAlert = false}) {
+    return GestureDetector(
+      onTap: () {
+        showBinStatusDialog(
+          context,
+          title: '$label Bin',
+          subtitle: subtitle,
+          percentage: percentage,
+          color: color,
+          capacity: capacity,
+          lastEmptied: lastEmptied,
+          avgFillRate: avgFillRate,
+          icon: icon,
+        );
+      },
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                height: 60,
+                width: 60,
+                child: CircularProgressIndicator(
+                  value: percentage,
+                  backgroundColor: AppColors.border.withOpacity(0.5),
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                  strokeWidth: 6,
+                ),
+              ),
+              Text(
+                '${(percentage * 100).toInt()}%',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              if (isAlert)
+                Positioned(
+                  right: -2,
+                  top: -2,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.error, color: Colors.red, size: 16),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }
