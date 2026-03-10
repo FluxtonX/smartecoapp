@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 import '../notifications/notifications_screen.dart';
 import '../pickup_scheduling/pickup_scheduling_screen.dart';
 import '../schedule_pickup/schedule_pickup_screen.dart';
@@ -64,7 +66,12 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.eco, color: Colors.white, size: 28),
+                    child: SvgPicture.asset(
+                      AppSvgs.leafImage,
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 28,
+                      height: 28,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   const Column(
@@ -104,7 +111,12 @@ class HomeScreen extends StatelessWidget {
                             color: Colors.white.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.notifications_none, color: Colors.white),
+                          child: SvgPicture.asset(
+                            AppSvgs.notificationImage,
+                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
                         Positioned(
                           right: 4,
@@ -128,7 +140,12 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.person_outline, color: Colors.white),
+                    child: SvgPicture.asset(
+                      AppSvgs.profileImage,
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
                 ],
               ),
@@ -177,7 +194,12 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.orange,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.card_giftcard, color: Colors.white),
+                child: SvgPicture.asset(
+                  AppSvgs.giftImage,
+                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  width: 24,
+                  height: 24,
+                ),
               ),
             ],
           ),
@@ -229,7 +251,12 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const PickupSchedulingScreen()),
           );
         },
-        icon: const Icon(Icons.calendar_today, color: AppColors.primary),
+        icon: SvgPicture.asset(
+          AppSvgs.calenderImage,
+          colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+          width: 20,
+          height: 20,
+        ),
         label: const Text(
           'Schedule Pickup',
           style: TextStyle(
@@ -249,10 +276,10 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildQuickActions() {
     final actions = [
-      {'icon': Icons.calendar_today, 'label': 'Schedule', 'color': Colors.green},
-      {'icon': Icons.location_on, 'label': 'Track', 'color': Colors.blue},
-      {'icon': Icons.delete_outline, 'label': 'Smart Bins', 'color': Colors.grey},
-      {'icon': Icons.card_giftcard, 'label': 'Rewards', 'color': Colors.orange},
+      {'svg': AppSvgs.calenderImage, 'label': 'Schedule', 'color': Colors.green},
+      {'svg': AppSvgs.mapImage, 'label': 'Track', 'color': Colors.blue},
+      {'svg': AppSvgs.binImage, 'label': 'Smart Bins', 'color': Colors.grey},
+      {'svg': AppSvgs.giftImage, 'label': 'Rewards', 'color': Colors.orange},
     ];
 
     return Row(
@@ -266,10 +293,14 @@ class HomeScreen extends StatelessWidget {
                 color: (action['color'] as Color).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                action['icon'] as IconData,
-                color: action['color'] as Color,
-                size: 28,
+              child: SvgPicture.asset(
+                action['svg'] as String,
+                colorFilter: ColorFilter.mode(
+                  action['color'] as Color,
+                  BlendMode.srcIn,
+                ),
+                width: 28,
+                height: 28,
               ),
             ),
             const SizedBox(height: 8),
@@ -299,8 +330,13 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Icon(Icons.location_on, color: Colors.blue, size: 20),
+            children: [
+              SvgPicture.asset(
+                AppSvgs.mapImage,
+                colorFilter: const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
+                width: 20,
+                height: 20,
+              ),
               SizedBox(width: 8),
               Text(
                 'Active Pickup',
@@ -389,17 +425,19 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 16),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
-              _buildBinStatusItem(context, 'Compost', 'Organic Waste', 0.45, AppColors.compost, Icons.eco, '50L', '3 days ago', '15% per day'),
+              _buildBinStatusItem(context, 'Compost', 'Organic Waste', 0.45, AppColors.compost, AppSvgs.binImage, '50L', '3 days ago', '15% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Recyclable', 'Recyclable Materials', 0.78, AppColors.recyclable, Icons.recycling, '75L', '5 days ago', '16% per day'),
+              _buildBinStatusItem(context, 'Recyclable', 'Recyclable Materials', 0.78, AppColors.recyclable, AppSvgs.binImage, '75L', '5 days ago', '16% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'E-Waste', 'Electronics & Batteries', 0.20, AppColors.eWaste, Icons.electrical_services, '30L', '10 days ago', '2% per day'),
+              _buildBinStatusItem(context, 'E-Waste', 'Electronics & Batteries', 0.20, AppColors.eWaste, AppSvgs.binImage, '30L', '10 days ago', '2% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Landfill', 'General Waste', 0.98, AppColors.landfill, Icons.delete_outline, '100L', '6 days ago', '15% per day', isAlert: true),
+              _buildBinStatusItem(context, 'Landfill', 'General Waste', 0.98, AppColors.landfill, AppSvgs.binImage, '100L', '6 days ago', '15% per day', isAlert: true),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Hazardous', 'Hazardous Materials', 0.15, AppColors.hazardous, Icons.warning_amber_outlined, '20L', '15 days ago', '1% per day'),
+              _buildBinStatusItem(context, 'Hazardous', 'Hazardous Materials', 0.15, AppColors.hazardous, AppSvgs.binImage, '20L', '15 days ago', '1% per day'),
             ],
           ),
         ),
@@ -407,7 +445,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBinStatusItem(BuildContext context, String label, String subtitle, double percentage, Color color, IconData icon, String capacity, String lastEmptied, String avgFillRate, {bool isAlert = false}) {
+  Widget _buildBinStatusItem(BuildContext context, String label, String subtitle, double percentage, Color color, String svgPath, String capacity, String lastEmptied, String avgFillRate, {bool isAlert = false}) {
     return GestureDetector(
       onTap: () {
         showBinStatusDialog(
@@ -419,12 +457,13 @@ class HomeScreen extends StatelessWidget {
           capacity: capacity,
           lastEmptied: lastEmptied,
           avgFillRate: avgFillRate,
-          icon: icon,
+          icon: Icons.delete_outline, // Keeping generic icon for dialog for now or refactor dialog
         );
       },
       child: Column(
         children: [
           Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               SizedBox(

@@ -23,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.card_giftcard,
+                  Icons.card_giftcard_rounded,
                   size: 64,
                   color: Colors.white,
                 ),
@@ -47,8 +47,8 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 48),
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 32),
+
+                padding: const EdgeInsets.symmetric(vertical: 6,horizontal: 50),
                 decoration: BoxDecoration(
                   color: Colors.white.withAlpha(30),
                   borderRadius: BorderRadius.circular(24),

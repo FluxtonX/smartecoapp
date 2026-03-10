@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 
 class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
@@ -192,9 +194,9 @@ class _RewardsScreenState extends State<RewardsScreen> {
         const SizedBox(height: 24),
         const Text('Ways to Earn', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
-        _buildEarnCard(title: 'Schedule Pickup', subtitle: 'Earn per booking', points: '+50', icon: Icons.calendar_today_outlined, iconColor: AppColors.primary, iconBg: AppColors.primaryLight),
-        _buildEarnCard(title: 'Complete Pickup', subtitle: 'Earn per completion', points: '+100', icon: Icons.trending_up, iconColor: Colors.blue, iconBg: Colors.blue.shade50),
-        _buildEarnCard(title: 'Refer a Friend', subtitle: 'Both get points', points: '+150', icon: Icons.people_outline, iconColor: Colors.orange, iconBg: Colors.orange.shade50),
+        _buildEarnCard(title: 'Schedule Pickup', subtitle: 'Earn per booking', points: '+50', svgPath: AppSvgs.calenderImage, iconColor: AppColors.primary, iconBg: AppColors.primaryLight),
+        _buildEarnCard(title: 'Complete Pickup', subtitle: 'Earn per completion', points: '+100', svgPath: AppSvgs.leafImage, iconColor: Colors.blue, iconBg: Colors.blue.shade50),
+        _buildEarnCard(title: 'Refer a Friend', subtitle: 'Both get points', points: '+150', svgPath: AppSvgs.profileImage, iconColor: Colors.orange, iconBg: Colors.orange.shade50),
         
         const SizedBox(height: 24),
         // Invite Friends container
@@ -280,7 +282,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
     );
   }
 
-  Widget _buildEarnCard({required String title, required String subtitle, required String points, required IconData icon, required Color iconColor, required Color iconBg}) {
+  Widget _buildEarnCard({required String title, required String subtitle, required String points, required String svgPath, required Color iconColor, required Color iconBg}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -294,7 +296,12 @@ class _RewardsScreenState extends State<RewardsScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, color: iconColor, size: 20),
+            child: SvgPicture.asset(
+              svgPath,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              width: 20,
+              height: 20,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -354,7 +361,15 @@ class _RewardsScreenState extends State<RewardsScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.card_giftcard, size: 14, color: isLocked ? Colors.grey : Colors.orange),
+                      SvgPicture.asset(
+                        AppSvgs.giftImage,
+                        colorFilter: ColorFilter.mode(
+                          isLocked ? Colors.grey : Colors.orange,
+                          BlendMode.srcIn,
+                        ),
+                        width: 14,
+                        height: 14,
+                      ),
                       const SizedBox(width: 4),
                       Text('$points points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isLocked ? Colors.grey : Colors.black87)),
                     ],

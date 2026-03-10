@@ -83,7 +83,14 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.check, color: AppColors.success, size: 16),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check, color: AppColors.success, size: 12),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         benefit,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 import 'pickup_success_screen.dart';
 
 class PickupSchedulingScreen extends StatefulWidget {
@@ -149,11 +151,11 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   // ============== STEP 1: WASTE SELECTION ==============
   Widget _buildWasteSelection() {
     final wasteCategories = [
-      {'id': 'Organic', 'title': 'Organic', 'desc': 'Food waste, garden waste', 'icon': Icons.eco_outlined, 'color': AppColors.compost},
-      {'id': 'Recyclable', 'title': 'Recyclable', 'desc': 'Paper, plastic, metal', 'icon': Icons.recycling_outlined, 'color': AppColors.recyclable},
-      {'id': 'General', 'title': 'General', 'desc': 'Non-recyclable waste', 'icon': Icons.delete_outline, 'color': AppColors.general},
-      {'id': 'EWaste', 'title': 'E-Waste', 'desc': 'Electronics, batteries', 'icon': Icons.computer_outlined, 'color': AppColors.eWaste},
-      {'id': 'Glass', 'title': 'Glass', 'desc': 'Bottles, glassware', 'icon': Icons.wine_bar_outlined, 'color': AppColors.glass},
+      {'id': 'Organic', 'title': 'Organic', 'desc': 'Food waste, garden waste', 'svg': AppSvgs.leafImage, 'color': AppColors.compost},
+      {'id': 'Recyclable', 'title': 'Recyclable', 'desc': 'Paper, plastic, metal', 'svg': AppSvgs.binImage, 'color': AppColors.recyclable}, // Using bin as generic
+      {'id': 'General', 'title': 'General', 'desc': 'Non-recyclable waste', 'svg': AppSvgs.binImage, 'color': AppColors.general},
+      {'id': 'EWaste', 'title': 'E-Waste', 'desc': 'Electronics, batteries', 'svg': AppSvgs.binImage, 'color': AppColors.eWaste},
+      {'id': 'Glass', 'title': 'Glass', 'desc': 'Bottles, glassware', 'svg': AppSvgs.binImage, 'color': AppColors.glass},
     ];
 
     return _buildStepLayout(
@@ -178,7 +180,12 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
             },
             child: Row(
               children: [
-                Icon(cat['icon'] as IconData, color: cat['color'] as Color, size: 28),
+                SvgPicture.asset(
+                  cat['svg'] as String,
+                  colorFilter: ColorFilter.mode(cat['color'] as Color, BlendMode.srcIn),
+                  width: 28,
+                  height: 28,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -331,8 +338,13 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                     size: const Size(double.infinity, double.infinity),
                     painter: _MapGridPainter(),
                   ),
-                  const Center(
-                    child: Icon(Icons.location_on, size: 48, color: AppColors.primary),
+                  Center(
+                    child: SvgPicture.asset(
+                      AppSvgs.mapImage,
+                      colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                      width: 48,
+                      height: 48,
+                    ),
                   ),
                 ],
               ),

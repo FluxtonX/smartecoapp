@@ -22,7 +22,7 @@ class NotificationsScreen extends StatelessWidget {
               'Notifications',
               style: TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -30,7 +30,7 @@ class NotificationsScreen extends StatelessWidget {
               '2 unread notifications',
               style: TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: 10,
               ),
             ),
           ],
@@ -45,7 +45,6 @@ class NotificationsScreen extends StatelessWidget {
                   'Mark all read',
                   style: TextStyle(
                     color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/dot_indicator.dart';
 import '../auth/create_account_screen.dart';
@@ -19,23 +21,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       'title': 'Smart Waste Management',
       'description': 'Schedule pickups, track collectors, and manage waste efficiently with our innovative platform.',
-      'icon': Icons.eco_outlined,
+      'image': AppSvgs.leafImage,
       'color': const Color(0xFFE8F5E9),
-      'iconColor': AppColors.primary,
     },
     {
       'title': 'Real-Time Tracking',
       'description': 'Monitor your waste collector in real-time with live GPS tracking and accurate ETAs.',
-      'icon': Icons.location_on_outlined,
+      'image': AppSvgs.mapImage,
       'color': const Color(0xFFE3F2FD),
-      'iconColor': Colors.blue,
     },
     {
       'title': 'Earn EcoPoints',
       'description': 'Get rewarded for proper waste management. Redeem points for exciting rewards and benefits.',
-      'icon': Icons.card_giftcard,
+      'image': AppSvgs.giftImage,
       'color': const Color(0xFFFFF3E0),
-      'iconColor': Colors.orange,
     },
   ];
 
@@ -85,10 +84,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: data['color'] as Color,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Icon(
-                            data['icon'] as IconData,
-                            size: 64,
-                            color: data['iconColor'] as Color,
+                          child: SvgPicture.asset(
+                            data['image'] as String,
+                            width: 140,
+                            height: 140,
+                            fit: BoxFit.contain,
                           ),
                         ),
                         const SizedBox(height: 48),
@@ -103,6 +103,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: 32),
+                        DotIndicator(
+                          totalDots: _onboardingData.length,
+                          currentIndex: _currentPage,
+                        ),
                       ],
                     ),
                   );
@@ -113,11 +118,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  DotIndicator(
-                    totalDots: _onboardingData.length,
-                    currentIndex: _currentPage,
-                  ),
-                  const SizedBox(height: 32),
                   CustomButton(
                     onPressed: _onNext,
                     text: _currentPage == _onboardingData.length - 1

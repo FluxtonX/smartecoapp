@@ -98,27 +98,29 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               const SizedBox(height: 16),
               Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.primary.withAlpha(50)),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.message, color: AppColors.primary, size: 16),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Tap: Check your messages for a code from SmartEco',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Tip: Check your messages for a code from ',
+                      children: [
+                        TextSpan(
+                          text: 'SmartEco',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 11,
+                        ),
                   ),
                 ),
               ),

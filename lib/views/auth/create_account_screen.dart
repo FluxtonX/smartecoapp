@@ -33,6 +33,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             children: [
               const SizedBox(height: 24),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
@@ -54,15 +55,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ],
               ),
               const SizedBox(height: 48),
-              Text(
-                'Create Account',
-                style: Theme.of(context).textTheme.headlineMedium,
+              Center(
+                child: Text(
+                  'Create Account',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Join Rwanda\'s smart waste management platform',
-                style: Theme.of(context).textTheme.bodyLarge,
+              Center(
+                child: Text(
+                  'Join Rwanda\'s smart waste management platform',
+                  textAlign: TextAlign.center, // This centers the lines relative to each other
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
+
               const SizedBox(height: 32),
               CustomTextField(
                 controller: _phoneController,

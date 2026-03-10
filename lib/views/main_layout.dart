@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 import 'home/home_screen.dart';
 import 'profile/profile_screen.dart';
 import 'bins/bins_screen.dart';
@@ -37,7 +39,12 @@ class _MainLayoutState extends State<MainLayout> {
           // Open QR Scanner
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 32),
+        child: SvgPicture.asset(
+          AppSvgs.qrCodeImage,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          width: 32,
+          height: 32,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -49,18 +56,18 @@ class _MainLayoutState extends State<MainLayout> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(0, Icons.eco_outlined, 'Home'),
-            _buildNavItem(1, Icons.delete_outline, 'Bins'),
+            _buildNavItem(0, AppSvgs.leafImage, 'Home'),
+            _buildNavItem(1, AppSvgs.binImage, 'Bins'),
             const SizedBox(width: 40), // Space for FAB
-            _buildNavItem(3, Icons.card_giftcard, 'Rewards'),
-            _buildNavItem(4, Icons.person_outline, 'Profile'),
+            _buildNavItem(3, AppSvgs.giftImage, 'Rewards'),
+            _buildNavItem(4, AppSvgs.profileImage, 'Profile'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(int index, String svgPath, String label) {
     final isSelected = _currentIndex == index;
     return GestureDetector(
       onTap: () {
@@ -74,27 +81,30 @@ class _MainLayoutState extends State<MainLayout> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
+              color: isSelected ? AppColors.primary : Colors.grey.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              icon,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
-              size: 24,
+            child: SvgPicture.asset(
+              svgPath,
+              colorFilter: ColorFilter.mode(
+                isSelected ? Colors.white : AppColors.textSecondary,
+                BlendMode.srcIn,
+              ),
+              width: 20,
+              height: 20,
             ),
           ),
-          if (!isSelected) const SizedBox(height: 2),
-          if (!isSelected)
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             ),
+          ),
         ],
       ),
     );
