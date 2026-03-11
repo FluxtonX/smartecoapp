@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 import '../main_layout.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -22,10 +24,10 @@ class WelcomeScreen extends StatelessWidget {
                   color: Colors.white.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.card_giftcard_rounded,
-                  size: 64,
-                  color: Colors.white,
+                child: SvgPicture.asset(
+                  AppSvgs.giftWhiteImage,
+                  width: 64,
+                  height: 64,
                 ),
               ),
               const SizedBox(height: 32),
@@ -95,6 +97,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
+              SizedBox(height: 30,),
             ],
           ),
         ),

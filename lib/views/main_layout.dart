@@ -6,6 +6,7 @@ import 'home/home_screen.dart';
 import 'profile/profile_screen.dart';
 import 'bins/bins_screen.dart';
 import 'rewards/rewards_screen.dart';
+import 'bins/bin_scanner_screen.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -17,8 +18,14 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
+  late final List<Widget> _screens = [
+    HomeScreen(
+      onViewAllBins: () {
+        setState(() {
+          _currentIndex = 1;
+        });
+      },
+    ),
     const BinsScreen(),
     const SizedBox.shrink(), // Placeholder for center floating button
     const RewardsScreen(),
@@ -36,7 +43,10 @@ class _MainLayoutState extends State<MainLayout> {
         elevation: 0,
         backgroundColor: AppColors.primary,
         onPressed: () {
-          // Open QR Scanner
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const BinScannerScreen()),
+          );
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: SvgPicture.asset(

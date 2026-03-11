@@ -8,7 +8,9 @@ import '../schedule_pickup/schedule_pickup_screen.dart';
 import 'widgets/bin_status_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final VoidCallback? onViewAllBins;
+
+  const HomeScreen({Key? key, this.onViewAllBins}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -388,7 +390,7 @@ class HomeScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   ),
                   child: const Text('Track Now', style: TextStyle(color: Colors.white)),
                 ),
@@ -414,7 +416,7 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: onViewAllBins ?? () {},
               child: const Text(
                 'View All',
                 style: TextStyle(color: AppColors.primary),
@@ -429,15 +431,15 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
-              _buildBinStatusItem(context, 'Compost', 'Organic Waste', 0.45, AppColors.compost, AppSvgs.binImage, '50L', '3 days ago', '15% per day'),
+              _buildBinStatusItem(context, 'Compost', 'Organic Waste', 0.45, AppColors.compost, AppSvgs.leafImage, '50L', '3 days ago', '15% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Recyclable', 'Recyclable Materials', 0.78, AppColors.recyclable, AppSvgs.binImage, '75L', '5 days ago', '16% per day'),
+              _buildBinStatusItem(context, 'Recyclable', 'Recyclable Materials', 0.78, AppColors.recyclable, AppSvgs.recyclableImage, '75L', '5 days ago', '16% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'E-Waste', 'Electronics & Batteries', 0.20, AppColors.eWaste, AppSvgs.binImage, '30L', '10 days ago', '2% per day'),
+              _buildBinStatusItem(context, 'E-Waste', 'Electronics & Batteries', 0.20, AppColors.eWaste, AppSvgs.eWasteImage, '30L', '10 days ago', '2% per day'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Landfill', 'General Waste', 0.98, AppColors.landfill, AppSvgs.binImage, '100L', '6 days ago', '15% per day', isAlert: true),
+              _buildBinStatusItem(context, 'Landfill', 'General Waste', 0.98, AppColors.landfill, AppSvgs.landfillImage, '100L', '6 days ago', '15% per day', isAlert: true),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, 'Hazardous', 'Hazardous Materials', 0.15, AppColors.hazardous, AppSvgs.binImage, '20L', '15 days ago', '1% per day'),
+              _buildBinStatusItem(context, 'Hazardous', 'Hazardous Materials', 0.15, AppColors.hazardous, AppSvgs.hazardousImage, '20L', '15 days ago', '1% per day'),
             ],
           ),
         ),
@@ -457,7 +459,7 @@ class HomeScreen extends StatelessWidget {
           capacity: capacity,
           lastEmptied: lastEmptied,
           avgFillRate: avgFillRate,
-          icon: Icons.delete_outline, // Keeping generic icon for dialog for now or refactor dialog
+          appSvg: svgPath,
         );
       },
       child: Column(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -66,7 +68,7 @@ class NotificationsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
-              icon: Icons.card_giftcard,
+              appSvg: AppSvgs.giftImage,
               iconColor: Colors.orange,
               title: 'EcoPoints Earned!',
               time: '2 hr ago',
@@ -93,7 +95,7 @@ class NotificationsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
-              icon: Icons.delete_outline,
+              appSvg: AppSvgs.binImage,
               iconColor: Colors.grey,
               title: 'Weekly Reminder',
               time: '2 days ago',
@@ -123,26 +125,28 @@ class NotificationsScreen extends StatelessWidget {
   }
 
   Widget _buildNotificationItem({
-    required IconData icon,
+    IconData? icon,
+    String? appSvg,
     required Color iconColor,
     required String title,
     required String time,
     required String description,
     required bool isUnread,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isUnread ? AppColors.primary : AppColors.border,
-          width: 1,
-        ),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Stack(
-        children: [
-          Row(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isUnread ? AppColors.primary : AppColors.border,
+              width: 1,
+            ),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
@@ -151,7 +155,9 @@ class NotificationsScreen extends StatelessWidget {
                   color: iconColor.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: iconColor),
+                child: appSvg != null 
+                    ? SvgPicture.asset(appSvg, colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn), width: 24, height: 24)
+                    : Icon(icon, color: iconColor),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -192,21 +198,25 @@ class NotificationsScreen extends StatelessWidget {
               ),
             ],
           ),
-          if (isUnread)
-            Positioned(
-              right: 0,
-              top: 0,
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
+        ),
+        if (isUnread)
+          Positioned(
+            right: -3,
+            top: -3,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: AppColors.error,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.background,
+                  width: 2,
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

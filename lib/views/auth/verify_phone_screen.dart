@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import '../account_setup/account_type_screen.dart';
+import '../main_layout.dart';
 
 class VerifyPhoneScreen extends StatefulWidget {
-  const VerifyPhoneScreen({super.key});
+  final bool isLogin;
+  const VerifyPhoneScreen({super.key, this.isLogin = false});
 
   @override
   State<VerifyPhoneScreen> createState() => _VerifyPhoneScreenState();
@@ -15,10 +17,18 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   void _onVerify() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
-    );
+    if (widget.isLogin) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const MainLayout()),
+        (route) => false,
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
+      );
+    }
   }
 
   @override

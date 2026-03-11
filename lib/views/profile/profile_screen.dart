@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
+import '../auth/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -47,7 +50,18 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.grey.shade200),
                 ),
-                child: _buildListItem(Icons.logout, 'Log Out', isLogout: true),
+                child: _buildListItem(
+                  Icons.logout, 
+                  'Log Out', 
+                  isLogout: true,
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      (route) => false,
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -150,10 +164,13 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.emoji_events, color: Colors.yellow, size: 16),
-                    SizedBox(width: 4),
-                    Text(
+                  children: [
+                    SvgPicture.asset(
+                      AppSvgs.badgeImage,
+                      colorFilter: const ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
+                    ),
+                    const SizedBox(width: 4),
+                    const Text(
                       'Eco Warrior',
                       style: TextStyle(color: Colors.yellow, fontSize: 12),
                     ),
@@ -260,7 +277,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem(IconData icon, String title, {bool isLogout = false}) {
+  Widget _buildListItem(IconData icon, String title, {bool isLogout = false, VoidCallback? onTap}) {
     final bgColor = isLogout ? Colors.red.withOpacity(0.1) : Colors.grey.withOpacity(0.1);
     final iconColor = isLogout ? Colors.red : AppColors.textSecondary;
     final textColor = isLogout ? Colors.red : AppColors.textPrimary;
@@ -283,7 +300,7 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       trailing: Icon(Icons.chevron_right, color: iconColor),
-      onTap: () {},
+      onTap: onTap ?? () {},
     );
   }
 }

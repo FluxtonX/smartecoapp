@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../pickup_scheduling/pickup_scheduling_screen.dart';
 
 class BinStatusDialog extends StatelessWidget {
   final String title;
@@ -9,7 +11,7 @@ class BinStatusDialog extends StatelessWidget {
   final String capacity;
   final String lastEmptied;
   final String avgFillRate;
-  final IconData icon;
+  final String appSvg;
 
   const BinStatusDialog({
     Key? key,
@@ -20,7 +22,7 @@ class BinStatusDialog extends StatelessWidget {
     required this.capacity,
     required this.lastEmptied,
     required this.avgFillRate,
-    required this.icon,
+    required this.appSvg,
   }) : super(key: key);
 
   @override
@@ -29,8 +31,9 @@ class BinStatusDialog extends StatelessWidget {
     final String statusText = percentage >= 0.9 ? 'Full' : (percentage >= 0.75 ? 'Nearly Full' : 'Ok');
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: AppColors.background,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -40,14 +43,19 @@ class BinStatusDialog extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.1),
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(icon, color: color, size: 24),
+                  child: SvgPicture.asset(
+                    appSvg,
+                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                    width: 28,
+                    height: 28,
+                  ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +64,7 @@ class BinStatusDialog extends StatelessWidget {
                         title,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -64,7 +72,7 @@ class BinStatusDialog extends StatelessWidget {
                         subtitle,
                         style: const TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 12,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -77,83 +85,128 @@ class BinStatusDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Stack(
-              alignment: Alignment.center,
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    height: 130,
+                    width: 130,
+                    child: CircularProgressIndicator(
+                      value: percentage,
+                      backgroundColor: AppColors.background,
+                      valueColor: AlwaysStoppedAnimation<Color>(color),
+                      strokeWidth: 10,
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${(percentage * 100).toInt()}%',
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          statusText,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
               children: [
-                SizedBox(
-                  height: 120,
-                  width: 120,
-                  child: CircularProgressIndicator(
-                    value: percentage,
-                    backgroundColor: AppColors.border.withOpacity(0.3),
-                    valueColor: AlwaysStoppedAnimation<Color>(color),
-                    strokeWidth: 8,
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _buildInfoColumn(Icons.delete_outline, 'Capacity', capacity),
                   ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      '${(percentage * 100).toInt()}%',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Text(
-                      statusText,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isFull ? color : AppColors.success,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                    child: _buildInfoColumn(Icons.calendar_today, 'Last Emptied', lastEmptied),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildInfoColumn(Icons.delete_outline, 'Capacity', capacity),
-                Container(width: 1, height: 30, color: AppColors.border),
-                _buildInfoColumn(Icons.calendar_today, 'Last Emptied', lastEmptied),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.show_chart, color: AppColors.textSecondary, size: 16),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Avg Fill Rate',
-                      style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
-                    ),
-                    Text(
-                      avgFillRate,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.show_chart, color: AppColors.textSecondary, size: 16),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'Avg Fill Rate',
+                        style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    avgFillRate,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             if (isFull) ...[
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
+                 child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PickupSchedulingScreen()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -175,6 +228,7 @@ class BinStatusDialog extends StatelessWidget {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: AppColors.textSecondary, size: 14),
             const SizedBox(width: 4),
@@ -197,7 +251,7 @@ void showBinStatusDialog(
   required String capacity,
   required String lastEmptied,
   required String avgFillRate,
-  required IconData icon,
+  required String appSvg,
 }) {
   showDialog(
     context: context,
@@ -210,7 +264,7 @@ void showBinStatusDialog(
         capacity: capacity,
         lastEmptied: lastEmptied,
         avgFillRate: avgFillRate,
-        icon: icon,
+        appSvg: appSvg,
       );
     },
   );

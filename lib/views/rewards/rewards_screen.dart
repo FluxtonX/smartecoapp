@@ -108,58 +108,77 @@ class _RewardsScreenState extends State<RewardsScreen> {
   }
 
   Widget _buildBalanceAndProgress() {
-    return Column(
-      children: [
-        // Balance Card
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          decoration: BoxDecoration(
-            color: Colors.orange.shade50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.orange.shade200),
-          ),
-          child: Column(
-            children: const [
-              Text('Your Balance', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-              SizedBox(height: 8),
-              Text('2450', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-              SizedBox(height: 4),
-              Text('EcoPoints', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        // Progress Card
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.transparent,// Light beige background
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          // Balance Card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F3E9),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orangeAccent),
+            ),
+            child: Column(
               children: const [
-                Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
-                SizedBox(width: 8),
-                Text('Eco Warrior', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text('Your Balance', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                SizedBox(height: 8),
+                Text('2450', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                SizedBox(height: 4),
+                Text('EcoPoints', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
               ],
             ),
-            const Text('2450 / 5,000', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: 2450 / 5000,
-            backgroundColor: Colors.orange.shade100,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
-            minHeight: 8,
           ),
-        ),
-        const SizedBox(height: 8),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Text('2550 points to Eco Champion', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-        ),
-      ],
+          SizedBox(height: 16),
+          // Progress Card
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F3E9),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
+                          SizedBox(width: 8),
+                          Text('Eco Warrior', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        ],
+                      ),
+                      const Text('2450 / 5,000', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: 2450 / 5000,
+                      backgroundColor: Colors.white,
+                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                      minHeight: 8,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('2550 points to Eco Champion', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

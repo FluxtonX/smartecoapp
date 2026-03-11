@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_images.dart';
+import 'bin_scanner_screen.dart';
 
 class BinsScreen extends StatelessWidget {
   const BinsScreen({super.key});
@@ -35,14 +38,14 @@ class BinsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   // Top Card - Total Fill Rate
-                  _buildTopCard(),
+                  _buildTopCard(context),
                   const SizedBox(height: 16),
 
                   // Bin Cards
                   _buildBinCard(
                     title: 'Compost Bin',
                     subtitle: 'Organic Waste',
-                    icon: Icons.eco_outlined,
+                    appSvg: AppSvgs.leafImage,
                     color: AppColors.compost,
                     fillLevel: 45,
                     status: 'OK',
@@ -51,7 +54,7 @@ class BinsScreen extends StatelessWidget {
                   _buildBinCard(
                     title: 'Recycling Bin',
                     subtitle: 'Recyclable Materials',
-                    icon: Icons.recycling_outlined,
+                    appSvg: AppSvgs.recyclableImage,
                     color: AppColors.recyclable,
                     fillLevel: 78,
                     status: 'Nearly Full',
@@ -61,7 +64,7 @@ class BinsScreen extends StatelessWidget {
                   _buildBinCard(
                     title: 'E-Waste Bin',
                     subtitle: 'Electronics & Batteries',
-                    icon: Icons.memory,
+                    appSvg: AppSvgs.eWasteImage,
                     color: AppColors.eWaste,
                     fillLevel: 20,
                     status: 'OK',
@@ -70,7 +73,7 @@ class BinsScreen extends StatelessWidget {
                   _buildBinCard(
                     title: 'Landfill Bin',
                     subtitle: 'General Waste',
-                    icon: Icons.delete_outline,
+                    appSvg: AppSvgs.landfillImage,
                     color: AppColors.landfill,
                     fillLevel: 92,
                     status: 'Full',
@@ -80,7 +83,7 @@ class BinsScreen extends StatelessWidget {
                   _buildBinCard(
                     title: 'Hazardous Bin',
                     subtitle: 'Hazardous Materials',
-                    icon: Icons.wine_bar_outlined,
+                    appSvg: AppSvgs.hazardousImage,
                     color: AppColors.hazardous,
                     fillLevel: 15,
                     status: 'OK',
@@ -101,7 +104,7 @@ class BinsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTopCard() {
+  Widget _buildTopCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -131,7 +134,12 @@ class BinsScreen extends StatelessWidget {
             ],
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const BinScannerScreen()),
+              );
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -197,7 +205,7 @@ class BinsScreen extends StatelessWidget {
   Widget _buildBinCard({
     required String title,
     required String subtitle,
-    required IconData icon,
+    required String appSvg,
     required Color color,
     required int fillLevel,
     required String status,
@@ -232,7 +240,12 @@ class BinsScreen extends StatelessWidget {
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: color, size: 32),
+            child: SvgPicture.asset(
+              appSvg, 
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn), 
+              width: 32, 
+              height: 32,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(

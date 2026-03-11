@@ -126,7 +126,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 height: 4,
                 decoration: BoxDecoration(
-                  color: index <= _currentStep ? AppColors.primary : Colors.grey.shade300,
+                  color: index <= _currentStep
+                      ? AppColors.primary
+                      : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -151,11 +153,41 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   // ============== STEP 1: WASTE SELECTION ==============
   Widget _buildWasteSelection() {
     final wasteCategories = [
-      {'id': 'Organic', 'title': 'Organic', 'desc': 'Food waste, garden waste', 'svg': AppSvgs.leafImage, 'color': AppColors.compost},
-      {'id': 'Recyclable', 'title': 'Recyclable', 'desc': 'Paper, plastic, metal', 'svg': AppSvgs.binImage, 'color': AppColors.recyclable}, // Using bin as generic
-      {'id': 'General', 'title': 'General', 'desc': 'Non-recyclable waste', 'svg': AppSvgs.binImage, 'color': AppColors.general},
-      {'id': 'EWaste', 'title': 'E-Waste', 'desc': 'Electronics, batteries', 'svg': AppSvgs.binImage, 'color': AppColors.eWaste},
-      {'id': 'Glass', 'title': 'Glass', 'desc': 'Bottles, glassware', 'svg': AppSvgs.binImage, 'color': AppColors.glass},
+      {
+        'id': 'Organic',
+        'title': 'Organic',
+        'desc': 'Food waste, garden waste',
+        'svg': AppSvgs.leafImage,
+        'color': AppColors.compost,
+      },
+      {
+        'id': 'Recyclable',
+        'title': 'Recyclable',
+        'desc': 'Paper, plastic, metal',
+        'svg': AppSvgs.recyclableImage,
+        'color': AppColors.recyclable,
+      }, // Using bin as generic
+      {
+        'id': 'General',
+        'title': 'General',
+        'desc': 'Non-recyclable waste',
+        'svg': AppSvgs.binImage,
+        'color': AppColors.general,
+      },
+      {
+        'id': 'EWaste',
+        'title': 'E-Waste',
+        'desc': 'Electronics, batteries',
+        'svg': AppSvgs.eWasteImage,
+        'color': AppColors.eWaste,
+      },
+      {
+        'id': 'Glass',
+        'title': 'Glass',
+        'desc': 'Bottles, glassware',
+        'svg': AppSvgs.hazardousImage,
+        'color': AppColors.hazardous,
+      },
     ];
 
     return _buildStepLayout(
@@ -180,26 +212,47 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
             },
             child: Row(
               children: [
-                SvgPicture.asset(
-                  cat['svg'] as String,
-                  colorFilter: ColorFilter.mode(cat['color'] as Color, BlendMode.srcIn),
-                  width: 28,
-                  height: 28,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: (cat['color'] as Color).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: SvgPicture.asset(
+                    cat['svg'] as String,
+                    colorFilter: ColorFilter.mode(
+                      cat['color'] as Color,
+                      BlendMode.srcIn,
+                    ),
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(cat['title'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
-                      Text(cat['desc'] as String, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                      Text(
+                        cat['title'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        cat['desc'] as String,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.check_box, color: AppColors.primary)
-                else
-                  Icon(Icons.check_box_outline_blank, color: Colors.grey.shade300),
+                  const Icon(Icons.check_box, color: AppColors.primary),
               ],
             ),
           );
@@ -235,15 +288,30 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
                     children: [
-                      Text(d['date']!.split(' ')[0], style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                      Text(d['date']!.split(' ')[1], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(
+                        d['date']!.split(' ')[0],
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        d['date']!.split(' ')[1],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -252,8 +320,21 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(d['day']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
-                      Text(d['date']!, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                      Text(
+                        d['day']!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        d['date']!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -276,7 +357,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
       '10:00 AM - 12:00 PM',
       '12:00 PM - 2:00 PM',
       '2:00 PM - 4:00 PM',
-      '4:00 PM - 6:00 PM'
+      '4:00 PM - 6:00 PM',
     ];
 
     return _buildStepLayout(
@@ -299,8 +380,21 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(t, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
-                      const Text('Available', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                      Text(
+                        t,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const Text(
+                        'Available',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -341,7 +435,10 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   Center(
                     child: SvgPicture.asset(
                       AppSvgs.mapImage,
-                      colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.primary,
+                        BlendMode.srcIn,
+                      ),
                       width: 48,
                       height: 48,
                     ),
@@ -358,25 +455,48 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade200),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
               ],
             ),
             child: Row(
               children: [
-                const Icon(Icons.home_outlined, color: AppColors.primary, size: 32),
+                const Icon(
+                  Icons.home_outlined,
+                  color: AppColors.primary,
+                  size: 32,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Home', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      const Text('Kg 123 St, Kigali, Gasabo District, Rwanda', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      const Text(
+                        'Home',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Text(
+                        'Kg 123 St, Kigali, Gasabo District, Rwanda',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: const Text('Edit', style: TextStyle(color: AppColors.primary)),
+                  child: const Text(
+                    'Edit',
+                    style: TextStyle(color: AppColors.primary),
+                  ),
                 ),
               ],
             ),
@@ -404,13 +524,20 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               padding: const EdgeInsets.only(bottom: 12),
               child: _buildSelectableCard(
                 isSelected: isSelected,
-                onTap: () => setState(() => _selectedPaymentMethod = p['id'] as String),
+                onTap: () =>
+                    setState(() => _selectedPaymentMethod = p['id'] as String),
                 child: Row(
                   children: [
                     Icon(p['icon'] as IconData, color: AppColors.textSecondary),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: Text(p['title'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      child: Text(
+                        p['title'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                     if (isSelected)
                       const Icon(Icons.check_box, color: AppColors.primary)
@@ -431,7 +558,11 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               children: [
                 _buildSummaryRow('Service Fee', '1,500 RWF'),
                 const SizedBox(height: 8),
-                _buildSummaryRow('EcoPoints Discount', '-300 RWF', valueColor: AppColors.primary),
+                _buildSummaryRow(
+                  'EcoPoints Discount',
+                  '-300 RWF',
+                  valueColor: AppColors.primary,
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Divider(),
@@ -445,29 +576,65 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, {Color valueColor = AppColors.textPrimary, bool isBold = false}) {
+  Widget _buildSummaryRow(
+    String label,
+    String value, {
+    Color valueColor = AppColors.textPrimary,
+    bool isBold = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(color: isBold ? AppColors.textPrimary : AppColors.textSecondary, fontWeight: isBold ? FontWeight.bold : FontWeight.normal, fontSize: isBold ? 16 : 14)),
-        Text(value, style: TextStyle(color: valueColor, fontWeight: isBold ? FontWeight.bold : FontWeight.normal, fontSize: isBold ? 16 : 14)),
+        Text(
+          label,
+          style: TextStyle(
+            color: isBold ? AppColors.textPrimary : AppColors.textSecondary,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            fontSize: isBold ? 16 : 14,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: valueColor,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            fontSize: isBold ? 16 : 14,
+          ),
+        ),
       ],
     );
   }
 
   // ============== HELPER WIDGETS ==============
-  Widget _buildStepLayout({required String title, required String subtitle, required Widget child}) {
+  Widget _buildStepLayout({
+    required String title,
+    required String subtitle,
+    required Widget child,
+  }) {
     bool canContinue = true;
     if (_currentStep == 0 && _selectedWasteTypes.isEmpty) canContinue = false;
-    
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+          Text(
+            subtitle,
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 24),
           Expanded(child: child),
           const SizedBox(height: 16),
@@ -478,30 +645,49 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               foregroundColor: canContinue ? Colors.white : AppColors.primary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-                side: BorderSide(color: canContinue ? Colors.transparent : AppColors.primary),
+                borderRadius: BorderRadius.circular(2),
+                side: BorderSide(
+                  color: canContinue ? Colors.transparent : AppColors.primary,
+                ),
               ),
               elevation: 0,
             ),
-            child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            child: const Text(
+              'Continue',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
+          SizedBox(height: 8,)
         ],
       ),
     );
   }
 
-  Widget _buildSelectableCard({required bool isSelected, required VoidCallback onTap, required Widget child}) {
+  Widget _buildSelectableCard({
+    required bool isSelected,
+    required VoidCallback onTap,
+    required Widget child,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.05)
+              : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.primary : Colors.grey.shade200, width: isSelected ? 2 : 1),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            width: isSelected ? 2 : 1,
+          ),
           boxShadow: [
             if (isSelected)
-              BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
           ],
         ),
         child: child,
@@ -528,4 +714,3 @@ class _MapGridPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
