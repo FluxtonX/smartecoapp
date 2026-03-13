@@ -153,175 +153,177 @@ class _BinDetailsDialog extends StatelessWidget {
         side: const BorderSide(color: AppColors.primary, width: 2),
       ),
       backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header Row
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header Row
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: SvgPicture.asset(
+                      appSvg,
+                      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
-                  child: SvgPicture.asset(
-                    appSvg,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                    width: 24,
-                    height: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: () => Navigator.pop(context),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Circular chart
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade200),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: CustomPaint(
-                  size: const Size(140, 140),
-                  painter: _CircleProgressPainter(
-                    percentage: fillLevel.toDouble(),
-                    color: color,
-                    backgroundColor: Colors.grey.shade200,
-                    strokeWidth: 12,
-                  ),
-                  child: SizedBox(
-                    width: 140,
-                    height: 140,
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$fillLevel%',
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: AppColors.textPrimary,
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                color: statusColor,
-                                fontSize: 12,
+                        ),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.grey),
+                    onPressed: () => Navigator.pop(context),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Circular chart
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: CustomPaint(
+                    size: const Size(140, 140),
+                    painter: _CircleProgressPainter(
+                      percentage: fillLevel.toDouble(),
+                      color: color,
+                      backgroundColor: Colors.grey.shade200,
+                      strokeWidth: 12,
+                    ),
+                    child: SizedBox(
+                      width: 140,
+                      height: 140,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '$fillLevel%',
+                              style: const TextStyle(
+                                fontSize: 32,
                                 fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
                               ),
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Two cards row
-            Row(
-              children: [
-                Expanded(
-                  child: _buildSmallCard(
-                    Icons.delete_outline,
-                    'Capacity',
-                    capacity,
+              // Two cards row
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSmallCard(
+                      Icons.delete_outline,
+                      'Capacity',
+                      capacity,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildSmallCard(
-                    Icons.calendar_today_outlined,
-                    'Last Emptied',
-                    lastEmptied,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildSmallCard(
+                      Icons.calendar_today_outlined,
+                      'Last Emptied',
+                      lastEmptied,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Avg fill rate card
+              _buildSmallCard(Icons.show_chart, 'Avg Fill Rate', avgFillRate),
+
+              // Schedule Pickup button logic
+              if (fillLevel > 50) ...[
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Could navigate to scheduling here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Schedule Pickup',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-
-            // Avg fill rate card
-            _buildSmallCard(Icons.show_chart, 'Avg Fill Rate', avgFillRate),
-
-            // Schedule Pickup button logic
-            if (fillLevel > 50) ...[
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // Could navigate to scheduling here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Schedule Pickup',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
             ],
-          ],
+          ),
         ),
       ),
     );

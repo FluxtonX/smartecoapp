@@ -117,51 +117,60 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Account Type',
-                style: Theme.of(context).textTheme.headlineMedium,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Account Type',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Choose the type that best fits your needs',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 32),
+                    _buildTypeCard(
+                      type: 'residential',
+                      title: 'Residential',
+                      subtitle: 'For individual households and families',
+                      icon: Icons.home_outlined,
+                      benefits: [
+                        'Weekly pickups',
+                        'Up to 3 bins',
+                        'Basic EcoPoints',
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTypeCard(
+                      type: 'business',
+                      title: 'Business',
+                      subtitle: 'For businesses and commercial properties',
+                      icon: Icons.domain,
+                      benefits: [
+                        'Daily pickups',
+                        'Unlimited bins',
+                        '2x EcoPoints',
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    const SizedBox(height: 16), // Extra space for scrolling
+                    CustomButton(
+                      onPressed: _onContinue,
+                      text: 'Continue',
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Choose the type that best fits your needs',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 32),
-              _buildTypeCard(
-                type: 'residential',
-                title: 'Residential',
-                subtitle: 'For individual households and families',
-                icon: Icons.home_outlined,
-                benefits: [
-                  'Weekly pickups',
-                  'Up to 3 bins',
-                  'Basic EcoPoints',
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildTypeCard(
-                type: 'business',
-                title: 'Business',
-                subtitle: 'For businesses and commercial properties',
-                icon: Icons.domain,
-                benefits: [
-                  'Daily pickups',
-                  'Unlimited bins',
-                  '2x EcoPoints',
-                ],
-              ),
-              const Spacer(),
-              CustomButton(
-                onPressed: _onContinue,
-                text: 'Continue',
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

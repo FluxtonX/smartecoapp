@@ -35,48 +35,56 @@ class _BiometricsScreenState extends State<BiometricsScreen> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(24),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 48),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 48),
+                    Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryLight,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Icon(
+                        Icons.fingerprint,
+                        size: 80,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    Text(
+                      'Enable Biometrics',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Use your fingerprint or face ID for quick\nand secure access',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 64),
+                    CustomButton(
+                      onPressed: _onEnableBiometrics,
+                      text: 'Enable Biometrics',
+                    ),
+                    const SizedBox(height: 16),
+                    CustomButton(
+                      onPressed: _onSkip,
+                      text: 'Skip for Now',
+                      isOutlined: true,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-                child: const Icon(
-                  Icons.fingerprint,
-                  size: 80,
-                  color: AppColors.primary,
-                ),
               ),
-              const SizedBox(height: 48),
-              Text(
-                'Enable Biometrics',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Use your fingerprint or face ID for quick\nand secure access',
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              CustomButton(
-                onPressed: _onEnableBiometrics,
-                text: 'Enable Biometrics',
-              ),
-              const SizedBox(height: 16),
-              CustomButton(
-                onPressed: _onSkip,
-                text: 'Skip for Now',
-                isOutlined: true,
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
