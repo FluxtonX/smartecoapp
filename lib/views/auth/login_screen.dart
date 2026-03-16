@@ -4,6 +4,7 @@ import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import 'create_account_screen.dart';
 import 'verify_phone_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -57,14 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 64),
               Center(
                 child: Text(
-                  'Welcome Back',
+                  AppLocalizations.of(context)!.welcomeBack,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Log in to continue your smart waste journey',
+                  AppLocalizations.of(context)!.loginToContinue,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 48),
               CustomTextField(
                 controller: _phoneController,
-                labelText: 'Phone Number',
+                labelText: AppLocalizations.of(context)!.phoneNumber,
                 hintText: '+250 7XX XXX XXX',
                 prefixIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
@@ -81,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 32),
               CustomButton(
                 onPressed: _onLogin,
-                text: 'Log In',
+                text: AppLocalizations.of(context)!.logIn,
               ),
               const SizedBox(height: 24),
               Center(
@@ -99,9 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: AppColors.textSecondary,
                           ),
                       children: [
-                        const TextSpan(text: 'Don\'t have an account? '),
+                        TextSpan(text: AppLocalizations.of(context)!.dontHaveAccount),
                         TextSpan(
-                          text: 'Sign Up',
+                          text: AppLocalizations.of(context)!.signUp,
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,

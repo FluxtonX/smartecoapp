@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../notifications/notifications_screen.dart';
@@ -29,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   _buildSchedulePickupButton(context),
                   const SizedBox(height: 24),
-                  _buildQuickActions(),
+                  _buildQuickActions(context),
                   const SizedBox(height: 24),
                   _buildActivePickupCard(context),
                   const SizedBox(height: 24),
@@ -76,11 +77,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Good Morning',
+                        AppLocalizations.of(context)!.goodMorning,
                         style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                       Text(
@@ -154,13 +155,13 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          _buildEcoPointsCard(),
+          _buildEcoPointsCard(context),
         ],
       ),
     );
   }
 
-  Widget _buildEcoPointsCard() {
+  Widget _buildEcoPointsCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -173,22 +174,26 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Your EcoPoints',
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    '2,450',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.yourEcoPoints,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      '2,450',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -208,12 +213,17 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Eco Warrior',
-                style: TextStyle(color: Colors.white, fontSize: 14),
+            children: [
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.ecoWarrior,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
               ),
-              Text(
+              const SizedBox(width: 8),
+              const Text(
                 '2,450 / 5,000',
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
@@ -230,9 +240,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            '550 points to Eco Champion tier',
-            style: TextStyle(color: Colors.white70, fontSize: 12),
+          Text(
+            AppLocalizations.of(context)!.pointsToTier('550'),
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
           ),
         ],
       ),
@@ -259,9 +269,9 @@ class HomeScreen extends StatelessWidget {
           width: 20,
           height: 20,
         ),
-        label: const Text(
-          'Schedule Pickup',
-          style: TextStyle(
+        label: Text(
+          AppLocalizations.of(context)!.schedulePickup,
+          style: const TextStyle(
               color: AppColors.primary,
               fontSize: 16,
               fontWeight: FontWeight.bold),
@@ -276,45 +286,52 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions() {
+  Widget _buildQuickActions(BuildContext context) {
     final actions = [
-      {'svg': AppSvgs.calenderImage, 'label': 'Schedule', 'color': Colors.green},
-      {'svg': AppSvgs.mapImage, 'label': 'Track', 'color': Colors.blue},
-      {'svg': AppSvgs.binImage, 'label': 'Smart Bins', 'color': Colors.grey},
-      {'svg': AppSvgs.giftImage, 'label': 'Rewards', 'color': Colors.orange},
+      {'svg': AppSvgs.calenderImage, 'label': (context) => AppLocalizations.of(context)!.schedule, 'color': Colors.green},
+      {'svg': AppSvgs.mapImage, 'label': (context) => AppLocalizations.of(context)!.track, 'color': Colors.blue},
+      {'svg': AppSvgs.binImage, 'label': (context) => AppLocalizations.of(context)!.smartBins, 'color': Colors.grey},
+      {'svg': AppSvgs.giftImage, 'label': (context) => AppLocalizations.of(context)!.rewards, 'color': Colors.orange},
     ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: actions.map((action) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: (action['color'] as Color).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: SvgPicture.asset(
-                action['svg'] as String,
-                colorFilter: ColorFilter.mode(
-                  action['color'] as Color,
-                  BlendMode.srcIn,
+        return Expanded(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: (action['color'] as Color).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                width: 28,
-                height: 28,
+                child: SvgPicture.asset(
+                  action['svg'] as String,
+                  colorFilter: ColorFilter.mode(
+                    action['color'] as Color,
+                    BlendMode.srcIn,
+                  ),
+                  width: 24,
+                  height: 24,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              action['label'] as String,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 8),
+              Builder(
+                builder: (context) => Text(
+                  (action['label'] as String Function(BuildContext))(context),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }).toList(),
     );
@@ -341,7 +358,7 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(width: 8),
               Text(
-                'Active Pickup',
+                AppLocalizations.of(context)!.activePickup,
                 style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 18,
@@ -350,9 +367,9 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          const Text(
-            'General waste collection',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          Text(
+            AppLocalizations.of(context)!.generalWasteCollection,
+            style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 16),
           Row(
@@ -369,9 +386,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    'En route',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.enRoute,
+                    style: const TextStyle(
                         color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -392,7 +409,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   ),
-                  child: const Text('Track Now', style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    AppLocalizations.of(context)!.trackNow, 
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -408,18 +428,20 @@ class HomeScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Smart Bins Status',
-              style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context)!.smartBinsStatus,
+                style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             TextButton(
               onPressed: onViewAllBins ?? () {},
-              child: const Text(
-                'View All',
-                style: TextStyle(color: AppColors.primary),
+              child: Text(
+                AppLocalizations.of(context)!.viewAll,
+                style: const TextStyle(color: AppColors.primary),
               ),
             ),
           ],

@@ -3,6 +3,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import '../account_setup/account_type_screen.dart';
 import '../main_layout.dart';
+import '../../l10n/app_localizations.dart';
 
 class VerifyPhoneScreen extends StatefulWidget {
   final bool isLogin;
@@ -39,7 +40,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Back'),
+        title: Text(AppLocalizations.of(context)!.back),
         titleSpacing: 0,
         centerTitle: false,
       ),
@@ -50,12 +51,12 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Verify Phone',
+                AppLocalizations.of(context)!.verifyPhone,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 8),
               Text(
-                'Enter the 6-digit code sent to\n+250 788 XXX XXX',
+                AppLocalizations.of(context)!.enterCodeSent('+250 788 XXX XXX'),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 32),
@@ -99,7 +100,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               const SizedBox(height: 24),
               Center(
                 child: Text(
-                  'Resend code in 08s',
+                  AppLocalizations.of(context)!.resendCodeIn('08'),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -116,7 +117,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                   ),
                   child: Text.rich(
                     TextSpan(
-                      text: 'Tip: Check your messages for a code from ',
+                      text: AppLocalizations.of(context)!.verifyTip,
                       children: [
                         TextSpan(
                           text: 'SmartEco',
@@ -137,7 +138,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               const Spacer(),
               CustomButton(
                 onPressed: _onVerify,
-                text: 'Verify',
+                text: AppLocalizations.of(context)!.verify,
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import 'bin_scanner_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class BinsScreen extends StatelessWidget {
   const BinsScreen({super.key});
@@ -17,10 +18,10 @@ class BinsScreen extends StatelessWidget {
             color: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
-              children: const [
+              children: [
                 Text(
-                  'Smart Bins',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.smartBins,
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -42,58 +43,64 @@ class BinsScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Bin Cards
+                  // Bin Cards
                   _buildBinCard(
-                    title: 'Compost Bin',
-                    subtitle: 'Organic Waste',
+                    context,
+                    title: AppLocalizations.of(context)!.compostBin,
+                    subtitle: AppLocalizations.of(context)!.organicWaste,
                     appSvg: AppSvgs.leafImage,
                     color: AppColors.compost,
                     fillLevel: 45,
-                    status: 'OK',
-                    lastEmptied: '3 days ago',
+                    status: AppLocalizations.of(context)!.statusOk,
+                    lastEmptied: AppLocalizations.of(context)!.daysAgo('3'),
                   ),
                   _buildBinCard(
-                    title: 'Recycling Bin',
-                    subtitle: 'Recyclable Materials',
+                    context,
+                    title: AppLocalizations.of(context)!.recyclingBin,
+                    subtitle: AppLocalizations.of(context)!.recyclableMaterials,
                     appSvg: AppSvgs.recyclableImage,
                     color: AppColors.recyclable,
                     fillLevel: 78,
-                    status: 'Nearly Full',
-                    lastEmptied: '5 days ago',
+                    status: AppLocalizations.of(context)!.statusNearlyFull,
+                    lastEmptied: AppLocalizations.of(context)!.daysAgo('5'),
                     isAlert: true,
                   ),
                   _buildBinCard(
-                    title: 'E-Waste Bin',
-                    subtitle: 'Electronics & Batteries',
+                    context,
+                    title: AppLocalizations.of(context)!.eWasteBin,
+                    subtitle: AppLocalizations.of(context)!.electronicsBatteries,
                     appSvg: AppSvgs.eWasteImage,
                     color: AppColors.eWaste,
                     fillLevel: 20,
-                    status: 'OK',
-                    lastEmptied: '10 days ago',
+                    status: AppLocalizations.of(context)!.statusOk,
+                    lastEmptied: AppLocalizations.of(context)!.daysAgo('10'),
                   ),
                   _buildBinCard(
-                    title: 'Landfill Bin',
-                    subtitle: 'General Waste',
+                    context,
+                    title: AppLocalizations.of(context)!.landfillBin,
+                    subtitle: AppLocalizations.of(context)!.generalWasteCollection,
                     appSvg: AppSvgs.landfillImage,
                     color: AppColors.landfill,
                     fillLevel: 92,
-                    status: 'Full',
-                    lastEmptied: '6 days ago',
+                    status: AppLocalizations.of(context)!.statusFull,
+                    lastEmptied: AppLocalizations.of(context)!.daysAgo('6'),
                     isAlert: true,
                   ),
                   _buildBinCard(
-                    title: 'Hazardous Bin',
-                    subtitle: 'Hazardous Materials',
+                    context,
+                    title: AppLocalizations.of(context)!.hazardousBin,
+                    subtitle: AppLocalizations.of(context)!.hazardousMaterials,
                     appSvg: AppSvgs.hazardousImage,
                     color: AppColors.hazardous,
                     fillLevel: 15,
-                    status: 'OK',
-                    lastEmptied: '15 days ago',
+                    status: AppLocalizations.of(context)!.statusOk,
+                    lastEmptied: AppLocalizations.of(context)!.daysAgo('15'),
                   ),
 
                   const SizedBox(height: 16),
 
                   // Smart Tip
-                  _buildSmartTip(),
+                  _buildSmartTip(context),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -117,13 +124,13 @@ class BinsScreen extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'Total Fill Rate',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                AppLocalizations.of(context)!.totalFillRate,
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
               ),
-              SizedBox(height: 4),
-              Text(
+              const SizedBox(height: 4),
+              const Text(
                 '50%',
                 style: TextStyle(
                   fontSize: 24,
@@ -148,10 +155,10 @@ class BinsScreen extends StatelessWidget {
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.qr_code_scanner, color: AppColors.primary, size: 18),
-                  SizedBox(width: 6),
-                  Text('Scan Bin', style: TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
+                children: [
+                  const Icon(Icons.qr_code_scanner, color: AppColors.primary, size: 18),
+                  const SizedBox(width: 6),
+                  Text(AppLocalizations.of(context)!.scanBin, style: const TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
                 ],
               ),
             ),
@@ -161,7 +168,7 @@ class BinsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSmartTip() {
+  Widget _buildSmartTip(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -178,19 +185,19 @@ class BinsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
-              'Smart Tip',
-              style: TextStyle(
+              AppLocalizations.of(context)!.smartTip,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: AppColors.textPrimary,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
-              'Your Landfill Bin is full. Schedule a pickup to earn EcoPoints and keep your bins clean!',
-              style: TextStyle(
+              AppLocalizations.of(context)!.landfillFullTip,
+              style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 12,
                 height: 1.5,
@@ -202,7 +209,8 @@ class BinsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBinCard({
+  Widget _buildBinCard(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required String appSvg,
@@ -212,12 +220,13 @@ class BinsScreen extends StatelessWidget {
     required String lastEmptied,
     bool isAlert = false,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     Color statusColor;
-    if (status == 'OK') {
+    if (status == l10n.statusOk) {
       statusColor = Colors.green;
-    } else if (status == 'Nearly Full') {
+    } else if (status == l10n.statusNearlyFull) {
       statusColor = Colors.orange;
-    } else if (status == 'Full') {
+    } else if (status == l10n.statusFull) {
       statusColor = AppColors.error;
     } else {
       statusColor = AppColors.textSecondary;
@@ -280,9 +289,9 @@ class BinsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Fill Level',
-                      style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
+                    Text(
+                      l10n.fillLevel,
+                      style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
                     ),
                     Text(
                       '$fillLevel%',
@@ -320,7 +329,7 @@ class BinsScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Last: $lastEmptied',
+                      l10n.lastEmptied(lastEmptied),
                       style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
                     ),
                   ],

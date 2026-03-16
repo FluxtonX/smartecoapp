@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../main_layout.dart';
+import '../../l10n/app_localizations.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -35,20 +36,20 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    const Text(
-                      'Welcome Bonus!',
+                    Text(
+                      AppLocalizations.of(context)!.welcomeBonus,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'You\'ve earned your first EcoPoints',
+                    Text(
+                      AppLocalizations.of(context)!.earnedFirstEcoPoints,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white70,
                       ),
@@ -60,9 +61,9 @@ class WelcomeScreen extends StatelessWidget {
                         color: Colors.white.withAlpha(30),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
-                          Text(
+                          const Text(
                             '100',
                             style: TextStyle(
                               fontSize: 64,
@@ -71,8 +72,8 @@ class WelcomeScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'EcoPoints',
-                            style: TextStyle(
+                            AppLocalizations.of(context)!.ecoPoints,
+                            style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
                             ),
@@ -97,9 +98,9 @@ class WelcomeScreen extends StatelessWidget {
                           (route) => false,
                         );
                       },
-                      child: const Text(
-                        'Start Using SmartEco',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      child: Text(
+                        AppLocalizations.of(context)!.startUsingSmartEco,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(height: 24),

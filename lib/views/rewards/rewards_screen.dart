@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import '../../l10n/app_localizations.dart';
 
 class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
@@ -29,9 +30,9 @@ class _RewardsScreenState extends State<RewardsScreen> {
                     icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
                     onPressed: () => Navigator.pop(context),
                   ),
-                const Text(
-                  'EcoPoints Rewards',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.rewardsTitle,
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -48,11 +49,11 @@ class _RewardsScreenState extends State<RewardsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Row(
               children: [
-                _buildTab(0, 'Overview'),
+                _buildTab(0, AppLocalizations.of(context)!.overview),
                 const SizedBox(width: 8),
-                _buildTab(1, 'Redeem'),
+                _buildTab(1, AppLocalizations.of(context)!.redeem),
                 const SizedBox(width: 8),
-                _buildTab(2, 'History'),
+                _buildTab(2, AppLocalizations.of(context)!.history),
               ],
             ),
           ),
@@ -126,12 +127,12 @@ class _RewardsScreenState extends State<RewardsScreen> {
               border: Border.all(color: Colors.orangeAccent),
             ),
             child: Column(
-              children: const [
-                Text('Your Balance', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-                SizedBox(height: 8),
-                Text('2450', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                SizedBox(height: 4),
-                Text('EcoPoints', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+              children: [
+                Text(AppLocalizations.of(context)!.yourBalance, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                const SizedBox(height: 8),
+                const Text('2450', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                const SizedBox(height: 4),
+                Text(AppLocalizations.of(context)!.ecoPoints, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
               ],
             ),
           ),
@@ -149,10 +150,10 @@ class _RewardsScreenState extends State<RewardsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
-                          SizedBox(width: 8),
-                          Text('Eco Warrior', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        children: [
+                          const Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.ecoWarrior, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         ],
                       ),
                       const Text('2450 / 5,000', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
@@ -169,9 +170,9 @@ class _RewardsScreenState extends State<RewardsScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('2550 points to Eco Champion', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    child: Text(AppLocalizations.of(context)!.pointsToTierDetailed('2550', AppLocalizations.of(context)!.ecoChampion), style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                   ),
                 ],
               ),
@@ -185,37 +186,36 @@ class _RewardsScreenState extends State<RewardsScreen> {
   // ====================== OVERVIEW TAB ======================
   Widget _buildOverviewTab() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Membership Tiers', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(AppLocalizations.of(context)!.membershipTiers, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         _buildTierCard(
-          title: 'Eco Starter',
-          points: '0 - 999 points',
+          title: AppLocalizations.of(context)!.ecoStarter,
+          points: AppLocalizations.of(context)!.ecoStarterPoints,
           icon: Icons.star_border,
           iconColor: Colors.grey,
           isCurrent: false,
         ),
         _buildTierCard(
-          title: 'Eco Warrior',
-          points: '1000 - 4999 points',
+          title: AppLocalizations.of(context)!.ecoWarrior,
+          points: AppLocalizations.of(context)!.ecoWarriorPoints,
           icon: Icons.workspace_premium_outlined,
           iconColor: AppColors.primary,
           isCurrent: true,
         ),
         _buildTierCard(
-          title: 'Eco Champion',
-          points: '5000+ points',
+          title: AppLocalizations.of(context)!.ecoChampion,
+          points: AppLocalizations.of(context)!.ecoChampionPoints,
           icon: Icons.emoji_events_outlined,
           iconColor: Colors.orange,
           isCurrent: false,
         ),
         const SizedBox(height: 24),
-        const Text('Ways to Earn', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(AppLocalizations.of(context)!.waysToEarn, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
-        _buildEarnCard(title: 'Schedule Pickup', subtitle: 'Earn per booking', points: '+50', svgPath: AppSvgs.calenderImage, iconColor: AppColors.primary, iconBg: AppColors.primaryLight),
-        _buildEarnCard(title: 'Complete Pickup', subtitle: 'Earn per completion', points: '+100', svgPath: AppSvgs.leafImage, iconColor: Colors.blue, iconBg: Colors.blue.shade50),
-        _buildEarnCard(title: 'Refer a Friend', subtitle: 'Both get points', points: '+150', svgPath: AppSvgs.profileImage, iconColor: Colors.orange, iconBg: Colors.orange.shade50),
+        _buildEarnCard(title: AppLocalizations.of(context)!.schedulePickup, subtitle: AppLocalizations.of(context)!.earnPerBooking, points: '+50', svgPath: AppSvgs.calenderImage, iconColor: AppColors.primary, iconBg: AppColors.primaryLight),
+        _buildEarnCard(title: AppLocalizations.of(context)!.completePickup, subtitle: AppLocalizations.of(context)!.earnPerCompletion, points: '+100', svgPath: AppSvgs.leafImage, iconColor: Colors.blue, iconBg: Colors.blue.shade50),
+        _buildEarnCard(title: AppLocalizations.of(context)!.referFriend, subtitle: AppLocalizations.of(context)!.bothGetPoints, points: '+150', svgPath: AppSvgs.profileImage, iconColor: Colors.orange, iconBg: Colors.orange.shade50),
         
         const SizedBox(height: 24),
         // Invite Friends container
@@ -234,27 +234,27 @@ class _RewardsScreenState extends State<RewardsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     const Text('Invite Friends', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
-                     const SizedBox(height: 4),
-                     const Text.rich(
-                       TextSpan(
-                         text: 'Share your code: ',
-                         style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
-                         children: [
-                           TextSpan(text: 'RAHMAT2024', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
-                         ],
-                       ),
-                     ),
-                     const SizedBox(height: 12),
-                     ElevatedButton(
-                       onPressed: () {},
-                       style: ElevatedButton.styleFrom(
-                         minimumSize: const Size(120, 36),
-                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                         elevation: 0,
-                       ),
-                       child: const Text('Share Code'),
-                     ),
+                    Text(AppLocalizations.of(context)!.inviteFriends, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
+                    const SizedBox(height: 4),
+                    Text.rich(
+                      TextSpan(
+                        text: AppLocalizations.of(context)!.shareYourCode,
+                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                        children: const [
+                          TextSpan(text: 'RAHMAT2024', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(120, 36),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        elevation: 0,
+                      ),
+                      child: Text(AppLocalizations.of(context)!.shareCode),
+                    ),
                   ],
                 ),
               ),
@@ -294,7 +294,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                 color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: const Text('Current', style: TextStyle(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.bold)),
+              child: Text(AppLocalizations.of(context)!.current, style: const TextStyle(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.bold)),
             ),
         ],
       ),
@@ -390,7 +390,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                         height: 14,
                       ),
                       const SizedBox(width: 4),
-                      Text('$points points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isLocked ? Colors.grey : Colors.black87)),
+                      Text(AppLocalizations.of(context)!.pointsCount(points), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isLocked ? Colors.grey : Colors.black87)),
                     ],
                   ),
                ],
@@ -400,7 +400,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
             Container(
                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
-               child: const Text('Locked', style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold, fontSize: 12)),
+               child: Text(AppLocalizations.of(context)!.locked, style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold, fontSize: 12)),
             )
           else
             ElevatedButton(
@@ -411,7 +411,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                 backgroundColor: AppColors.primary,
                 elevation: 0,
               ),
-              child: const Text('Redeem', style: TextStyle(fontSize: 12, color: Colors.white)),
+              child: Text(AppLocalizations.of(context)!.redeem, style: const TextStyle(fontSize: 12, color: Colors.white)),
             ),
         ],
       ),
@@ -428,21 +428,21 @@ class _RewardsScreenState extends State<RewardsScreen> {
       ),
       child: Column(
          children: [
-           _buildHistoryItem('Scheduled pickup', '2 hours ago', '+50', true),
+           _buildHistoryItem(context, AppLocalizations.of(context)!.schedulePickup, AppLocalizations.of(context)!.hoursAgo('2'), '+50', true),
            const Divider(height: 1),
-           _buildHistoryItem('Completed pickup', '1 day ago', '+100', true),
+           _buildHistoryItem(context, AppLocalizations.of(context)!.completePickup, AppLocalizations.of(context)!.daysAgo('1'), '+100', true),
            const Divider(height: 1),
-           _buildHistoryItem('Airtime voucher', '2 days ago', '-200', false),
+           _buildHistoryItem(context, AppLocalizations.of(context)!.airtimeVoucher, AppLocalizations.of(context)!.daysAgo('2'), '-200', false),
            const Divider(height: 1),
-           _buildHistoryItem('Referral bonus', '3 days ago', '+150', true),
+           _buildHistoryItem(context, AppLocalizations.of(context)!.referralBonus, AppLocalizations.of(context)!.daysAgo('3'), '+150', true),
            const Divider(height: 1),
-           _buildHistoryItem('Weekly streak', '5 days ago', '+75', true),
+           _buildHistoryItem(context, AppLocalizations.of(context)!.weeklyStreak, AppLocalizations.of(context)!.daysAgo('5'), '+75', true),
          ],
       ),
     );
   }
 
-  Widget _buildHistoryItem(String title, String time, String points, bool isPositive) {
+  Widget _buildHistoryItem(BuildContext context, String title, String time, String points, bool isPositive) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(

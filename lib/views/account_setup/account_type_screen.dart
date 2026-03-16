@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import 'biometrics_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class AccountTypeScreen extends StatefulWidget {
   const AccountTypeScreen({super.key});
@@ -127,43 +128,43 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Account Type',
+                      AppLocalizations.of(context)!.accountType,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Choose the type that best fits your needs',
+                      AppLocalizations.of(context)!.chooseTypeNeeds,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 32),
                     _buildTypeCard(
                       type: 'residential',
-                      title: 'Residential',
-                      subtitle: 'For individual households and families',
+                      title: AppLocalizations.of(context)!.residential,
+                      subtitle: AppLocalizations.of(context)!.residentialDesc,
                       icon: Icons.home_outlined,
                       benefits: [
-                        'Weekly pickups',
-                        'Up to 3 bins',
-                        'Basic EcoPoints',
+                        AppLocalizations.of(context)!.weeklyPickups,
+                        AppLocalizations.of(context)!.upTo3Bins,
+                        AppLocalizations.of(context)!.basicEcoPoints,
                       ],
                     ),
                     const SizedBox(height: 16),
                     _buildTypeCard(
                       type: 'business',
-                      title: 'Business',
-                      subtitle: 'For businesses and commercial properties',
+                      title: AppLocalizations.of(context)!.businessAccount,
+                      subtitle: AppLocalizations.of(context)!.businessDesc,
                       icon: Icons.domain,
                       benefits: [
-                        'Daily pickups',
-                        'Unlimited bins',
-                        '2x EcoPoints',
+                        AppLocalizations.of(context)!.dailyPickups,
+                        AppLocalizations.of(context)!.unlimitedBins,
+                        AppLocalizations.of(context)!.twoXEcoPoints,
                       ],
                     ),
                     const SizedBox(height: 32),
                     const SizedBox(height: 16), // Extra space for scrolling
                     CustomButton(
                       onPressed: _onContinue,
-                      text: 'Continue',
+                      text: AppLocalizations.of(context)!.continueText,
                     ),
                     const SizedBox(height: 24),
                   ],

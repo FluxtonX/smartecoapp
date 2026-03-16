@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import 'welcome_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class BiometricsScreen extends StatefulWidget {
   const BiometricsScreen({super.key});
@@ -59,24 +60,24 @@ class _BiometricsScreenState extends State<BiometricsScreen> {
                     ),
                     const SizedBox(height: 48),
                     Text(
-                      'Enable Biometrics',
+                      AppLocalizations.of(context)!.enableBiometrics,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Use your fingerprint or face ID for quick\nand secure access',
+                      AppLocalizations.of(context)!.biometricsDesc,
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 64),
                     CustomButton(
                       onPressed: _onEnableBiometrics,
-                      text: 'Enable Biometrics',
+                      text: AppLocalizations.of(context)!.enableBiometrics,
                     ),
                     const SizedBox(height: 16),
                     CustomButton(
                       onPressed: _onSkip,
-                      text: 'Skip for Now',
+                      text: AppLocalizations.of(context)!.skipForNow,
                       isOutlined: true,
                     ),
                     const SizedBox(height: 24),
@@ -134,12 +135,12 @@ class _ScanningBiometricsScreenState extends State<ScanningBiometricsScreen> {
               ),
               const SizedBox(height: 48),
               Text(
-                'Scanning...',
+                AppLocalizations.of(context)!.scanning,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
               Text(
-                'Setting up your biometric authentication',
+                AppLocalizations.of(context)!.biometricsSetupDesc,
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),

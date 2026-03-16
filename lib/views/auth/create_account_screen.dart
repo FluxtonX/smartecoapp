@@ -4,6 +4,7 @@ import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import 'login_screen.dart';
 import 'verify_phone_screen.dart';
+import '../../l10n/app_localizations.dart';
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
 
@@ -57,15 +58,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 48),
               Center(
                 child: Text(
-                  'Create Account',
+                  AppLocalizations.of(context)!.createAccount,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Join Rwanda\'s smart waste management platform',
-                  textAlign: TextAlign.center, // This centers the lines relative to each other
+                  AppLocalizations.of(context)!.joinRwandaSmartWaste,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
@@ -73,7 +74,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 32),
               CustomTextField(
                 controller: _phoneController,
-                labelText: 'Phone Number',
+                labelText: AppLocalizations.of(context)!.phoneNumber,
                 hintText: '+250 7XX XXX XXX',
                 prefixIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
@@ -81,14 +82,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 16),
               CustomTextField(
                 controller: _referralController,
-                labelText: 'Referral Code (Optional)',
+                labelText: AppLocalizations.of(context)!.referralCode,
                 hintText: '# ENTER CODE',
                 prefixIcon: Icons.local_offer_outlined,
               ),
               const SizedBox(height: 32),
               CustomButton(
                 onPressed: _onContinue,
-                text: 'Continue',
+                text: AppLocalizations.of(context)!.continueText,
               ),
               const SizedBox(height: 16),
               Center(
@@ -97,17 +98,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   text: TextSpan(
                     style: Theme.of(context).textTheme.bodySmall,
                     children: [
-                      const TextSpan(text: 'By continuing, you agree to our '),
+                      TextSpan(text: AppLocalizations.of(context)!.byContinuingAgree),
                       TextSpan(
-                        text: 'Terms of Service',
+                        text: AppLocalizations.of(context)!.termsOfService,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const TextSpan(text: ' and\n'),
+                      TextSpan(text: AppLocalizations.of(context)!.and),
                       TextSpan(
-                        text: 'Privacy Policy',
+                        text: AppLocalizations.of(context)!.privacyPolicy,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -133,9 +134,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             color: AppColors.textSecondary,
                           ),
                       children: [
-                        const TextSpan(text: 'Already have an account? '),
+                        TextSpan(text: AppLocalizations.of(context)!.alreadyHaveAccount),
                         TextSpan(
-                          text: 'Log In',
+                          text: AppLocalizations.of(context)!.logIn,
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
@@ -162,14 +163,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Government Certified',
+                            AppLocalizations.of(context)!.governmentCertified,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,
                                 ),
                           ),
                           Text(
-                            'Authorized by Rwanda Environment Management Authority',
+                            AppLocalizations.of(context)!.authorizedByREMA,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: AppColors.primary,
                                 ),

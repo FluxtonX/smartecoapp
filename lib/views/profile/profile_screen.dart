@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import '../../l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import '../../core/providers/locale_provider.dart';
 import '../auth/login_screen.dart';
+
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -18,27 +22,36 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 56), // Add space to prevent overlap from positioned card in header
             const SizedBox(height: 16),
             _buildSection(
-              title: 'Account',
+              title: AppLocalizations.of(context)!.account,
               items: [
-                _buildListItem(Icons.person_outline, 'Personal Information'),
-                _buildListItem(Icons.location_on_outlined, 'Addresses'),
-                _buildListItem(Icons.phone_outlined, 'Phone Number'),
+                _buildListItem(Icons.person_outline, AppLocalizations.of(context)!.personalInformation),
+                _buildListItem(Icons.location_on_outlined, AppLocalizations.of(context)!.addresses),
+                _buildListItem(Icons.phone_outlined, AppLocalizations.of(context)!.phoneNumber),
               ],
             ),
             const SizedBox(height: 24),
             _buildSection(
-              title: 'Preferences',
+              title: AppLocalizations.of(context)!.preferences,
               items: [
-                _buildListItem(Icons.notifications_none, 'Notifications'),
-                _buildListItem(Icons.security_outlined, 'Privacy & Security'),
+                _buildListItem(Icons.notifications_none, AppLocalizations.of(context)!.notifications),
+                _buildListItem(Icons.security_outlined, AppLocalizations.of(context)!.privacySecurity),
+                _buildListItem(
+                  Icons.language, 
+                  AppLocalizations.of(context)!.language,
+                  onTap: () => _showLanguageDialog(context),
+                  trailing: Text(
+                    _getLanguageName(Provider.of<LocaleProvider>(context, listen: false).locale?.languageCode ?? 'en', context),
+                    style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 24),
             _buildSection(
-              title: 'Support',
+              title: AppLocalizations.of(context)!.support,
               items: [
-                _buildListItem(Icons.help_outline, 'Help & Support'),
-                _buildListItem(Icons.info_outline, 'About SmartEco'),
+                _buildListItem(Icons.help_outline, AppLocalizations.of(context)!.helpSupport),
+                _buildListItem(Icons.info_outline, AppLocalizations.of(context)!.aboutSmartEco),
               ],
             ),
             const SizedBox(height: 24),
@@ -52,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: _buildListItem(
                   Icons.logout, 
-                  'Log Out', 
+                  AppLocalizations.of(context)!.logOut, 
                   isLogout: true,
                   onTap: () {
                     Navigator.pushAndRemoveUntil(
@@ -110,8 +123,8 @@ class ProfileScreen extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  const Text(
-                    'Profile',
+                  Text(
+                    AppLocalizations.of(context)!.profile,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -199,13 +212,12 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatItem('24', 'Pickups'),
+                Expanded(child: _buildStatItem('24', AppLocalizations.of(context)!.pickups)),
                 Container(width: 1, height: 40, color: AppColors.border),
-                _buildStatItem('2,450', 'EcoPoints'),
+                Expanded(child: _buildStatItem('2,450', AppLocalizations.of(context)!.ecoPoints)),
                 Container(width: 1, height: 40, color: AppColors.border),
-                _buildStatItem('156kg', 'Recycled'),
+                Expanded(child: _buildStatItem('156kg', AppLocalizations.of(context)!.recycled)),
               ],
             ),
           ),
@@ -216,9 +228,11 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildStatItem(String value, String label) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           value,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontSize: 20,
@@ -228,9 +242,12 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 12,
+            fontSize: 10,
           ),
         ),
       ],
@@ -277,7 +294,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem(IconData icon, String title, {bool isLogout = false, VoidCallback? onTap}) {
+  Widget _buildListItem(IconData icon, String title, {bool isLogout = false, VoidCallback? onTap, Widget? trailing}) {
     final bgColor = isLogout ? Colors.red.withOpacity(0.1) : Colors.grey.withOpacity(0.1);
     final iconColor = isLogout ? Colors.red : AppColors.textSecondary;
     final textColor = isLogout ? Colors.red : AppColors.textPrimary;
@@ -299,8 +316,52 @@ class ProfileScreen extends StatelessWidget {
           fontWeight: isLogout ? FontWeight.bold : FontWeight.w500,
         ),
       ),
-      trailing: Icon(Icons.chevron_right, color: iconColor),
+      trailing: trailing ?? Icon(Icons.chevron_right, color: iconColor),
       onTap: onTap ?? () {},
     );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.selectLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _languageOption(context, 'en', AppLocalizations.of(context)!.english),
+            _languageOption(context, 'rw', AppLocalizations.of(context)!.kinyarwanda),
+            _languageOption(context, 'fr', AppLocalizations.of(context)!.french),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _languageOption(BuildContext context, String code, String name) {
+    final provider = Provider.of<LocaleProvider>(context, listen: false);
+    final isSelected = provider.locale?.languageCode == code;
+
+    return ListTile(
+      title: Text(name),
+      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primary) : null,
+      onTap: () {
+        provider.setLocale(Locale(code));
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  String _getLanguageName(String code, BuildContext context) {
+    switch (code) {
+      case 'en':
+        return AppLocalizations.of(context)!.english;
+      case 'rw':
+        return AppLocalizations.of(context)!.kinyarwanda;
+      case 'fr':
+        return AppLocalizations.of(context)!.french;
+      default:
+        return AppLocalizations.of(context)!.english;
+    }
   }
 }
