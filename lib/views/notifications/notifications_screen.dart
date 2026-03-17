@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 
@@ -19,18 +20,18 @@ class NotificationsScreen extends StatelessWidget {
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
-              'Notifications',
-              style: TextStyle(
+              AppLocalizations.of(context)!.notifications,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              '2 unread notifications',
-              style: TextStyle(
+              AppLocalizations.of(context)!.unreadNotifications('2'),
+              style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 10,
               ),
@@ -43,9 +44,9 @@ class NotificationsScreen extends StatelessWidget {
               padding: const EdgeInsets.only(right: 16.0),
               child: GestureDetector(
                 onTap: () {},
-                child: const Text(
-                  'Mark all read',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.markAllRead,
+                  style: const TextStyle(
                     color: AppColors.primary,
                   ),
                 ),
@@ -61,56 +62,56 @@ class NotificationsScreen extends StatelessWidget {
             _buildNotificationItem(
               icon: Icons.location_on_outlined,
               iconColor: Colors.blue,
-              title: 'Collector Arriving',
-              time: '5 min ago',
-              description: 'Your waste collector is 5 minutes away',
+              title: AppLocalizations.of(context)!.collectorArriving,
+              time: AppLocalizations.of(context)!.minAgo('5'),
+              description: AppLocalizations.of(context)!.collectorArrivingDesc,
               isUnread: true,
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
               appSvg: AppSvgs.giftImage,
               iconColor: Colors.orange,
-              title: 'EcoPoints Earned!',
-              time: '2 hr ago',
-              description: 'You earned 100 points for completing a pickup 2 hours ago',
+              title: AppLocalizations.of(context)!.ecoPointsEarned,
+              time: AppLocalizations.of(context)!.hrAgo('2'),
+              description: AppLocalizations.of(context)!.ecoPointsEarnedDesc,
               isUnread: true,
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
               icon: Icons.error_outline,
               iconColor: Colors.red,
-              title: 'Bin Nearly Full',
-              time: '5 hr ago',
-              description: 'Your Landfill Bin is 92% full. Schedule a pickup soon.',
+              title: AppLocalizations.of(context)!.binNearlyFull,
+              time: AppLocalizations.of(context)!.hrAgo('5'),
+              description: AppLocalizations.of(context)!.binNearlyFullDesc,
               isUnread: false,
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
               icon: Icons.check_circle_outline,
               iconColor: Colors.green,
-              title: 'Pickup Completed',
-              time: '1 day ago',
-              description: 'Your general waste has been successfully collected',
+              title: AppLocalizations.of(context)!.pickupCompleted,
+              time: AppLocalizations.of(context)!.daysAgo('1'),
+              description: AppLocalizations.of(context)!.pickupCompletedDesc,
               isUnread: false,
             ),
             const SizedBox(height: 12),
             _buildNotificationItem(
               appSvg: AppSvgs.binImage,
               iconColor: Colors.grey,
-              title: 'Weekly Reminder',
-              time: '2 days ago',
-              description: 'Don\'t forget to schedule your weekly waste pickup',
+              title: AppLocalizations.of(context)!.weeklyReminder,
+              time: AppLocalizations.of(context)!.daysAgo('2'),
+              description: AppLocalizations.of(context)!.weeklyReminderDesc,
               isUnread: false,
             ),
             const SizedBox(height: 40),
             Center(
               child: Column(
-                children: const [
-                  Icon(Icons.notifications_none, size: 48, color: AppColors.primary),
-                  SizedBox(height: 16),
+                children: [
+                  const Icon(Icons.notifications_none, size: 48, color: AppColors.primary),
+                  const SizedBox(height: 16),
                   Text(
-                    'You\'re all caught up!',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.allCaughtUp,
+                    style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 16,
                     ),
@@ -166,15 +167,19 @@ class NotificationsScreen extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           time,
                           style: const TextStyle(

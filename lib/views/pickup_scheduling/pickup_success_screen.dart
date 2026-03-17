@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../main_layout.dart';
 
 class PickupSuccessScreen extends StatelessWidget {
@@ -49,26 +50,26 @@ class PickupSuccessScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            const Text(
-              'Pickup Scheduled!',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.pickupScheduledSuccessTitle,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Your waste pickup has been confirmed',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.wastePickupConfirmed,
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 32),
-            const Text(
-              'Reference Number',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.referenceNumber,
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
               ),
@@ -121,19 +122,19 @@ class PickupSuccessScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     '🎉 ',
                     style: TextStyle(fontSize: 16),
                   ),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                        text: 'You earned ',
-                        style: TextStyle(color: Colors.black87, fontSize: 12),
+                        text: AppLocalizations.of(context)!.earnedPointsText1,
+                        style: const TextStyle(color: Colors.black87, fontSize: 12),
                         children: [
-                          TextSpan(text: '50 EcoPoints', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
-                          TextSpan(text: ' for scheduling this pickup!'),
+                          TextSpan(text: AppLocalizations.of(context)!.earnedPointsText2, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
+                          TextSpan(text: AppLocalizations.of(context)!.earnedPointsText3),
                         ],
                       ),
                     ),
@@ -158,7 +159,7 @@ class PickupSuccessScreen extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+              child: Text(AppLocalizations.of(context)!.continueBtn, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
             ),
             const SizedBox(height: 32),
           ],

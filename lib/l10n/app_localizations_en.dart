@@ -205,10 +205,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get compostBin => 'Compost Bin';
 
   @override
+  String get compost => 'Compost';
+
+  @override
   String get organicWaste => 'Organic Waste';
 
   @override
   String get recyclingBin => 'Recycling Bin';
+
+  @override
+  String get recyclable => 'Recyclable';
 
   @override
   String get recyclableMaterials => 'Recyclable Materials';
@@ -217,13 +223,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eWasteBin => 'E-Waste Bin';
 
   @override
+  String get eWaste => 'E-Waste';
+
+  @override
   String get electronicsBatteries => 'Electronics & Batteries';
 
   @override
   String get landfillBin => 'Landfill Bin';
 
   @override
+  String get landfill => 'Landfill';
+
+  @override
   String get hazardousBin => 'Hazardous Bin';
+
+  @override
+  String get hazardous => 'Hazardous';
 
   @override
   String get hazardousMaterials => 'Hazardous Materials';
@@ -429,4 +444,252 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referralBonus => 'Referral bonus';
+
+  @override
+  String unreadNotifications(Object count) {
+    return '$count unread notifications';
+  }
+
+  @override
+  String get markAllRead => 'Mark all read';
+
+  @override
+  String get collectorArriving => 'Collector Arriving';
+
+  @override
+  String minAgo(Object count) {
+    return '$count min ago';
+  }
+
+  @override
+  String get collectorArrivingDesc => 'Your waste collector is 5 minutes away';
+
+  @override
+  String get ecoPointsEarned => 'EcoPoints Earned!';
+
+  @override
+  String hrAgo(Object count) {
+    return '$count hr ago';
+  }
+
+  @override
+  String get ecoPointsEarnedDesc =>
+      'You earned 100 points for completing a pickup 2 hours ago';
+
+  @override
+  String get binNearlyFull => 'Bin Nearly Full';
+
+  @override
+  String get binNearlyFullDesc =>
+      'Your Landfill Bin is 92% full. Schedule a pickup soon.';
+
+  @override
+  String get pickupCompleted => 'Pickup Completed';
+
+  @override
+  String get pickupCompletedDesc =>
+      'Your general waste has been successfully collected';
+
+  @override
+  String get weeklyReminder => 'Weekly Reminder';
+
+  @override
+  String get weeklyReminderDesc =>
+      'Don\'t forget to schedule your weekly waste pickup';
+
+  @override
+  String get allCaughtUp => 'You\'re all caught up!';
+
+  @override
+  String get mapPlaceholder => 'Map Placeholder';
+
+  @override
+  String minTime(Object count) {
+    return '$count min';
+  }
+
+  @override
+  String get collectorEnRoute => 'Collector En Route';
+
+  @override
+  String get wasteCollectedShortly => 'Your waste will be collected shortly';
+
+  @override
+  String get minutes => 'Minutes';
+
+  @override
+  String get kmAway => 'km away';
+
+  @override
+  String get stops => 'Stops';
+
+  @override
+  String pickupsCount(Object count) {
+    return '($count pickups)';
+  }
+
+  @override
+  String get callCollector => 'Call Collector';
+
+  @override
+  String get statusUpdates => 'Status Updates';
+
+  @override
+  String get enRouteLocation => 'En Route to Your Location';
+
+  @override
+  String get minutesAway => '12 minutes away';
+
+  @override
+  String get pickupStarted => 'Pickup Started';
+
+  @override
+  String get collectionInitiated => 'Collection route initiated';
+
+  @override
+  String get pickupScheduled => 'Pickup Scheduled';
+
+  @override
+  String get waitingCollector => 'Waiting for collector';
+
+  @override
+  String get selectWasteType => 'Select Waste Type';
+
+  @override
+  String get chooseWasteCategories => 'Choose one or more waste categories';
+
+  @override
+  String get organicWasteTitle => 'Organic';
+
+  @override
+  String get organicWasteDesc => 'Food waste, garden waste';
+
+  @override
+  String get recyclableWasteTitle => 'Recyclable';
+
+  @override
+  String get recyclableWasteDesc => 'Paper, plastic, metal';
+
+  @override
+  String get generalWasteTitle => 'General';
+
+  @override
+  String get generalWasteDesc => 'Non-recyclable waste';
+
+  @override
+  String get eWasteTitle => 'E-Waste';
+
+  @override
+  String get eWasteDesc => 'Electronics, batteries';
+
+  @override
+  String get glassWasteTitle => 'Glass';
+
+  @override
+  String get glassWasteDesc => 'Bottles, glassware';
+
+  @override
+  String get selectDate => 'Select Date';
+
+  @override
+  String get advanceNotice => 'Pickups must be scheduled 24 hours in advance';
+
+  @override
+  String get selectTime => 'Select Time';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get confirmAddress => 'Confirm Address';
+
+  @override
+  String get verifyLocation => 'Verify your pickup location';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get homeLocation => 'Home';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get choosePayment => 'Choose how you want to pay';
+
+  @override
+  String get serviceFee => 'Service Fee';
+
+  @override
+  String get ecoPointsDiscount => 'EcoPoints Discount';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get continueBtn => 'Continue';
+
+  @override
+  String get pickupScheduledSuccess => 'Pickup scheduled successfully!';
+
+  @override
+  String get errSelectWaste => 'Please select at least one waste type';
+
+  @override
+  String get errSelectDate => 'Please select a date';
+
+  @override
+  String get errSelectTime => 'Please select a time slot';
+
+  @override
+  String get errSelectPayment => 'Please select a payment method';
+
+  @override
+  String get pickupScheduledSuccessTitle => 'Pickup Scheduled!';
+
+  @override
+  String get wastePickupConfirmed => 'Your waste pickup has been confirmed';
+
+  @override
+  String get referenceNumber => 'Reference Number';
+
+  @override
+  String get earnedPointsText1 => 'You earned ';
+
+  @override
+  String get earnedPointsText2 => '50 EcoPoints';
+
+  @override
+  String get earnedPointsText3 => ' for scheduling this pickup!';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navBins => 'Bins';
+
+  @override
+  String get scanningQRCode => 'Scanning QR Code...';
+
+  @override
+  String get capacity => 'Capacity';
+
+  @override
+  String get lastEmptiedTitle => 'Last Emptied';
+
+  @override
+  String get avgFillRate => 'Avg Fill Rate';
+
+  @override
+  String get fifteenPercentPerDay => '15% per day';
+
+  @override
+  String get sixteenPercentPerDay => '16% per day';
+
+  @override
+  String get fiftyL => '50L';
+
+  @override
+  String get seventyFiveL => '75L';
 }

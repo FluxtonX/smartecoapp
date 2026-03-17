@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/countries.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
+import '../../core/providers/locale_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
@@ -15,6 +19,23 @@ class CreateAccountScreen extends StatefulWidget {
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _phoneController = TextEditingController();
   final _referralController = TextEditingController();
+  String _lastValidCountryCode = 'RW';
+  Key _phoneFieldKey = UniqueKey();
+
+  late final List<Country> _customCountries = countries.map((country) {
+    if (['PK', 'RW', 'FR', 'US'].contains(country.code)) {
+      return country;
+    }
+    return Country(
+      name: '🔒 ${country.name} (Unavailable)',
+      nameTranslations: const {},
+      flag: country.flag,
+      code: country.code,
+      dialCode: country.dialCode,
+      minLength: country.minLength,
+      maxLength: country.maxLength,
+    );
+  }).toList();
 
   void _onContinue() {
     Navigator.push(
@@ -72,12 +93,73 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
 
               const SizedBox(height: 32),
-              CustomTextField(
+               IntlPhoneField(
+                key: _phoneFieldKey,
                 controller: _phoneController,
-                labelText: AppLocalizations.of(context)!.phoneNumber,
-                hintText: '+250 7XX XXX XXX',
-                prefixIcon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
+                countries: _customCountries,
+                dropdownTextStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
+                dropdownIconPosition: IconPosition.trailing,
+                dropdownIcon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: AppColors.primary,
+                ),
+                flagsButtonMargin: const EdgeInsets.only(left: 8),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.phoneNumber,
+                  labelStyle: const TextStyle(color: AppColors.textSecondary),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: AppColors.primary),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: AppColors.textSecondary.withOpacity(0.2)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.withOpacity(0.05),
+                ),
+                initialCountryCode: _lastValidCountryCode,
+                onChanged: (phone) {
+                  // You can handle phone number changes here
+                },
+                onCountryChanged: (country) {
+                  if (!['PK', 'RW', 'FR', 'US'].contains(country.code)) {
+                    // Revert selection
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Service is currently unavailable in ${country.name}.'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                    setState(() {
+                      _phoneFieldKey = UniqueKey();
+                    });
+                    return;
+                  }
+
+                  setState(() {
+                    _lastValidCountryCode = country.code;
+                  });
+
+                  final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
+                  if (country.code == 'FR') {
+                    localeProvider.setLocale(const Locale('fr'));
+                  } else if (country.code == 'RW') {
+                    localeProvider.setLocale(const Locale('rw'));
+                  } else {
+                    localeProvider.setLocale(const Locale('en'));
+                  }
+                },
               ),
               const SizedBox(height: 16),
               CustomTextField(

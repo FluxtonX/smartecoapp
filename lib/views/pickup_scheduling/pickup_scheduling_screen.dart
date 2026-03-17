@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import '../../l10n/app_localizations.dart';
 import 'pickup_success_screen.dart';
 
 class PickupSchedulingScreen extends StatefulWidget {
@@ -26,24 +27,24 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   void _nextStep() {
     // Validation
     if (_currentStep == 0 && _selectedWasteTypes.isEmpty) {
-      _showToast('Please select at least one waste type', isError: true);
+      _showToast(AppLocalizations.of(context)!.errSelectWaste, isError: true);
       return;
     }
     if (_currentStep == 1 && _selectedDate == null) {
-      _showToast('Please select a date', isError: true);
+      _showToast(AppLocalizations.of(context)!.errSelectDate, isError: true);
       return;
     }
     if (_currentStep == 2 && _selectedTime == null) {
-      _showToast('Please select a time slot', isError: true);
+      _showToast(AppLocalizations.of(context)!.errSelectTime, isError: true);
       return;
     }
     if (_currentStep == 4) {
       if (_selectedPaymentMethod == null) {
-        _showToast('Please select a payment method', isError: true);
+        _showToast(AppLocalizations.of(context)!.errSelectPayment, isError: true);
         return;
       }
       // Submit and go to success
-      _showToast('Pickup scheduled successfully!', isError: false);
+      _showToast(AppLocalizations.of(context)!.pickupScheduledSuccess, isError: false);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -155,44 +156,44 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     final wasteCategories = [
       {
         'id': 'Organic',
-        'title': 'Organic',
-        'desc': 'Food waste, garden waste',
+        'title': AppLocalizations.of(context)!.organicWasteTitle,
+        'desc': AppLocalizations.of(context)!.organicWasteDesc,
         'svg': AppSvgs.leafImage,
         'color': AppColors.compost,
       },
       {
         'id': 'Recyclable',
-        'title': 'Recyclable',
-        'desc': 'Paper, plastic, metal',
+        'title': AppLocalizations.of(context)!.recyclableWasteTitle,
+        'desc': AppLocalizations.of(context)!.recyclableWasteDesc,
         'svg': AppSvgs.recyclableImage,
         'color': AppColors.recyclable,
       }, // Using bin as generic
       {
         'id': 'General',
-        'title': 'General',
-        'desc': 'Non-recyclable waste',
+        'title': AppLocalizations.of(context)!.generalWasteTitle,
+        'desc': AppLocalizations.of(context)!.generalWasteDesc,
         'svg': AppSvgs.binImage,
         'color': AppColors.general,
       },
       {
         'id': 'EWaste',
-        'title': 'E-Waste',
-        'desc': 'Electronics, batteries',
+        'title': AppLocalizations.of(context)!.eWasteTitle,
+        'desc': AppLocalizations.of(context)!.eWasteDesc,
         'svg': AppSvgs.eWasteImage,
         'color': AppColors.eWaste,
       },
       {
         'id': 'Glass',
-        'title': 'Glass',
-        'desc': 'Bottles, glassware',
+        'title': AppLocalizations.of(context)!.glassWasteTitle,
+        'desc': AppLocalizations.of(context)!.glassWasteDesc,
         'svg': AppSvgs.hazardousImage,
         'color': AppColors.hazardous,
       },
     ];
 
     return _buildStepLayout(
-      title: 'Select Waste Type',
-      subtitle: 'Choose one or more waste categories',
+      title: AppLocalizations.of(context)!.selectWasteType,
+      subtitle: AppLocalizations.of(context)!.chooseWasteCategories,
       child: ListView.separated(
         itemCount: wasteCategories.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -274,8 +275,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     ];
 
     return _buildStepLayout(
-      title: 'Select Date',
-      subtitle: 'Pickups must be scheduled 24 hours in advance',
+      title: AppLocalizations.of(context)!.selectDate,
+      subtitle: AppLocalizations.of(context)!.advanceNotice,
       child: ListView.separated(
         itemCount: dates.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -361,8 +362,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     ];
 
     return _buildStepLayout(
-      title: 'Select Time',
-      subtitle: 'Pickups must be scheduled 24 hours in advance',
+      title: AppLocalizations.of(context)!.selectTime,
+      subtitle: AppLocalizations.of(context)!.advanceNotice,
       child: ListView.separated(
         itemCount: times.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -388,9 +389,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const Text(
-                        'Available',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.available,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                         ),
@@ -413,8 +414,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   // ============== STEP 4: ADDRESS SELECTION ==============
   Widget _buildAddressSelection() {
     return _buildStepLayout(
-      title: 'Confirm Address',
-      subtitle: 'Verify your pickup location',
+      title: AppLocalizations.of(context)!.confirmAddress,
+      subtitle: AppLocalizations.of(context)!.verifyLocation,
       child: Column(
         children: [
           Expanded(
@@ -474,9 +475,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Home',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.homeLocation,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -493,9 +494,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(color: AppColors.primary),
+                  child: Text(
+                    AppLocalizations.of(context)!.edit,
+                    style: const TextStyle(color: AppColors.primary),
                   ),
                 ),
               ],
@@ -514,8 +515,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     ];
 
     return _buildStepLayout(
-      title: 'Payment Method',
-      subtitle: 'Choose how you want to pay',
+      title: AppLocalizations.of(context)!.paymentMethod,
+      subtitle: AppLocalizations.of(context)!.choosePayment,
       child: Column(
         children: [
           ...payments.map((p) {
@@ -556,10 +557,10 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
             ),
             child: Column(
               children: [
-                _buildSummaryRow('Service Fee', '1,500 RWF'),
+                _buildSummaryRow(AppLocalizations.of(context)!.serviceFee, '1,500 RWF'),
                 const SizedBox(height: 8),
                 _buildSummaryRow(
-                  'EcoPoints Discount',
+                  AppLocalizations.of(context)!.ecoPointsDiscount,
                   '-300 RWF',
                   valueColor: AppColors.primary,
                 ),
@@ -567,7 +568,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Divider(),
                 ),
-                _buildSummaryRow('Total', '1,200 RWF', isBold: true),
+                _buildSummaryRow(AppLocalizations.of(context)!.total, '1,200 RWF', isBold: true),
               ],
             ),
           ),
@@ -652,9 +653,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               ),
               elevation: 0,
             ),
-            child: const Text(
-              'Continue',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            child: Text(
+              AppLocalizations.of(context)!.continueBtn,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
           SizedBox(height: 8,)

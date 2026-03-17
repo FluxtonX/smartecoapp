@@ -149,12 +149,14 @@ class _RewardsScreenState extends State<RewardsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.ecoWarrior, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        ],
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.workspace_premium_outlined, color: AppColors.textPrimary, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(AppLocalizations.of(context)!.ecoWarrior, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                          ],
+                        ),
                       ),
                       const Text('2450 / 5,000', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
                     ],

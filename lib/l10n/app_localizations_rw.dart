@@ -206,10 +206,16 @@ class AppLocalizationsRw extends AppLocalizations {
   String get compostBin => 'Igipangu cy\'ifumbire';
 
   @override
+  String get compost => 'Ifumbire';
+
+  @override
   String get organicWaste => 'Imyanda ibora';
 
   @override
   String get recyclingBin => 'Igipangu cy\'imyanda isubiranywa';
+
+  @override
+  String get recyclable => 'Isubiranywa';
 
   @override
   String get recyclableMaterials => 'Imyanda ishobora gusubiranywa';
@@ -219,13 +225,22 @@ class AppLocalizationsRw extends AppLocalizations {
       'Igipangu cy\'imyanda y\'ibikoresho by\'amashanyarazi';
 
   @override
+  String get eWaste => 'Iby\'amashanyarazi';
+
+  @override
   String get electronicsBatteries => 'Ibicuruzwa by\'amashanyarazi na bateri';
 
   @override
   String get landfillBin => 'Igipangu cy\'imyanda isanzwe';
 
   @override
+  String get landfill => 'Imyanda Isanzwe';
+
+  @override
   String get hazardousBin => 'Igipangu cy\'imyanda iteje akaga';
+
+  @override
+  String get hazardous => 'Iteje akaga';
 
   @override
   String get hazardousMaterials => 'Imyanda iteje akaga';
@@ -432,4 +447,256 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get referralBonus => 'Bonus yo kohereza inshuti';
+
+  @override
+  String unreadNotifications(Object count) {
+    return '$count integuza nshya';
+  }
+
+  @override
+  String get markAllRead => 'Soma byose';
+
+  @override
+  String get collectorArriving => 'Umutwara Myanda Nyamwiza';
+
+  @override
+  String minAgo(Object count) {
+    return 'Iminota $count ishize';
+  }
+
+  @override
+  String get collectorArrivingDesc =>
+      'Umutwara myanda wawe arakugeraho mu minota 5';
+
+  @override
+  String get ecoPointsEarned => 'Watsindiye EcoPoints!';
+
+  @override
+  String hrAgo(Object count) {
+    return 'Amasaha $count ashize';
+  }
+
+  @override
+  String get ecoPointsEarnedDesc =>
+      'Watsindiye amanota 100 kuko watwaje imyanda mu masaha 2 ashize';
+
+  @override
+  String get binNearlyFull => 'Igipangu kigiye kuzura';
+
+  @override
+  String get binNearlyFullDesc =>
+      'Igipangu cyawe cy\'imyanda isanzwe cyuzuye 92%. Teganya kuyitwara vuba.';
+
+  @override
+  String get pickupCompleted => 'Gutwarwa byarangiye';
+
+  @override
+  String get pickupCompletedDesc => 'Imyanda yawe rusange yatwawe neza';
+
+  @override
+  String get weeklyReminder => 'Kwibutswa kwa Buri Cyumweru';
+
+  @override
+  String get weeklyReminderDesc =>
+      'Wibagirwa guteganya gutwarwa k\'imyanda cya buri cyumweru';
+
+  @override
+  String get allCaughtUp => 'Wabonye byose!';
+
+  @override
+  String get mapPlaceholder => 'Aho Kwerekana Ikarita';
+
+  @override
+  String minTime(Object count) {
+    return '$count min';
+  }
+
+  @override
+  String get collectorEnRoute => 'Umutwara Myanda Nyamwiza Araza';
+
+  @override
+  String get wasteCollectedShortly => 'Imyanda yawe iri gutwarwa vuba';
+
+  @override
+  String get minutes => 'Iminota';
+
+  @override
+  String get kmAway => 'Irometero bye';
+
+  @override
+  String get stops => 'Aho ahagarara';
+
+  @override
+  String pickupsCount(Object count) {
+    return '($count inshuro)';
+  }
+
+  @override
+  String get callCollector => 'Hamagara Umutwara Myanda Nyamwiza';
+
+  @override
+  String get statusUpdates => 'Ibyagezweho';
+
+  @override
+  String get enRouteLocation => 'Ari Mu Nzira Iza Kuri Wowe';
+
+  @override
+  String get minutesAway => 'Iminota 12 isigaye';
+
+  @override
+  String get pickupStarted => 'Gutwarwa Ku Imyanda Byatangiye';
+
+  @override
+  String get collectionInitiated => 'Gukusanya byatangijwe';
+
+  @override
+  String get pickupScheduled => 'Gutwarwa Ku Imyanda Byateganyijwe';
+
+  @override
+  String get waitingCollector => 'Gutegereza umutwara myanda nyamwiza';
+
+  @override
+  String get selectWasteType => 'Hitamo Ubwoko Bw\'Imyanda';
+
+  @override
+  String get chooseWasteCategories =>
+      'Hitamo icyiciro kimwe cyangwa byinshi by\'imyanda';
+
+  @override
+  String get organicWasteTitle => 'Iboraho';
+
+  @override
+  String get organicWasteDesc => 'Ibisigazwa by\'ibiryo, iby\'ubusitani';
+
+  @override
+  String get recyclableWasteTitle => 'Ibishobora gutunganywa';
+
+  @override
+  String get recyclableWasteDesc => 'Urupapuro, palasitiki, icyuma';
+
+  @override
+  String get generalWasteTitle => 'Rusange';
+
+  @override
+  String get generalWasteDesc => 'Imyanda idatunganywa';
+
+  @override
+  String get eWasteTitle => 'E-Waste';
+
+  @override
+  String get eWasteDesc => 'Ibikoresho by\'ikoranabuhanga, batiri';
+
+  @override
+  String get glassWasteTitle => 'Ikirahure';
+
+  @override
+  String get glassWasteDesc => 'Amacupa, ibirahure';
+
+  @override
+  String get selectDate => 'Hitamo Itariki';
+
+  @override
+  String get advanceNotice =>
+      'Gutwara imyanda bigomba gutegurwa mbere y\'amasaha 24';
+
+  @override
+  String get selectTime => 'Hitamo Igihe';
+
+  @override
+  String get available => 'Ihari';
+
+  @override
+  String get confirmAddress => 'Emeza Aderesi';
+
+  @override
+  String get verifyLocation => 'Reba aho uzatwarirwa';
+
+  @override
+  String get edit => 'Hindura';
+
+  @override
+  String get homeLocation => 'Murugo';
+
+  @override
+  String get paymentMethod => 'Uburyo Bwo Kwishyura';
+
+  @override
+  String get choosePayment => 'Hitamo uko ushaka kwishyura';
+
+  @override
+  String get serviceFee => 'Ikiguzi cya serivisi';
+
+  @override
+  String get ecoPointsDiscount => 'Kugabanyirizwa kwa EcoPoints';
+
+  @override
+  String get total => 'Igiteranyo';
+
+  @override
+  String get continueBtn => 'Komeza';
+
+  @override
+  String get pickupScheduledSuccess => 'Gutwara imyanda byateganyijwe neza!';
+
+  @override
+  String get errSelectWaste =>
+      'Nyamuneka hitamo nibura ubwoko bumwe bw\'imyanda';
+
+  @override
+  String get errSelectDate => 'Nyamuneka hitamo itariki';
+
+  @override
+  String get errSelectTime => 'Nyamuneka hitamo igihe';
+
+  @override
+  String get errSelectPayment => 'Nyamuneka hitamo uburyo bwo kwishyura';
+
+  @override
+  String get pickupScheduledSuccessTitle => 'Gutwara Imyanda Byateganyijwe!';
+
+  @override
+  String get wastePickupConfirmed => 'Gutwara imyanda yawe byemejwe';
+
+  @override
+  String get referenceNumber => 'Numero Ndangamuntu';
+
+  @override
+  String get earnedPointsText1 => 'Watsindiye ';
+
+  @override
+  String get earnedPointsText2 => '50 EcoPoints';
+
+  @override
+  String get earnedPointsText3 =>
+      ' kubera guteganya gutwara imyanda iyi nshuro!';
+
+  @override
+  String get navHome => 'Ahabanza';
+
+  @override
+  String get navBins => 'Ibitebo';
+
+  @override
+  String get scanningQRCode => 'Gusoma QR Code...';
+
+  @override
+  String get capacity => 'Ingano';
+
+  @override
+  String get lastEmptiedTitle => 'Hakuwemo Bwa Nyuma';
+
+  @override
+  String get avgFillRate => 'Kuzura bihoraho';
+
+  @override
+  String get fifteenPercentPerDay => '15% ku munsi';
+
+  @override
+  String get sixteenPercentPerDay => '16% ku munsi';
+
+  @override
+  String get fiftyL => '50L';
+
+  @override
+  String get seventyFiveL => '75L';
 }

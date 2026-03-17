@@ -206,10 +206,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get compostBin => 'Bac à compost';
 
   @override
+  String get compost => 'Compost';
+
+  @override
   String get organicWaste => 'Déchets organiques';
 
   @override
   String get recyclingBin => 'Bac de recyclage';
+
+  @override
+  String get recyclable => 'Recyclable';
 
   @override
   String get recyclableMaterials => 'Matières recyclables';
@@ -218,13 +224,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get eWasteBin => 'Bac à déchets électroniques';
 
   @override
+  String get eWaste => 'Électronique';
+
+  @override
   String get electronicsBatteries => 'Électronique et piles';
 
   @override
   String get landfillBin => 'Bac à ordures ménagères';
 
   @override
+  String get landfill => 'Ordures';
+
+  @override
   String get hazardousBin => 'Bac pour produits dangereux';
+
+  @override
+  String get hazardous => 'Dangereux';
 
   @override
   String get hazardousMaterials => 'Matières dangereuses';
@@ -433,4 +448,258 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get referralBonus => 'Bonus de parrainage';
+
+  @override
+  String unreadNotifications(Object count) {
+    return '$count notifications non lues';
+  }
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get collectorArriving => 'Collecteur en route';
+
+  @override
+  String minAgo(Object count) {
+    return 'il y a $count min';
+  }
+
+  @override
+  String get collectorArrivingDesc =>
+      'Votre collecteur de déchets est à 5 minutes';
+
+  @override
+  String get ecoPointsEarned => 'EcoPoints gagnés !';
+
+  @override
+  String hrAgo(Object count) {
+    return 'il y a $count h';
+  }
+
+  @override
+  String get ecoPointsEarnedDesc =>
+      'Vous avez gagné 100 points pour un ramassage il y a 2 heures';
+
+  @override
+  String get binNearlyFull => 'Bac presque plein';
+
+  @override
+  String get binNearlyFullDesc =>
+      'Votre bac à ordures est plein à 92 %. Planifiez un ramassage bientôt.';
+
+  @override
+  String get pickupCompleted => 'Ramassage terminé';
+
+  @override
+  String get pickupCompletedDesc =>
+      'Vos déchets généraux ont été collectés avec succès';
+
+  @override
+  String get weeklyReminder => 'Rappel hebdomadaire';
+
+  @override
+  String get weeklyReminderDesc =>
+      'N\'oubliez pas de planifier votre collecte de déchets hebdomadaire';
+
+  @override
+  String get allCaughtUp => 'Vous êtes à jour !';
+
+  @override
+  String get mapPlaceholder => 'Espace réservé à la carte';
+
+  @override
+  String minTime(Object count) {
+    return '$count min';
+  }
+
+  @override
+  String get collectorEnRoute => 'Collecteur en route';
+
+  @override
+  String get wasteCollectedShortly =>
+      'Vos déchets seront collectés prochainement';
+
+  @override
+  String get minutes => 'Minutes';
+
+  @override
+  String get kmAway => 'km de distance';
+
+  @override
+  String get stops => 'Arrêts';
+
+  @override
+  String pickupsCount(Object count) {
+    return '($count ramassages)';
+  }
+
+  @override
+  String get callCollector => 'Appeler le collecteur';
+
+  @override
+  String get statusUpdates => 'Mises à jour du statut';
+
+  @override
+  String get enRouteLocation => 'En route vers votre position';
+
+  @override
+  String get minutesAway => 'à 12 minutes';
+
+  @override
+  String get pickupStarted => 'Ramassage commencé';
+
+  @override
+  String get collectionInitiated => 'Itinéraire de collecte initié';
+
+  @override
+  String get pickupScheduled => 'Ramassage prévu';
+
+  @override
+  String get waitingCollector => 'En attente du collecteur';
+
+  @override
+  String get selectWasteType => 'Sélectionner le type de déchets';
+
+  @override
+  String get chooseWasteCategories =>
+      'Choisissez une ou plusieurs catégories de déchets';
+
+  @override
+  String get organicWasteTitle => 'Organique';
+
+  @override
+  String get organicWasteDesc => 'Restes de nourriture, déchets de jardin';
+
+  @override
+  String get recyclableWasteTitle => 'Recyclable';
+
+  @override
+  String get recyclableWasteDesc => 'Papier, plastique, métal';
+
+  @override
+  String get generalWasteTitle => 'Général';
+
+  @override
+  String get generalWasteDesc => 'Déchets non recyclables';
+
+  @override
+  String get eWasteTitle => 'Déchets électroniques';
+
+  @override
+  String get eWasteDesc => 'Électronique, batteries';
+
+  @override
+  String get glassWasteTitle => 'Verre';
+
+  @override
+  String get glassWasteDesc => 'Bouteilles, objets en verre';
+
+  @override
+  String get selectDate => 'Sélectionner une date';
+
+  @override
+  String get advanceNotice =>
+      'Les ramassages doivent être planifiés 24 heures à l\'avance';
+
+  @override
+  String get selectTime => 'Sélectionner l\'heure';
+
+  @override
+  String get available => 'Disponible';
+
+  @override
+  String get confirmAddress => 'Confirmer l\'adresse';
+
+  @override
+  String get verifyLocation => 'Vérifiez votre lieu de ramassage';
+
+  @override
+  String get edit => 'Modifier';
+
+  @override
+  String get homeLocation => 'Domicile';
+
+  @override
+  String get paymentMethod => 'Mode de paiement';
+
+  @override
+  String get choosePayment => 'Choisissez comment vous souhaitez payer';
+
+  @override
+  String get serviceFee => 'Frais de service';
+
+  @override
+  String get ecoPointsDiscount => 'Remise EcoPoints';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get continueBtn => 'Continuer';
+
+  @override
+  String get pickupScheduledSuccess => 'Ramassage planifié avec succès !';
+
+  @override
+  String get errSelectWaste =>
+      'Veuillez sélectionner au moins un type de déchets';
+
+  @override
+  String get errSelectDate => 'Veuillez sélectionner une date';
+
+  @override
+  String get errSelectTime => 'Veuillez sélectionner un créneau horaire';
+
+  @override
+  String get errSelectPayment => 'Veuillez sélectionner un mode de paiement';
+
+  @override
+  String get pickupScheduledSuccessTitle => 'Ramassage planifié !';
+
+  @override
+  String get wastePickupConfirmed =>
+      'Votre ramassage de déchets a été confirmé';
+
+  @override
+  String get referenceNumber => 'Numéro de référence';
+
+  @override
+  String get earnedPointsText1 => 'Vous avez gagné ';
+
+  @override
+  String get earnedPointsText2 => '50 EcoPoints';
+
+  @override
+  String get earnedPointsText3 => ' pour la planification de ce ramassage !';
+
+  @override
+  String get navHome => 'Accueil';
+
+  @override
+  String get navBins => 'Poubelles';
+
+  @override
+  String get scanningQRCode => 'Numérisation du code QR...';
+
+  @override
+  String get capacity => 'Capacité';
+
+  @override
+  String get lastEmptiedTitle => 'Dernier vidage';
+
+  @override
+  String get avgFillRate => 'Taux de remplissage m...';
+
+  @override
+  String get fifteenPercentPerDay => '15% par jour';
+
+  @override
+  String get sixteenPercentPerDay => '16% par jour';
+
+  @override
+  String get fiftyL => '50L';
+
+  @override
+  String get seventyFiveL => '75L';
 }

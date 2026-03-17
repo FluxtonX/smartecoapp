@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class SchedulePickupScreen extends StatelessWidget {
   const SchedulePickupScreen({Key? key}) : super(key: key);
@@ -18,10 +19,10 @@ class SchedulePickupScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.map, size: 48, color: Colors.grey),
-                  SizedBox(height: 8),
-                  Text('Map Placeholder', style: TextStyle(color: Colors.grey)),
+                children: [
+                  const Icon(Icons.map, size: 48, color: Colors.grey),
+                  const SizedBox(height: 8),
+                  Text(AppLocalizations.of(context)!.mapPlaceholder, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
@@ -55,12 +56,12 @@ class SchedulePickupScreen extends StatelessWidget {
                     ],
                   ),
                   child: Row(
-                    children: const [
-                      Icon(Icons.access_time, color: Colors.blue, size: 16),
-                      SizedBox(width: 8),
+                    children: [
+                      const Icon(Icons.access_time, color: Colors.blue, size: 16),
+                      const SizedBox(width: 8),
                       Text(
-                        '11 min',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        AppLocalizations.of(context)!.minTime('11'),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -89,18 +90,18 @@ class SchedulePickupScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
-                      'Collector En Route',
+                    Text(
+                      AppLocalizations.of(context)!.collectorEnRoute,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Your waste will be collected shortly',
+                    Text(
+                      AppLocalizations.of(context)!.wasteCollectedShortly,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -111,9 +112,9 @@ class SchedulePickupScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildStat('11', 'Minutes'),
-                        _buildStat('2.1', 'km away'),
-                        _buildStat('3/5', 'Stops'),
+                        _buildStat('11', AppLocalizations.of(context)!.minutes),
+                        _buildStat('2.1', AppLocalizations.of(context)!.kmAway),
+                        _buildStat('3/5', AppLocalizations.of(context)!.stops),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -144,10 +145,10 @@ class SchedulePickupScreen extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               Row(
-                                children: const [
-                                  Icon(Icons.star, color: Colors.orange, size: 16),
-                                  Text(' 4.9 ', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text('(248 pickups)', style: TextStyle(color: AppColors.textSecondary)),
+                                children: [
+                                  const Icon(Icons.star, color: Colors.orange, size: 16),
+                                  const Text(' 4.9 ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(AppLocalizations.of(context)!.pickupsCount('248'), style: const TextStyle(color: AppColors.textSecondary)),
                                 ],
                               ),
                               const Text('RAE 123 B', style: TextStyle(color: AppColors.textSecondary)),
@@ -160,7 +161,7 @@ class SchedulePickupScreen extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.phone_outlined, color: Colors.white),
-                      label: const Text('Call Collector', style: TextStyle(color: Colors.white)),
+                      label: Text(AppLocalizations.of(context)!.callCollector, style: const TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -168,12 +169,12 @@ class SchedulePickupScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Status Updates',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    Text(
+                      AppLocalizations.of(context)!.statusUpdates,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     const SizedBox(height: 16),
-                    _buildStatusTimeline(),
+                    _buildStatusTimeline(context),
                   ],
                 ),
               ),
@@ -206,24 +207,24 @@ class SchedulePickupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTimeline() {
+  Widget _buildStatusTimeline(BuildContext context) {
     return Column(
       children: [
         _buildTimelineItem(
-          title: 'En Route to Your Location',
-          subtitle: '12 minutes away',
+          title: AppLocalizations.of(context)!.enRouteLocation,
+          subtitle: AppLocalizations.of(context)!.minutesAway,
           time: '2:45 PM',
           isLast: false,
         ),
         _buildTimelineItem(
-          title: 'Pickup Started',
-          subtitle: 'Collection route initiated',
+          title: AppLocalizations.of(context)!.pickupStarted,
+          subtitle: AppLocalizations.of(context)!.collectionInitiated,
           time: '2:30 PM',
           isLast: false,
         ),
         _buildTimelineItem(
-          title: 'Pickup Scheduled',
-          subtitle: 'Waiting for collector',
+          title: AppLocalizations.of(context)!.pickupScheduled,
+          subtitle: AppLocalizations.of(context)!.waitingCollector,
           time: '2:00 PM',
           isLast: true,
         ),

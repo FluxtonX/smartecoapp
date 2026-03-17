@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import '../../l10n/app_localizations.dart';
 import 'home/home_screen.dart';
 import 'profile/profile_screen.dart';
 import 'bins/bins_screen.dart';
@@ -66,11 +67,11 @@ class _MainLayoutState extends State<MainLayout> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(0, AppSvgs.leafImage, 'Home'),
-            _buildNavItem(1, AppSvgs.binImage, 'Bins'),
+            _buildNavItem(0, AppSvgs.leafImage, AppLocalizations.of(context)!.navHome),
+            _buildNavItem(1, AppSvgs.binImage, AppLocalizations.of(context)!.navBins),
             const SizedBox(width: 40), // Space for FAB
-            _buildNavItem(3, AppSvgs.giftImage, 'Rewards'),
-            _buildNavItem(4, AppSvgs.profileImage, 'Profile'),
+            _buildNavItem(3, AppSvgs.giftImage, AppLocalizations.of(context)!.rewards),
+            _buildNavItem(4, AppSvgs.profileImage, AppLocalizations.of(context)!.profile),
           ],
         ),
       ),

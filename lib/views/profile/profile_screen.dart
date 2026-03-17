@@ -322,33 +322,103 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showLanguageDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.selectLanguage),
-        content: Column(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        padding: const EdgeInsets.only(top: 12, bottom: 32, left: 24, right: 24),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _languageOption(context, 'en', AppLocalizations.of(context)!.english),
-            _languageOption(context, 'rw', AppLocalizations.of(context)!.kinyarwanda),
-            _languageOption(context, 'fr', AppLocalizations.of(context)!.french),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              AppLocalizations.of(context)!.selectLanguage,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _languageOption(context, 'en', AppLocalizations.of(context)!.english, '🇬🇧'),
+            const SizedBox(height: 12),
+            _languageOption(context, 'rw', AppLocalizations.of(context)!.kinyarwanda, '🇷🇼'),
+            const SizedBox(height: 12),
+            _languageOption(context, 'fr', AppLocalizations.of(context)!.french, '🇫🇷'),
           ],
         ),
       ),
     );
   }
 
-  Widget _languageOption(BuildContext context, String code, String name) {
+  Widget _languageOption(BuildContext context, String code, String name, String emojiFlag) {
     final provider = Provider.of<LocaleProvider>(context, listen: false);
     final isSelected = provider.locale?.languageCode == code;
 
-    return ListTile(
-      title: Text(name),
-      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primary) : null,
+    return InkWell(
       onTap: () {
         provider.setLocale(Locale(code));
         Navigator.pop(context);
       },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withOpacity(0.08) : Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              emojiFlag,
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check, color: Colors.white, size: 16),
+              ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import '../../l10n/app_localizations.dart';
 
 class BinScannerScreen extends StatefulWidget {
   const BinScannerScreen({super.key});
@@ -57,9 +58,9 @@ class _BinScannerScreenState extends State<BinScannerScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Scanning QR Code...',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.scanningQRCode,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -136,16 +137,16 @@ class _BinDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = isCompost ? 'Compost Bin' : 'Recycling Bin';
-    final subtitle = isCompost ? 'Organic Waste' : 'Recyclable Materials';
+    final title = isCompost ? AppLocalizations.of(context)!.compostBin : AppLocalizations.of(context)!.recyclingBin;
+    final subtitle = isCompost ? AppLocalizations.of(context)!.organicWaste : AppLocalizations.of(context)!.recyclableMaterials;
     final appSvg = isCompost ? AppSvgs.leafImage : AppSvgs.recyclableImage;
     final color = isCompost ? AppColors.compost : AppColors.recyclable;
     final fillLevel = isCompost ? 45 : 78;
-    final status = isCompost ? 'Ok' : 'Nearly Full';
+    final status = isCompost ? AppLocalizations.of(context)!.statusOk : AppLocalizations.of(context)!.statusNearlyFull;
     final statusColor = isCompost ? Colors.green : Colors.orange;
-    final capacity = isCompost ? '50L' : '75L';
-    final lastEmptied = isCompost ? '3 days ago' : '5 days ago';
-    final avgFillRate = isCompost ? '15% per day' : '16% per day';
+    final capacity = isCompost ? AppLocalizations.of(context)!.fiftyL : AppLocalizations.of(context)!.seventyFiveL;
+    final lastEmptied = AppLocalizations.of(context)!.daysAgo(isCompost ? '3' : '5');
+    final avgFillRate = isCompost ? AppLocalizations.of(context)!.fifteenPercentPerDay : AppLocalizations.of(context)!.sixteenPercentPerDay;
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -274,7 +275,7 @@ class _BinDetailsDialog extends StatelessWidget {
                   Expanded(
                     child: _buildSmallCard(
                       Icons.delete_outline,
-                      'Capacity',
+                      AppLocalizations.of(context)!.capacity,
                       capacity,
                     ),
                   ),
@@ -282,7 +283,7 @@ class _BinDetailsDialog extends StatelessWidget {
                   Expanded(
                     child: _buildSmallCard(
                       Icons.calendar_today_outlined,
-                      'Last Emptied',
+                      AppLocalizations.of(context)!.lastEmptiedTitle,
                       lastEmptied,
                     ),
                   ),
@@ -291,7 +292,7 @@ class _BinDetailsDialog extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Avg fill rate card
-              _buildSmallCard(Icons.show_chart, 'Avg Fill Rate', avgFillRate),
+              _buildSmallCard(Icons.show_chart, AppLocalizations.of(context)!.avgFillRate, avgFillRate),
 
               // Schedule Pickup button logic
               if (fillLevel > 50) ...[
@@ -311,9 +312,9 @@ class _BinDetailsDialog extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Schedule Pickup',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.schedulePickup,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

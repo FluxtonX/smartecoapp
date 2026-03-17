@@ -478,6 +478,12 @@ abstract class AppLocalizations {
   /// **'Compost Bin'**
   String get compostBin;
 
+  /// No description provided for @compost.
+  ///
+  /// In en, this message translates to:
+  /// **'Compost'**
+  String get compost;
+
   /// No description provided for @organicWaste.
   ///
   /// In en, this message translates to:
@@ -489,6 +495,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recycling Bin'**
   String get recyclingBin;
+
+  /// No description provided for @recyclable.
+  ///
+  /// In en, this message translates to:
+  /// **'Recyclable'**
+  String get recyclable;
 
   /// No description provided for @recyclableMaterials.
   ///
@@ -502,6 +514,12 @@ abstract class AppLocalizations {
   /// **'E-Waste Bin'**
   String get eWasteBin;
 
+  /// No description provided for @eWaste.
+  ///
+  /// In en, this message translates to:
+  /// **'E-Waste'**
+  String get eWaste;
+
   /// No description provided for @electronicsBatteries.
   ///
   /// In en, this message translates to:
@@ -514,11 +532,23 @@ abstract class AppLocalizations {
   /// **'Landfill Bin'**
   String get landfillBin;
 
+  /// No description provided for @landfill.
+  ///
+  /// In en, this message translates to:
+  /// **'Landfill'**
+  String get landfill;
+
   /// No description provided for @hazardousBin.
   ///
   /// In en, this message translates to:
   /// **'Hazardous Bin'**
   String get hazardousBin;
+
+  /// No description provided for @hazardous.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazardous'**
+  String get hazardous;
 
   /// No description provided for @hazardousMaterials.
   ///
@@ -897,6 +927,474 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Referral bonus'**
   String get referralBonus;
+
+  /// No description provided for @unreadNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread notifications'**
+  String unreadNotifications(Object count);
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get markAllRead;
+
+  /// No description provided for @collectorArriving.
+  ///
+  /// In en, this message translates to:
+  /// **'Collector Arriving'**
+  String get collectorArriving;
+
+  /// No description provided for @minAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String minAgo(Object count);
+
+  /// No description provided for @collectorArrivingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your waste collector is 5 minutes away'**
+  String get collectorArrivingDesc;
+
+  /// No description provided for @ecoPointsEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'EcoPoints Earned!'**
+  String get ecoPointsEarned;
+
+  /// No description provided for @hrAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hr ago'**
+  String hrAgo(Object count);
+
+  /// No description provided for @ecoPointsEarnedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned 100 points for completing a pickup 2 hours ago'**
+  String get ecoPointsEarnedDesc;
+
+  /// No description provided for @binNearlyFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Bin Nearly Full'**
+  String get binNearlyFull;
+
+  /// No description provided for @binNearlyFullDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Landfill Bin is 92% full. Schedule a pickup soon.'**
+  String get binNearlyFullDesc;
+
+  /// No description provided for @pickupCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Completed'**
+  String get pickupCompleted;
+
+  /// No description provided for @pickupCompletedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your general waste has been successfully collected'**
+  String get pickupCompletedDesc;
+
+  /// No description provided for @weeklyReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Reminder'**
+  String get weeklyReminder;
+
+  /// No description provided for @weeklyReminderDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget to schedule your weekly waste pickup'**
+  String get weeklyReminderDesc;
+
+  /// No description provided for @allCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up!'**
+  String get allCaughtUp;
+
+  /// No description provided for @mapPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Placeholder'**
+  String get mapPlaceholder;
+
+  /// No description provided for @minTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String minTime(Object count);
+
+  /// No description provided for @collectorEnRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Collector En Route'**
+  String get collectorEnRoute;
+
+  /// No description provided for @wasteCollectedShortly.
+  ///
+  /// In en, this message translates to:
+  /// **'Your waste will be collected shortly'**
+  String get wasteCollectedShortly;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get minutes;
+
+  /// No description provided for @kmAway.
+  ///
+  /// In en, this message translates to:
+  /// **'km away'**
+  String get kmAway;
+
+  /// No description provided for @stops.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops'**
+  String get stops;
+
+  /// No description provided for @pickupsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'({count} pickups)'**
+  String pickupsCount(Object count);
+
+  /// No description provided for @callCollector.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Collector'**
+  String get callCollector;
+
+  /// No description provided for @statusUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Status Updates'**
+  String get statusUpdates;
+
+  /// No description provided for @enRouteLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'En Route to Your Location'**
+  String get enRouteLocation;
+
+  /// No description provided for @minutesAway.
+  ///
+  /// In en, this message translates to:
+  /// **'12 minutes away'**
+  String get minutesAway;
+
+  /// No description provided for @pickupStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Started'**
+  String get pickupStarted;
+
+  /// No description provided for @collectionInitiated.
+  ///
+  /// In en, this message translates to:
+  /// **'Collection route initiated'**
+  String get collectionInitiated;
+
+  /// No description provided for @pickupScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Scheduled'**
+  String get pickupScheduled;
+
+  /// No description provided for @waitingCollector.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for collector'**
+  String get waitingCollector;
+
+  /// No description provided for @selectWasteType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Waste Type'**
+  String get selectWasteType;
+
+  /// No description provided for @chooseWasteCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more waste categories'**
+  String get chooseWasteCategories;
+
+  /// No description provided for @organicWasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic'**
+  String get organicWasteTitle;
+
+  /// No description provided for @organicWasteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Food waste, garden waste'**
+  String get organicWasteDesc;
+
+  /// No description provided for @recyclableWasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recyclable'**
+  String get recyclableWasteTitle;
+
+  /// No description provided for @recyclableWasteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper, plastic, metal'**
+  String get recyclableWasteDesc;
+
+  /// No description provided for @generalWasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get generalWasteTitle;
+
+  /// No description provided for @generalWasteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-recyclable waste'**
+  String get generalWasteDesc;
+
+  /// No description provided for @eWasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'E-Waste'**
+  String get eWasteTitle;
+
+  /// No description provided for @eWasteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics, batteries'**
+  String get eWasteDesc;
+
+  /// No description provided for @glassWasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Glass'**
+  String get glassWasteTitle;
+
+  /// No description provided for @glassWasteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottles, glassware'**
+  String get glassWasteDesc;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get selectDate;
+
+  /// No description provided for @advanceNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickups must be scheduled 24 hours in advance'**
+  String get advanceNotice;
+
+  /// No description provided for @selectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get selectTime;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// No description provided for @confirmAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Address'**
+  String get confirmAddress;
+
+  /// No description provided for @verifyLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your pickup location'**
+  String get verifyLocation;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @homeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeLocation;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @choosePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to pay'**
+  String get choosePayment;
+
+  /// No description provided for @serviceFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Fee'**
+  String get serviceFee;
+
+  /// No description provided for @ecoPointsDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'EcoPoints Discount'**
+  String get ecoPointsDiscount;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @continueBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueBtn;
+
+  /// No description provided for @pickupScheduledSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup scheduled successfully!'**
+  String get pickupScheduledSuccess;
+
+  /// No description provided for @errSelectWaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one waste type'**
+  String get errSelectWaste;
+
+  /// No description provided for @errSelectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a date'**
+  String get errSelectDate;
+
+  /// No description provided for @errSelectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a time slot'**
+  String get errSelectTime;
+
+  /// No description provided for @errSelectPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a payment method'**
+  String get errSelectPayment;
+
+  /// No description provided for @pickupScheduledSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Scheduled!'**
+  String get pickupScheduledSuccessTitle;
+
+  /// No description provided for @wastePickupConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your waste pickup has been confirmed'**
+  String get wastePickupConfirmed;
+
+  /// No description provided for @referenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Number'**
+  String get referenceNumber;
+
+  /// No description provided for @earnedPointsText1.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned '**
+  String get earnedPointsText1;
+
+  /// No description provided for @earnedPointsText2.
+  ///
+  /// In en, this message translates to:
+  /// **'50 EcoPoints'**
+  String get earnedPointsText2;
+
+  /// No description provided for @earnedPointsText3.
+  ///
+  /// In en, this message translates to:
+  /// **' for scheduling this pickup!'**
+  String get earnedPointsText3;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navBins.
+  ///
+  /// In en, this message translates to:
+  /// **'Bins'**
+  String get navBins;
+
+  /// No description provided for @scanningQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning QR Code...'**
+  String get scanningQRCode;
+
+  /// No description provided for @capacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity'**
+  String get capacity;
+
+  /// No description provided for @lastEmptiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Emptied'**
+  String get lastEmptiedTitle;
+
+  /// No description provided for @avgFillRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Fill Rate'**
+  String get avgFillRate;
+
+  /// No description provided for @fifteenPercentPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'15% per day'**
+  String get fifteenPercentPerDay;
+
+  /// No description provided for @sixteenPercentPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'16% per day'**
+  String get sixteenPercentPerDay;
+
+  /// No description provided for @fiftyL.
+  ///
+  /// In en, this message translates to:
+  /// **'50L'**
+  String get fiftyL;
+
+  /// No description provided for @seventyFiveL.
+  ///
+  /// In en, this message translates to:
+  /// **'75L'**
+  String get seventyFiveL;
 }
 
 class _AppLocalizationsDelegate
