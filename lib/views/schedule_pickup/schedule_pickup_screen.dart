@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -11,20 +12,18 @@ class SchedulePickupScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // Map Placeholder
-          Container(
+          // Google Map
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.5,
             width: double.infinity,
-            color: Colors.grey.shade300,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.map, size: 48, color: Colors.grey),
-                  const SizedBox(height: 8),
-                  Text(AppLocalizations.of(context)!.mapPlaceholder, style: const TextStyle(color: Colors.grey)),
-                ],
+            child: const GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(33.6996, 73.0362), // islamabad, pakistan
+                zoom: 14.0,
               ),
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
             ),
           ),
           

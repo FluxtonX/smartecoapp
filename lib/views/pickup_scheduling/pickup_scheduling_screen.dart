@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
@@ -426,25 +427,21 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: Stack(
-                children: [
-                  // Subtle grid lines to simulate map
-                  CustomPaint(
-                    size: const Size(double.infinity, double.infinity),
-                    painter: _MapGridPainter(),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: const GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(-1.9441, 30.0619), // Kigali, Rwanda
+                    zoom: 14.0,
                   ),
-                  Center(
-                    child: SvgPicture.asset(
-                      AppSvgs.mapImage,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
-                        BlendMode.srcIn,
-                      ),
-                      width: 48,
-                      height: 48,
-                    ),
-                  ),
-                ],
+                  zoomControlsEnabled: false,
+                  myLocationButtonEnabled: false,
+                  mapToolbarEnabled: false,
+                  scrollGesturesEnabled: false,
+                  zoomGesturesEnabled: false,
+                  tiltGesturesEnabled: false,
+                  rotateGesturesEnabled: false,
+                ),
               ),
             ),
           ),

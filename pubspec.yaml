@@ -43,6 +43,7 @@ dependencies:
   intl: any
   provider: any
   intl_phone_field: ^3.2.0
+  google_maps_flutter: ^2.14.2
 
 dev_dependencies:
   flutter_test:
