@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../../controller/auth_controller.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
@@ -7,11 +9,26 @@ import '../notifications/notifications_screen.dart';
 import '../pickup_scheduling/pickup_scheduling_screen.dart';
 import '../schedule_pickup/schedule_pickup_screen.dart';
 import 'widgets/bin_status_dialog.dart';
+import '../../controller/pickup_controller.dart';
+import '../../model/pickup_model.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final VoidCallback? onViewAllBins;
 
-  const HomeScreen({Key? key, this.onViewAllBins}) : super(key: key);
+  const HomeScreen({super.key, this.onViewAllBins});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PickupController>(context, listen: false).fetchActivePickup();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +49,17 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   _buildQuickActions(context),
                   const SizedBox(height: 24),
-                  _buildActivePickupCard(context),
-                  const SizedBox(height: 24),
+                  Consumer<PickupController>(
+                    builder: (context, controller, child) {
+                      if (controller.activePickup == null) return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          _buildActivePickupCard(context, controller.activePickup!),
+                          const SizedBox(height: 24),
+                        ],
+                      );
+                    },
+                  ),
                   _buildSmartBinsStatus(context),
                   const SizedBox(height: 100), // Space for bottom nav
                 ],
@@ -82,14 +108,19 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.goodMorning,
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        style: const TextStyle(color: Colors.white70, fontSize: 14),
                       ),
-                      Text(
-                        'Rahmat',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
+                      Consumer<AuthController>(
+                        builder: (context, auth, _) {
+                          final name = auth.user?.displayFirstName ?? 'User';
+                          return Text(
+                            name,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -185,12 +216,16 @@ class HomeScreen extends StatelessWidget {
                       style: const TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      '2,450',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold),
+                    Consumer<AuthController>(
+                      builder: (context, auth, _) {
+                        return Text(
+                          auth.user?.ecoPoints?.toString() ?? '2,450',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold),
+                        );
+                      }
                     ),
                   ],
                 ),
@@ -337,13 +372,34 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActivePickupCard(BuildContext context) {
+  Widget _buildActivePickupCard(BuildContext context, PickupModel pickup) {
+    String statusLabel = AppLocalizations.of(context)!.pendingStatus;
+    Color statusColor = AppColors.primary;
+    
+    switch (pickup.status) {
+      case PickupStatus.COLLECTOR_ASSIGNED:
+        statusLabel = AppLocalizations.of(context)!.collectorAssignedStatus;
+        statusColor = Colors.orange;
+        break;
+      case PickupStatus.EN_ROUTE:
+        statusLabel = AppLocalizations.of(context)!.enRoute;
+        statusColor = Colors.blue;
+        break;
+      case PickupStatus.ARRIVED:
+        statusLabel = 'Arrived'; // or localized
+        statusColor = Colors.green;
+        break;
+      default:
+        // statusLabel already initialized to pendingStatus
+        break;
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: statusColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.withOpacity(0.2)),
+        border: Border.all(color: statusColor.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,14 +408,14 @@ class HomeScreen extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 AppSvgs.mapImage,
-                colorFilter: const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(statusColor, BlendMode.srcIn),
                 width: 20,
                 height: 20,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 AppLocalizations.of(context)!.activePickup,
-                style: TextStyle(
+                style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
@@ -368,7 +424,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            AppLocalizations.of(context)!.generalWasteCollection,
+            '${pickup.wasteType} Waste Collection',
             style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 16),
@@ -380,21 +436,21 @@ class HomeScreen extends StatelessWidget {
                   Container(
                     height: 8,
                     width: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.blue,
+                    decoration: BoxDecoration(
+                      color: statusColor,
                       shape: BoxShape.circle,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    AppLocalizations.of(context)!.enRoute,
-                    style: const TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+                    statusLabel,
+                    style: TextStyle(
+                        color: statusColor, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
               SizedBox(
-                width: 120, // constrain the width so the button doesn't force infinite width due to global theme
+                width: 120,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -403,7 +459,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: statusColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -438,7 +494,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: onViewAllBins ?? () {},
+              onPressed: widget.onViewAllBins ?? () {},
               child: Text(
                 AppLocalizations.of(context)!.viewAll,
                 style: const TextStyle(color: AppColors.primary),

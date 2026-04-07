@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
+import '../../controller/pickup_controller.dart';
+import '../../core/widgets/custom_loader.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'pickup_success_screen.dart';
 
 class PickupSchedulingScreen extends StatefulWidget {
@@ -19,15 +26,100 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   final int _totalSteps = 5;
 
   // Form State
-  List<String> _selectedWasteTypes = [];
+  // Form State
+  String? _selectedWasteType;
+  Map<String, String>? _selectedDateObj;
   String? _selectedDate;
   String? _selectedTime;
-  String _selectedAddress = "Home"; // Default
+  String? _selectedTimeSlot;
+  // String _selectedAddress = "Home"; // Default
   String? _selectedPaymentMethod;
+  LatLng? _selectedLocation;
+  String _addressText = 'Kg 123 St, Kigali, Gasabo District, Rwanda';
+  GoogleMapController? _mapController;
+  bool _isLoadingLocation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    try {
+      if (await Geolocator.isLocationServiceEnabled() == false) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please enable location services on your device.')),
+          );
+        }
+        setState(() => _isLoadingLocation = false);
+        return;
+      }
+    } catch (e) {
+      debugPrint("Location services check failed: $e");
+      // Fallback or just continue to permission check
+    }
+
+    // First request permission explicitly using permission_handler
+    final status = await Permission.location.request();
+    if (status.isDenied) {
+      debugPrint("Location permission denied by user via permission_handler.");
+      setState(() => _isLoadingLocation = false);
+      return;
+    }
+
+    if (status.isPermanentlyDenied) {
+      openAppSettings();
+      setState(() => _isLoadingLocation = false);
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() => _isLoadingLocation = false);
+      return;
+    }
+
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      final latLng = LatLng(position.latitude, position.longitude);
+      setState(() {
+        _selectedLocation = latLng;
+        _isLoadingLocation = false;
+      });
+      
+      _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+      _getAddressFromLatLng(latLng);
+    } catch (e) {
+      setState(() => _isLoadingLocation = false);
+    }
+  }
+
+  Future<void> _getAddressFromLatLng(LatLng position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _addressText = "${place.street}, ${place.locality}, ${place.subAdministrativeArea}, ${place.country}";
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   void _nextStep() {
     // Validation
-    if (_currentStep == 0 && _selectedWasteTypes.isEmpty) {
+    if (_currentStep == 0 && _selectedWasteType == null) {
       _showToast(AppLocalizations.of(context)!.errSelectWaste, isError: true);
       return;
     }
@@ -44,18 +136,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
         _showToast(AppLocalizations.of(context)!.errSelectPayment, isError: true);
         return;
       }
-      // Submit and go to success
-      _showToast(AppLocalizations.of(context)!.pickupScheduledSuccess, isError: false);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PickupSuccessScreen(
-            date: _selectedDate!,
-            time: _selectedTime!,
-            reference: 'ECO-ULK6WS',
-          ),
-        ),
-      );
+      _onConfirmPayment();
       return;
     }
 
@@ -66,6 +147,35 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     setState(() {
       _currentStep++;
     });
+  }
+
+  Future<void> _onConfirmPayment() async {
+    final pickupController = Provider.of<PickupController>(context, listen: false);
+
+    final success = await pickupController.scheduleNewPickup({
+      'wasteType': _selectedWasteType,
+      'scheduledDate': _selectedDateObj?['fullDate'],
+      'timeSlot': _selectedTimeSlot,
+      'address': _addressText,
+      'latitude': _selectedLocation?.latitude ?? 33.6844,
+      'longitude': _selectedLocation?.longitude ?? 73.0479,
+    });
+
+    if (success && mounted) {
+      _showToast(AppLocalizations.of(context)!.pickupScheduledSuccess, isError: false);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PickupSuccessScreen(
+            date: _selectedDate!,
+            time: _selectedTime!,
+            reference: pickupController.activePickup?.reference ?? 'ECO-XXXXXX',
+          ),
+        ),
+      );
+    } else if (mounted) {
+      _showToast(pickupController.error ?? 'Failed to schedule pickup', isError: true);
+    }
   }
 
   void _previousStep() {
@@ -156,35 +266,35 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   Widget _buildWasteSelection() {
     final wasteCategories = [
       {
-        'id': 'Organic',
+        'id': 'ORGANIC',
         'title': AppLocalizations.of(context)!.organicWasteTitle,
         'desc': AppLocalizations.of(context)!.organicWasteDesc,
         'svg': AppSvgs.leafImage,
         'color': AppColors.compost,
       },
       {
-        'id': 'Recyclable',
+        'id': 'RECYCLABLE',
         'title': AppLocalizations.of(context)!.recyclableWasteTitle,
         'desc': AppLocalizations.of(context)!.recyclableWasteDesc,
         'svg': AppSvgs.recyclableImage,
         'color': AppColors.recyclable,
-      }, // Using bin as generic
+      },
       {
-        'id': 'General',
+        'id': 'GENERAL',
         'title': AppLocalizations.of(context)!.generalWasteTitle,
         'desc': AppLocalizations.of(context)!.generalWasteDesc,
         'svg': AppSvgs.binImage,
         'color': AppColors.general,
       },
       {
-        'id': 'EWaste',
+        'id': 'EWASTE',
         'title': AppLocalizations.of(context)!.eWasteTitle,
         'desc': AppLocalizations.of(context)!.eWasteDesc,
         'svg': AppSvgs.eWasteImage,
         'color': AppColors.eWaste,
       },
       {
-        'id': 'Glass',
+        'id': 'GLASS',
         'title': AppLocalizations.of(context)!.glassWasteTitle,
         'desc': AppLocalizations.of(context)!.glassWasteDesc,
         'svg': AppSvgs.hazardousImage,
@@ -200,16 +310,12 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final cat = wasteCategories[index];
-          final isSelected = _selectedWasteTypes.contains(cat['id']);
+          final isSelected = _selectedWasteType == cat['id'];
           return _buildSelectableCard(
             isSelected: isSelected,
             onTap: () {
               setState(() {
-                if (isSelected) {
-                  _selectedWasteTypes.remove(cat['id']);
-                } else {
-                  _selectedWasteTypes.add(cat['id'] as String);
-                }
+                _selectedWasteType = cat['id'] as String;
               });
             },
             child: Row(
@@ -264,16 +370,23 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   }
 
   // ============== STEP 2: DATE SELECTION ==============
+  List<Map<String, String>> _generateDates() {
+    final List<Map<String, String>> dates = [];
+    final now = DateTime.now();
+    for (int i = 1; i <= 7; i++) {
+      final date = now.add(Duration(days: i));
+      dates.add({
+        'id': DateFormat('EEEE\nMMM d').format(date),
+        'day': DateFormat('EEEE').format(date),
+        'date': DateFormat('MMM d').format(date),
+        'fullDate': DateFormat('yyyy-MM-dd').format(date),
+      });
+    }
+    return dates;
+  }
+
   Widget _buildDateSelection() {
-    final dates = [
-      {'id': 'Saturday\nFeb 21', 'day': 'Saturday', 'date': 'Feb 21'},
-      {'id': 'Sunday\nFeb 22', 'day': 'Sunday', 'date': 'Feb 22'},
-      {'id': 'Monday\nFeb 23', 'day': 'Monday', 'date': 'Feb 23'},
-      {'id': 'Tuesday\nFeb 24', 'day': 'Tuesday', 'date': 'Feb 24'},
-      {'id': 'Wednesday\nFeb 25', 'day': 'Wednesday', 'date': 'Feb 25'},
-      {'id': 'Thursday\nFeb 26', 'day': 'Thursday', 'date': 'Feb 26'},
-      {'id': 'Friday\nFeb 27', 'day': 'Friday', 'date': 'Feb 27'},
-    ];
+    final dates = _generateDates();
 
     return _buildStepLayout(
       title: AppLocalizations.of(context)!.selectDate,
@@ -286,7 +399,10 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
           final isSelected = _selectedDate == d['id'];
           return _buildSelectableCard(
             isSelected: isSelected,
-            onTap: () => setState(() => _selectedDate = d['id']),
+            onTap: () => setState(() {
+              _selectedDate = d['id'];
+              _selectedDateObj = d;
+            }),
             child: Row(
               children: [
                 Container(
@@ -354,26 +470,43 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
 
   // ============== STEP 3: TIME SELECTION ==============
   Widget _buildTimeSelection() {
-    final times = [
-      '8:00 AM - 10:00 AM',
-      '10:00 AM - 12:00 PM',
-      '12:00 PM - 2:00 PM',
-      '2:00 PM - 4:00 PM',
-      '4:00 PM - 6:00 PM',
+    final now = DateTime.now();
+    final isTomorrow = _selectedDate == _generateDates().first['id'];
+
+    final allTimes = [
+      {'label': '8:00 AM - 10:00 AM', 'hour': 8, 'slot': 'MORNING_8_10'},
+      {'label': '10:00 AM - 12:00 PM', 'hour': 10, 'slot': 'MORNING_10_12'},
+      {'label': '2:00 PM - 4:00 PM', 'hour': 14, 'slot': 'AFTERNOON_2_4'},
+      {'label': '4:00 PM - 6:00 PM', 'hour': 16, 'slot': 'AFTERNOON_4_6'},
     ];
+
+    List<Map<String, dynamic>> availableTimes = allTimes;
+
+    if (isTomorrow) {
+      availableTimes = allTimes.where((t) {
+        final slotStartTomorrow = DateTime(now.year, now.month, now.day + 1, t['hour'] as int);
+        return slotStartTomorrow.difference(now).inHours >= 24;
+      }).toList();
+    }
 
     return _buildStepLayout(
       title: AppLocalizations.of(context)!.selectTime,
       subtitle: AppLocalizations.of(context)!.advanceNotice,
-      child: ListView.separated(
-        itemCount: times.length,
+      child: availableTimes.isEmpty 
+        ? Center(child: Text(AppLocalizations.of(context)!.noSlotsAvailableTomorrow))
+        : ListView.separated(
+        itemCount: availableTimes.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          final t = times[index];
+          final t = availableTimes[index]['label'] as String;
+          final slot = availableTimes[index]['slot'] as String;
           final isSelected = _selectedTime == t;
           return _buildSelectableCard(
             isSelected: isSelected,
-            onTap: () => setState(() => _selectedTime = t),
+            onTap: () => setState(() {
+              _selectedTime = t;
+              _selectedTimeSlot = slot;
+            }),
             child: Row(
               children: [
                 const Icon(Icons.access_time, color: AppColors.textSecondary),
@@ -429,18 +562,26 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: const GoogleMap(
+                child: _isLoadingLocation 
+                  ? const Center(child: CustomLoader())
+                  : GoogleMap(
+                  onMapCreated: (controller) => _mapController = controller,
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(-1.9441, 30.0619), // Kigali, Rwanda
+                    target: _selectedLocation ?? const LatLng(33.6844, 73.0479), // Islamabad, Pakistan
                     zoom: 14.0,
                   ),
+                  onCameraMove: (position) {
+                    _selectedLocation = position.target;
+                  },
+                  onCameraIdle: () {
+                    if (_selectedLocation != null) {
+                      _getAddressFromLatLng(_selectedLocation!);
+                    }
+                  },
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
                   zoomControlsEnabled: false,
-                  myLocationButtonEnabled: false,
                   mapToolbarEnabled: false,
-                  scrollGesturesEnabled: false,
-                  zoomGesturesEnabled: false,
-                  tiltGesturesEnabled: false,
-                  rotateGesturesEnabled: false,
                 ),
               ),
             ),
@@ -479,9 +620,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                           fontSize: 16,
                         ),
                       ),
-                      const Text(
-                        'Kg 123 St, Kigali, Gasabo District, Rwanda',
-                        style: TextStyle(
+                      Text(
+                        _addressText,
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
                         ),
@@ -490,7 +631,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Logic to toggle editing if needed, but the map is already interactive
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.edit,
                     style: const TextStyle(color: AppColors.primary),
@@ -609,8 +752,9 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     required String subtitle,
     required Widget child,
   }) {
+    final pickupController = Provider.of<PickupController>(context);
     bool canContinue = true;
-    if (_currentStep == 0 && _selectedWasteTypes.isEmpty) canContinue = false;
+    if (_currentStep == 0 && _selectedWasteType == null) canContinue = false;
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -637,7 +781,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
           Expanded(child: child),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: _nextStep,
+            onPressed: pickupController.isLoading || !canContinue ? null : _nextStep,
             style: ElevatedButton.styleFrom(
               backgroundColor: canContinue ? AppColors.primary : Colors.white,
               foregroundColor: canContinue ? Colors.white : AppColors.primary,
@@ -650,12 +794,16 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
               ),
               elevation: 0,
             ),
-            child: Text(
-              AppLocalizations.of(context)!.continueBtn,
+            child: pickupController.isLoading 
+              ? const SizedBox(height: 20, width: 20, child: CustomLoader(size: 20))
+              : Text(
+              _currentStep == _totalSteps - 1 
+                ? AppLocalizations.of(context)!.confirmPayment
+                : AppLocalizations.of(context)!.continueBtn,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
-          SizedBox(height: 8,)
+          const SizedBox(height: 8,)
         ],
       ),
     );
@@ -694,21 +842,21 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   }
 }
 
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 1.0;
-
-    for (double i = 0; i < size.width; i += 20) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-    for (double i = 0; i < size.height; i += 20) {
-      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
+// class _MapGridPainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint = Paint()
+//       ..color = Colors.grey.shade300
+//       ..strokeWidth = 1.0;
+//
+//     for (double i = 0; i < size.width; i += 20) {
+//       canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+//     }
+//     for (double i = 0; i < size.height; i += 20) {
+//       canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }

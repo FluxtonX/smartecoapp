@@ -138,6 +138,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Join Rwanda\'s smart waste management platform';
 
   @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get email => 'Email Address';
+
+  @override
   String get referralCode => 'Referral Code (Optional)';
 
   @override
@@ -670,6 +676,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navBins => 'Bins';
 
   @override
+  String get noSlotsAvailableTomorrow =>
+      'No slots available for tomorrow. Please choose another date.';
+
+  @override
+  String get confirmPayment => 'Confirm Payment';
+
+  @override
   String get scanningQRCode => 'Scanning QR Code...';
 
   @override
@@ -692,4 +705,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seventyFiveL => '75L';
+
+  @override
+  String get pendingStatus => 'Pending';
+
+  @override
+  String get confirmedStatus => 'Confirmed';
+
+  @override
+  String get collectorAssignedStatus => 'Collector Assigned';
+
+  @override
+  String get completedStatus => 'Completed';
+
+  @override
+  String get cancelledStatus => 'Cancelled';
 }

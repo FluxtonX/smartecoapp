@@ -352,6 +352,18 @@ abstract class AppLocalizations {
   /// **'Join Rwanda\'s smart waste management platform'**
   String get joinRwandaSmartWaste;
 
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get email;
+
   /// No description provided for @referralCode.
   ///
   /// In en, this message translates to:
@@ -1348,6 +1360,18 @@ abstract class AppLocalizations {
   /// **'Bins'**
   String get navBins;
 
+  /// No description provided for @noSlotsAvailableTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'No slots available for tomorrow. Please choose another date.'**
+  String get noSlotsAvailableTomorrow;
+
+  /// No description provided for @confirmPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Payment'**
+  String get confirmPayment;
+
   /// No description provided for @scanningQRCode.
   ///
   /// In en, this message translates to:
@@ -1395,6 +1419,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'75L'**
   String get seventyFiveL;
+
+  /// No description provided for @pendingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingStatus;
+
+  /// No description provided for @confirmedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get confirmedStatus;
+
+  /// No description provided for @collectorAssignedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Collector Assigned'**
+  String get collectorAssignedStatus;
+
+  /// No description provided for @completedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completedStatus;
+
+  /// No description provided for @cancelledStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelledStatus;
 }
 
 class _AppLocalizationsDelegate

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import '../../controller/auth_controller.dart';
 import '../../core/providers/locale_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
-import '../../core/widgets/custom_text_field.dart';
 import 'create_account_screen.dart';
 import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
@@ -37,15 +37,40 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }).toList();
 
-  void _onLogin() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const VerifyPhoneScreen(isLogin: true,)),
-    );
+  String _fullPhoneNumber = '';
+
+  Future<void> _onLogin() async {
+    if (_fullPhoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid phone number')),
+      );
+      return;
+    }
+    
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final fullPhone = _fullPhoneNumber;
+    
+    final success = await authController.sendOtp(fullPhone, isLogin: true);
+    
+    if (success && mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => VerifyPhoneScreen(isLogin: true, phoneNumber: fullPhone)),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Failed to send OTP'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -129,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 initialCountryCode: _lastValidCountryCode,
                 onChanged: (phone) {
-                  // You can handle phone number changes here
+                  _fullPhoneNumber = phone.completeNumber;
                 },
                 onCountryChanged: (country) {
                   if (!['PK', 'RW', 'FR', 'US'].contains(country.code)) {
@@ -165,6 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
               CustomButton(
                 onPressed: _onLogin,
                 text: AppLocalizations.of(context)!.logIn,
+                isLoading: authController.isLoading,
               ),
               const SizedBox(height: 24),
               Center(

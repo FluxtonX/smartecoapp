@@ -139,6 +139,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Rejoignez la plateforme rwandaise de gestion intelligente des déchets';
 
   @override
+  String get fullName => 'Nom complet';
+
+  @override
+  String get email => 'Adresse e-mail';
+
+  @override
   String get referralCode => 'Code de parrainage (facultatif)';
 
   @override
@@ -680,6 +686,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navBins => 'Poubelles';
 
   @override
+  String get noSlotsAvailableTomorrow =>
+      'No slots available for tomorrow. Please choose another date.';
+
+  @override
+  String get confirmPayment => 'Confirm Payment';
+
+  @override
   String get scanningQRCode => 'Numérisation du code QR...';
 
   @override
@@ -702,4 +715,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get seventyFiveL => '75L';
+
+  @override
+  String get pendingStatus => 'Pending';
+
+  @override
+  String get confirmedStatus => 'Confirmed';
+
+  @override
+  String get collectorAssignedStatus => 'Collector Assigned';
+
+  @override
+  String get completedStatus => 'Completed';
+
+  @override
+  String get cancelledStatus => 'Cancelled';
 }

@@ -49,6 +49,8 @@
   "signUp": "S'inscrire",
   "createAccount": "Créer un compte",
   "joinRwandaSmartWaste": "Rejoignez la plateforme rwandaise de gestion intelligente des déchets",
+  "fullName": "Nom complet",
+  "email": "Adresse e-mail",
   "referralCode": "Code de parrainage (facultatif)",
   "continueText": "Continuer",
   "byContinuingAgree": "En continuant, vous acceptez nos ",

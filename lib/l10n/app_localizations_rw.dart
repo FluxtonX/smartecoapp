@@ -139,6 +139,12 @@ class AppLocalizationsRw extends AppLocalizations {
       'Fatanya n\'abandi mu gucunga imyanda mu buryo bw\'ubwenge mu Rwanda';
 
   @override
+  String get fullName => 'Amazina yose';
+
+  @override
+  String get email => 'Imeyili';
+
+  @override
   String get referralCode => 'Kode yo koherezwa (Si ngombwa)';
 
   @override
@@ -677,6 +683,13 @@ class AppLocalizationsRw extends AppLocalizations {
   String get navBins => 'Ibitebo';
 
   @override
+  String get noSlotsAvailableTomorrow =>
+      'No slots available for tomorrow. Please choose another date.';
+
+  @override
+  String get confirmPayment => 'Confirm Payment';
+
+  @override
   String get scanningQRCode => 'Gusoma QR Code...';
 
   @override
@@ -699,4 +712,19 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get seventyFiveL => '75L';
+
+  @override
+  String get pendingStatus => 'Pending';
+
+  @override
+  String get confirmedStatus => 'Confirmed';
+
+  @override
+  String get collectorAssignedStatus => 'Collector Assigned';
+
+  @override
+  String get completedStatus => 'Completed';
+
+  @override
+  String get cancelledStatus => 'Cancelled';
 }

@@ -14,7 +14,7 @@ class BinStatusDialog extends StatelessWidget {
   final String appSvg;
 
   const BinStatusDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.percentage,
@@ -23,7 +23,7 @@ class BinStatusDialog extends StatelessWidget {
     required this.lastEmptied,
     required this.avgFillRate,
     required this.appSvg,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

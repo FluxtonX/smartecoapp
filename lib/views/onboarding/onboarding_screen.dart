@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/dot_indicator.dart';

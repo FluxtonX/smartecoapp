@@ -49,6 +49,8 @@
   "signUp": "Sign Up",
   "createAccount": "Create Account",
   "joinRwandaSmartWaste": "Join Rwanda's smart waste management platform",
+  "fullName": "Full Name",
+  "email": "Email Address",
   "referralCode": "Referral Code (Optional)",
   "continueText": "Continue",
   "byContinuingAgree": "By continuing, you agree to our ",
@@ -215,6 +217,8 @@
   "earnedPointsText3": " for scheduling this pickup!",
   "navHome": "Home",
   "navBins": "Bins",
+  "noSlotsAvailableTomorrow": "No slots available for tomorrow. Please choose another date.",
+  "confirmPayment": "Confirm Payment",
   "scanningQRCode": "Scanning QR Code...",
   "capacity": "Capacity",
   "lastEmptiedTitle": "Last Emptied",
@@ -222,5 +226,10 @@
   "fifteenPercentPerDay": "15% per day",
   "sixteenPercentPerDay": "16% per day",
   "fiftyL": "50L",
-  "seventyFiveL": "75L"
+  "seventyFiveL": "75L",
+  "pendingStatus": "Pending",
+  "confirmedStatus": "Confirmed",
+  "collectorAssignedStatus": "Collector Assigned",
+  "completedStatus": "Completed",
+  "cancelledStatus": "Cancelled"
 }

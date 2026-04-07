@@ -4,6 +4,9 @@ import '../../core/widgets/custom_button.dart';
 import 'biometrics_screen.dart';
 import '../../l10n/app_localizations.dart';
 
+import 'package:provider/provider.dart';
+import '../../controller/user_controller.dart';
+
 class AccountTypeScreen extends StatefulWidget {
   const AccountTypeScreen({super.key});
 
@@ -12,13 +15,25 @@ class AccountTypeScreen extends StatefulWidget {
 }
 
 class _AccountTypeScreenState extends State<AccountTypeScreen> {
-  String _selectedType = 'residential'; // 'residential' or 'business'
+  String _selectedType = 'RESIDENTIAL'; // 'RESIDENTIAL' or 'BUSINESS'
 
-  void _onContinue() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const BiometricsScreen()),
-    );
+  Future<void> _onContinue() async {
+    final userController = Provider.of<UserController>(context, listen: false);
+    
+    await userController.updateProfile({'userType': _selectedType});
+
+    if (mounted) {
+      if (userController.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(userController.error ?? 'Failed to update type')),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const BiometricsScreen()),
+        );
+      }
+    }
   }
 
   Widget _buildTypeCard({
@@ -138,7 +153,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                     ),
                     const SizedBox(height: 32),
                     _buildTypeCard(
-                      type: 'residential',
+                      type: 'RESIDENTIAL',
                       title: AppLocalizations.of(context)!.residential,
                       subtitle: AppLocalizations.of(context)!.residentialDesc,
                       icon: Icons.home_outlined,
@@ -150,7 +165,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildTypeCard(
-                      type: 'business',
+                      type: 'BUSINESS',
                       title: AppLocalizations.of(context)!.businessAccount,
                       subtitle: AppLocalizations.of(context)!.businessDesc,
                       icon: Icons.domain,

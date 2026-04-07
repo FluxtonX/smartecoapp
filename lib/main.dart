@@ -6,6 +6,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:smarteco/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'core/providers/locale_provider.dart';
+import 'controller/auth_controller.dart';
+import 'controller/user_controller.dart';
+import 'controller/bin_controller.dart';
+import 'controller/pickup_controller.dart';
 import 'core/theme/app_theme.dart';
 import 'views/splash/splash_screen.dart';
 
@@ -44,6 +48,10 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => AuthController()),
+        ChangeNotifierProvider(create: (_) => UserController()),
+        ChangeNotifierProvider(create: (_) => BinController()),
+        ChangeNotifierProvider(create: (_) => PickupController()),
       ],
       child: DevicePreview(
         enabled: !kReleaseMode,

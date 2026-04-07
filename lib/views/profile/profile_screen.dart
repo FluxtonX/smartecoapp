@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../../controller/auth_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import '../../core/providers/locale_provider.dart';
 import '../auth/login_screen.dart';
 
-
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthController>(context);
+    final user = auth.user;
+    final name = user?.displayFirstName ?? 'User';
+    final phone = user?.phone ?? '+250 000 000 000';
+    final points = user?.ecoPoints?.toString() ?? '0';
+    final tier = user?.ecoTier ?? 'Eco Warrior';
+    final initials = name.isNotEmpty ? name[0].toUpperCase() : 'U';
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeader(context),
+            _buildHeader(context, initials, name, phone, tier, points),
             const SizedBox(height: 56), // Add space to prevent overlap from positioned card in header
             const SizedBox(height: 16),
             _buildSection(
@@ -100,7 +108,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, String initials, String name, String phone, String tier, String points) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -142,10 +150,10 @@ class ProfileScreen extends StatelessWidget {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    'R',
-                    style: TextStyle(
+                    initials,
+                    style: const TextStyle(
                       color: AppColors.primary,
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -154,18 +162,18 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Rahmat',
-                style: TextStyle(
+              Text(
+                name,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                '+250 788 XXX XXX',
-                style: TextStyle(color: Colors.white70, fontSize: 14),
+              Text(
+                phone,
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
               ),
               const SizedBox(height: 8),
               Container(
@@ -183,9 +191,9 @@ class ProfileScreen extends StatelessWidget {
                       colorFilter: const ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
                     ),
                     const SizedBox(width: 4),
-                    const Text(
-                      'Eco Warrior',
-                      style: TextStyle(color: Colors.yellow, fontSize: 12),
+                    Text(
+                      tier,
+                      style: const TextStyle(color: Colors.yellow, fontSize: 12),
                     ),
                   ],
                 ),
@@ -215,7 +223,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Expanded(child: _buildStatItem('24', AppLocalizations.of(context)!.pickups)),
                 Container(width: 1, height: 40, color: AppColors.border),
-                Expanded(child: _buildStatItem('2,450', AppLocalizations.of(context)!.ecoPoints)),
+                Expanded(child: _buildStatItem(points, AppLocalizations.of(context)!.ecoPoints)),
                 Container(width: 1, height: 40, color: AppColors.border),
                 Expanded(child: _buildStatItem('156kg', AppLocalizations.of(context)!.recycled)),
               ],

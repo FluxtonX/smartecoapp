@@ -9,6 +9,8 @@ import '../../core/widgets/custom_text_field.dart';
 import 'login_screen.dart';
 import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../controller/auth_controller.dart';
+
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
 
@@ -20,6 +22,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _phoneController = TextEditingController();
   final _referralController = TextEditingController();
   String _lastValidCountryCode = 'RW';
+  String _fullPhoneNumber = '';
   Key _phoneFieldKey = UniqueKey();
 
   late final List<Country> _customCountries = countries.map((country) {
@@ -37,15 +40,46 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
   }).toList();
 
-  void _onContinue() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const VerifyPhoneScreen()),
-    );
+  Future<void> _onContinue() async {
+    if (_fullPhoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid phone number'), backgroundColor: AppColors.error),
+      );
+      return;
+    }
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final fullPhone = _fullPhoneNumber;
+
+    final success = await authController.sendOtp(fullPhone, isLogin: false);
+
+    if (success && mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => VerifyPhoneScreen(
+            isLogin: false,
+            phoneNumber: fullPhone,
+            referralCode: _referralController.text.trim().isNotEmpty 
+                ? _referralController.text.trim() 
+                : null,
+          ),
+        ),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Failed to send OTP'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -93,7 +127,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
 
               const SizedBox(height: 32),
-               IntlPhoneField(
+              IntlPhoneField(
                 key: _phoneFieldKey,
                 controller: _phoneController,
                 countries: _customCountries,
@@ -129,16 +163,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ),
                 initialCountryCode: _lastValidCountryCode,
                 onChanged: (phone) {
-                  // You can handle phone number changes here
+                  _fullPhoneNumber = phone.completeNumber;
                 },
                 onCountryChanged: (country) {
                   if (!['PK', 'RW', 'FR', 'US'].contains(country.code)) {
-                    // Revert selection
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Service is currently unavailable in ${country.name}.'),
                         behavior: SnackBarBehavior.floating,
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: AppColors.error,
                       ),
                     );
                     setState(() {
@@ -172,6 +205,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               CustomButton(
                 onPressed: _onContinue,
                 text: AppLocalizations.of(context)!.continueText,
+                isLoading: authController.isLoading,
               ),
               const SizedBox(height: 16),
               Center(
@@ -183,7 +217,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       TextSpan(text: AppLocalizations.of(context)!.byContinuingAgree),
                       TextSpan(
                         text: AppLocalizations.of(context)!.termsOfService,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
@@ -191,7 +225,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       TextSpan(text: AppLocalizations.of(context)!.and),
                       TextSpan(
                         text: AppLocalizations.of(context)!.privacyPolicy,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
@@ -219,7 +253,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         TextSpan(text: AppLocalizations.of(context)!.alreadyHaveAccount),
                         TextSpan(
                           text: AppLocalizations.of(context)!.logIn,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),

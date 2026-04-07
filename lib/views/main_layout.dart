@@ -10,7 +10,7 @@ import 'rewards/rewards_screen.dart';
 import 'bins/bin_scanner_screen.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({Key? key}) : super(key: key);
+  const MainLayout({super.key});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();

@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
-import '../account_setup/account_type_screen.dart';
 import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
+import 'complete_profile_screen.dart';
+
+import 'package:provider/provider.dart';
+import '../../controller/auth_controller.dart';
 
 class VerifyPhoneScreen extends StatefulWidget {
   final bool isLogin;
-  const VerifyPhoneScreen({super.key, this.isLogin = false});
+  final String phoneNumber;
+  final String? referralCode;
+  const VerifyPhoneScreen({
+    super.key, 
+    this.isLogin = false, 
+    required this.phoneNumber, 
+    this.referralCode,
+  });
 
   @override
   State<VerifyPhoneScreen> createState() => _VerifyPhoneScreenState();
@@ -17,23 +27,48 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
-  void _onVerify() {
-    if (widget.isLogin) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const MainLayout()),
-        (route) => false,
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
+  Future<void> _onVerify() async {
+    final code = _controllers.map((c) => c.text).join();
+    if (code.length < 6) return;
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final success = await authController.verifyOtp(
+      widget.phoneNumber, 
+      code,
+      referralCode: widget.referralCode,
+    );
+
+    if (success && mounted) {
+      if (widget.isLogin) {
+        // If login, go to Home
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const MainLayout()),
+          (route) => false,
+        );
+      } else {
+        // If signup, go to Complete Profile
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompleteProfileScreen(phoneNumber: widget.phoneNumber),
+          ),
+        );
+      }
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Invalid OTP. Please try again.'),
+          backgroundColor: AppColors.error,
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,7 +91,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                AppLocalizations.of(context)!.enterCodeSent('+250 788 XXX XXX'),
+                AppLocalizations.of(context)!.enterCodeSent(widget.phoneNumber),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 32),
@@ -77,7 +112,6 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                           _focusNodes[index + 1].requestFocus();
                         }
                         if (index == 5 && value.isNotEmpty) {
-                          // Auto complete or verify
                           _onVerify();
                         }
                       },
@@ -119,7 +153,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                     TextSpan(
                       text: AppLocalizations.of(context)!.verifyTip,
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'SmartEco',
                           style: TextStyle(
                             color: AppColors.primary,
@@ -139,6 +173,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               CustomButton(
                 onPressed: _onVerify,
                 text: AppLocalizations.of(context)!.verify,
+                isLoading: authController.isLoading,
               ),
             ],
           ),
