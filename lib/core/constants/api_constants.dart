@@ -12,8 +12,8 @@ class ApiConstants {
   }
   
   // The actual production server IP
-  static const String _productionBaseUrl = 'http://15.240.11.31/api/v1'; 
-  
+  static const String _productionBaseUrl = 'http://13.223.149.5/api/v1';
+
   static String get baseUrl => kReleaseMode ? _productionBaseUrl : _debugBaseUrl;
   
   // Auth Endpoints
