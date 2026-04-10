@@ -137,4 +137,32 @@ class AuthController extends ChangeNotifier {
     // or just assume logged in and let subsequent API calls fail with 401.
     return true;
   }
+
+  String? get accessToken => _apiService.accessToken;
+
+  Future<bool> loginWithToken(String token) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      // First, set the token in ApiService
+      await _apiService.saveTokens(token, ''); // We might not have a refresh token here
+      
+      // Then fetch profile to verify it's still valid
+      final response = await _apiService.get('/users/me');
+      
+      if (response['success'] == true && response['data'] != null) {
+        _user = UserModel.fromJson(response['data']);
+        _setLoading(false);
+        return true;
+      } else {
+        _setError('Session expired. Please log in again.');
+        _setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      _setLoading(false);
+      _setError(e is AppException ? e.message : e.toString());
+      return false;
+    }
+  }
 }

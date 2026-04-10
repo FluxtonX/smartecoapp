@@ -39,6 +39,7 @@ class PickupModel {
   final String? cancellationReason;
   final CollectorModel? collector;
   final Map<String, dynamic>? eta;
+  final Map<String, dynamic>? payment;
   final DateTime createdAt;
 
   PickupModel({
@@ -55,6 +56,7 @@ class PickupModel {
     this.cancellationReason,
     this.collector,
     this.eta,
+    this.payment,
     required this.createdAt,
   });
 
@@ -82,6 +84,7 @@ class PickupModel {
       cancellationReason: json['cancellationReason'],
       collector: json['collector'] != null ? CollectorModel.fromJson(json['collector']) : null,
       eta: json['eta'],
+      payment: json['payment'],
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }

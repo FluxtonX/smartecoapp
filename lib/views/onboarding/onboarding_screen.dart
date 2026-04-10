@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_images.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/dot_indicator.dart';
@@ -52,7 +53,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _goToAuth() {
+  void _goToAuth() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenOnboarding', true);
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const CreateAccountScreen()),

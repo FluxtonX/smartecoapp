@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../model/pickup_model.dart';
 import '../repositories/pickup_repository.dart';
+import '../repositories/payment_repository.dart';
 
 class PickupController extends ChangeNotifier {
   final PickupRepository _pickupRepository = PickupRepositoryImpl();
+  final PaymentRepository _paymentRepository = PaymentRepositoryImpl();
 
   List<PickupModel> _pickupHistory = [];
   PickupModel? _activePickup;
@@ -104,6 +106,19 @@ class PickupController extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<Map<String, String?>> getPaymentStatus(String paymentId) async {
+    try {
+      final paymentData = await _paymentRepository.checkPaymentStatus(paymentId);
+      return {
+        'status': paymentData['status'] as String,
+        'reason': paymentData['failReason'] as String?,
+      };
+    } catch (e) {
+      debugPrint('Error checking payment status: $e');
+      return {'status': 'PENDING', 'reason': null};
     }
   }
 }

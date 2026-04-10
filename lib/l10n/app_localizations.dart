@@ -1360,6 +1360,12 @@ abstract class AppLocalizations {
   /// **'Bins'**
   String get navBins;
 
+  /// No description provided for @navScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get navScan;
+
   /// No description provided for @noSlotsAvailableTomorrow.
   ///
   /// In en, this message translates to:

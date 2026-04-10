@@ -676,6 +676,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navBins => 'Bins';
 
   @override
+  String get navScan => 'Scan';
+
+  @override
   String get noSlotsAvailableTomorrow =>
       'No slots available for tomorrow. Please choose another date.';
 

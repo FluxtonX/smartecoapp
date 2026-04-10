@@ -217,6 +217,7 @@
   "earnedPointsText3": " for scheduling this pickup!",
   "navHome": "Home",
   "navBins": "Bins",
+  "navScan": "Scan",
   "noSlotsAvailableTomorrow": "No slots available for tomorrow. Please choose another date.",
   "confirmPayment": "Confirm Payment",
   "scanningQRCode": "Scanning QR Code...",

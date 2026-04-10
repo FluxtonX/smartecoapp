@@ -9,6 +9,8 @@ import '../../core/widgets/custom_button.dart';
 import 'create_account_screen.dart';
 import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/services/biometric_service.dart';
+import '../main_layout.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
   String _lastValidCountryCode = 'RW';
   Key _phoneFieldKey = UniqueKey();
+  final BiometricService _biometricService = BiometricService();
+  bool _isBiometricsEnabled = false;
 
   late final List<Country> _customCountries = countries.map((country) {
     if (['PK', 'RW', 'FR', 'US'].contains(country.code)) {
@@ -38,6 +42,54 @@ class _LoginScreenState extends State<LoginScreen> {
   }).toList();
 
   String _fullPhoneNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometrics();
+  }
+
+  Future<void> _checkBiometrics() async {
+    final enabled = await _biometricService.isBiometricsEnabled();
+    setState(() {
+      _isBiometricsEnabled = enabled;
+    });
+    
+    // Auto-prompt if enabled
+    if (enabled) {
+      // Small delay to let screen settle
+      Future.delayed(const Duration(milliseconds: 500), _onBiometricLogin);
+    }
+  }
+
+  Future<void> _onBiometricLogin() async {
+    final authenticated = await _biometricService.authenticate(
+      reason: 'Use your fingerprint to login to SmartEco',
+    );
+
+    if (authenticated && mounted) {
+      final token = await _biometricService.getStoredToken();
+      if (token != null) {
+        final authController = Provider.of<AuthController>(context, listen: false);
+        final success = await authController.loginWithToken(token);
+        
+        if (success && mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const MainLayout()),
+            (route) => false,
+          );
+        } else if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(authController.error ?? 'Biometric login failed'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    }
+  }
 
   Future<void> _onLogin() async {
     if (_fullPhoneNumber.isEmpty) {
@@ -194,31 +246,57 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
               Center(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
-                    );
-                  },
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+                        );
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                          children: [
+                            TextSpan(text: AppLocalizations.of(context)!.dontHaveAccount),
+                            TextSpan(
+                              text: AppLocalizations.of(context)!.signUp,
+                              style: const TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (_isBiometricsEnabled) ...[
+                      const SizedBox(height: 32),
+                      InkWell(
+                        onTap: _onBiometricLogin,
+                        borderRadius: BorderRadius.circular(24),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.08),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.primary.withOpacity(0.15)),
                           ),
-                      children: [
-                        TextSpan(text: AppLocalizations.of(context)!.dontHaveAccount),
-                        TextSpan(
-                          text: AppLocalizations.of(context)!.signUp,
-                          style: TextStyle(
+                          child: const Icon(
+                            Icons.fingerprint,
+                            size: 40,
                             color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                      const SizedBox(height: 8),
+
+                    ],
+                  ],
                 ),
               ),
             ],

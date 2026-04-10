@@ -217,6 +217,7 @@
   "earnedPointsText3": " pour la planification de ce ramassage !",
   "navHome": "Accueil",
   "navBins": "Poubelles",
+  "navScan": "Scanner",
   "scanningQRCode": "Numérisation du code QR...",
   "capacity": "Capacité",
   "lastEmptiedTitle": "Dernier vidage",

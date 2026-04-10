@@ -7,7 +7,7 @@ import 'home/home_screen.dart';
 import 'profile/profile_screen.dart';
 import 'bins/bins_screen.dart';
 import 'rewards/rewards_screen.dart';
-import 'bins/bin_scanner_screen.dart';
+import 'bins/scan_tab_screen.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -28,7 +28,7 @@ class _MainLayoutState extends State<MainLayout> {
       },
     ),
     const BinsScreen(),
-    const SizedBox.shrink(), // Placeholder for center floating button
+    const ScanTabScreen(),
     const RewardsScreen(),
     const ProfileScreen(),
   ];
@@ -40,27 +40,7 @@ class _MainLayoutState extends State<MainLayout> {
         index: _currentIndex,
         children: _screens,
       ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const BinScannerScreen()),
-          );
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: SvgPicture.asset(
-          AppSvgs.qrCodeImage,
-          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          width: 32,
-          height: 32,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
         color: Colors.white,
         padding: EdgeInsets.zero,
         height: 70,
@@ -69,11 +49,54 @@ class _MainLayoutState extends State<MainLayout> {
           children: [
             _buildNavItem(0, AppSvgs.leafImage, AppLocalizations.of(context)!.navHome),
             _buildNavItem(1, AppSvgs.binImage, AppLocalizations.of(context)!.navBins),
-            const SizedBox(width: 40), // Space for FAB
+            _buildScannerItem(),
             _buildNavItem(3, AppSvgs.giftImage, AppLocalizations.of(context)!.rewards),
             _buildNavItem(4, AppSvgs.profileImage, AppLocalizations.of(context)!.profile),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildScannerItem() {
+    final isSelected = _currentIndex == 2;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentIndex = 2;
+        });
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.primary : Colors.grey.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: SvgPicture.asset(
+              AppSvgs.qrCodeImage,
+              colorFilter: ColorFilter.mode(
+                isSelected ? Colors.white : AppColors.textSecondary,
+                BlendMode.srcIn,
+              ),
+              width: 20,
+              height: 20,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            AppLocalizations.of(context)!.navScan,
+            style: TextStyle(
+              fontSize: 12,
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

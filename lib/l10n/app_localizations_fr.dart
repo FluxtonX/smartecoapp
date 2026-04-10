@@ -686,6 +686,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navBins => 'Poubelles';
 
   @override
+  String get navScan => 'Scanner';
+
+  @override
   String get noSlotsAvailableTomorrow =>
       'No slots available for tomorrow. Please choose another date.';
 

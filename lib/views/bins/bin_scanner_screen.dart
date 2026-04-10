@@ -6,7 +6,14 @@ import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
 
 class BinScannerScreen extends StatefulWidget {
-  const BinScannerScreen({super.key});
+  final VoidCallback? onClose;
+  final bool isEmbedded;
+
+  const BinScannerScreen({
+    super.key,
+    this.onClose,
+    this.isEmbedded = false,
+  });
 
   @override
   State<BinScannerScreen> createState() => _BinScannerScreenState();
@@ -27,7 +34,11 @@ class _BinScannerScreenState extends State<BinScannerScreen>
     // Simulate scanning for 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        Navigator.pop(context); // Close scanner
+        if (widget.onClose != null) {
+          widget.onClose!();
+        } else {
+          Navigator.pop(context); // Close scanner
+        }
         _showRandomBinDialog(context);
       }
     });
@@ -49,9 +60,7 @@ class _BinScannerScreenState extends State<BinScannerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
+    final content = SafeArea(
         child: Stack(
           children: [
             Center(
@@ -60,8 +69,8 @@ class _BinScannerScreenState extends State<BinScannerScreen>
                 children: [
                   Text(
                     AppLocalizations.of(context)!.scanningQRCode,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: widget.isEmbedded ? AppColors.textPrimary : Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -73,7 +82,7 @@ class _BinScannerScreenState extends State<BinScannerScreen>
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.primary, width: 2),
                       borderRadius: BorderRadius.circular(24),
-                      color: AppColors.primary.withValues(alpha: 0.05),
+                      color: AppColors.primary.withOpacity(0.05),
                     ),
                     child: Stack(
                       children: [
@@ -90,9 +99,7 @@ class _BinScannerScreenState extends State<BinScannerScreen>
                                   color: AppColors.primary,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primary.withValues(
-                                        alpha: 0.8,
-                                      ),
+                                      color: AppColors.primary.withOpacity(0.8),
                                       blurRadius: 10,
                                       spreadRadius: 2,
                                     ),
@@ -106,7 +113,7 @@ class _BinScannerScreenState extends State<BinScannerScreen>
                           child: Icon(
                             Icons.qr_code_scanner,
                             size: 100,
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: (widget.isEmbedded ? AppColors.textSecondary : Colors.white).withOpacity(0.2),
                           ),
                         ),
                       ],
@@ -119,13 +126,34 @@ class _BinScannerScreenState extends State<BinScannerScreen>
               top: 16,
               left: 16,
               child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
+                icon: Icon(
+                  Icons.close, 
+                  color: widget.isEmbedded ? AppColors.textPrimary : Colors.white, 
+                  size: 30
+                ),
+                onPressed: () {
+                  if (widget.onClose != null) {
+                    widget.onClose!();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
               ),
             ),
           ],
         ),
-      ),
+      );
+
+    if (widget.isEmbedded) {
+      return Container(
+        color: AppColors.background,
+        child: content,
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: content,
     );
   }
 }

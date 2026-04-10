@@ -8,9 +8,16 @@ import '../../l10n/app_localizations.dart';
 import '../../core/providers/locale_provider.dart';
 import '../auth/login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+import 'security_settings_screen.dart';
+
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthController>(context);
@@ -27,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             _buildHeader(context, initials, name, phone, tier, points),
-            const SizedBox(height: 56), // Add space to prevent overlap from positioned card in header
+            const SizedBox(height: 56), 
             const SizedBox(height: 16),
             _buildSection(
               title: AppLocalizations.of(context)!.account,
@@ -42,7 +49,16 @@ class ProfileScreen extends StatelessWidget {
               title: AppLocalizations.of(context)!.preferences,
               items: [
                 _buildListItem(Icons.notifications_none, AppLocalizations.of(context)!.notifications),
-                _buildListItem(Icons.security_outlined, AppLocalizations.of(context)!.privacySecurity),
+                _buildListItem(
+                  Icons.security_outlined, 
+                  AppLocalizations.of(context)!.privacySecurity,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SecuritySettingsScreen()),
+                    );
+                  },
+                ),
                 _buildListItem(
                   Icons.language, 
                   AppLocalizations.of(context)!.language,

@@ -683,6 +683,9 @@ class AppLocalizationsRw extends AppLocalizations {
   String get navBins => 'Ibitebo';
 
   @override
+  String get navScan => 'Sikana';
+
+  @override
   String get noSlotsAvailableTomorrow =>
       'No slots available for tomorrow. Please choose another date.';
 

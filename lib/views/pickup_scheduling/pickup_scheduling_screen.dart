@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -152,6 +153,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   Future<void> _onConfirmPayment() async {
     final pickupController = Provider.of<PickupController>(context, listen: false);
 
+    // 1. Create Pickup
     final success = await pickupController.scheduleNewPickup({
       'wasteType': _selectedWasteType,
       'scheduledDate': _selectedDateObj?['fullDate'],
@@ -159,23 +161,172 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
       'address': _addressText,
       'latitude': _selectedLocation?.latitude ?? 33.6844,
       'longitude': _selectedLocation?.longitude ?? 73.0479,
+      'paymentMethod': _selectedPaymentMethod == 'momo' ? 'MTN_MOMO' : 'AIRTEL_MONEY',
     });
 
-    if (success && mounted) {
-      _showToast(AppLocalizations.of(context)!.pickupScheduledSuccess, isError: false);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PickupSuccessScreen(
-            date: _selectedDate!,
-            time: _selectedTime!,
-            reference: pickupController.activePickup?.reference ?? 'ECO-XXXXXX',
-          ),
-        ),
-      );
-    } else if (mounted) {
-      _showToast(pickupController.error ?? 'Failed to schedule pickup', isError: true);
+    if (!success) {
+      if (mounted) {
+        _showToast(pickupController.error ?? 'Failed to schedule pickup', isError: true);
+      }
+      return;
     }
+
+    final newPickup = pickupController.activePickup;
+    if (newPickup == null || newPickup.payment == null) {
+      // Fallback if no payment object found
+      _goToSuccessScreen();
+      return;
+    }
+
+    // 2. Show Payment Processing Dialog
+    _showPaymentProcessingDialog(newPickup.payment!['id'].toString());
+  }
+
+  void _showPaymentProcessingDialog(String paymentId) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16),
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Processing Payment',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Please check your phone for the mobile money PIN prompt. We are waiting for your approval...',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+    // 3. Start Polling
+    _pollPaymentStatus(paymentId);
+  }
+
+  Future<void> _pollPaymentStatus(String paymentId) async {
+    final pickupController = Provider.of<PickupController>(context, listen: false);
+    int attempts = 0;
+    const maxAttempts = 15; // 30 seconds total
+
+    Timer.periodic(const Duration(seconds: 2), (timer) async {
+      attempts++;
+      final statusData = await pickupController.getPaymentStatus(paymentId);
+      final status = statusData['status'];
+      final reason = statusData['reason'];
+      
+      if (status == 'COMPLETED') {
+        timer.cancel();
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+          _goToSuccessScreen();
+        }
+      } else if (status == 'FAILED') {
+        timer.cancel();
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+          _showPaymentFailedDialog(reason);
+        }
+      } else if (attempts >= maxAttempts) {
+        timer.cancel();
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+          // If timeout, we still show success screen but maybe it stays PENDING in backend
+          _goToSuccessScreen();
+        }
+      }
+    });
+  }
+
+  void _showPaymentFailedDialog(String? reason) {
+    String message = 'We could not process your payment. This could be due to a wrong PIN, insufficient balance, or a network issue.';
+    
+    // Friendly error mappings from documentation
+    if (reason != null) {
+      if (reason.contains('NOT_ENOUGH_FUNDS')) {
+        message = 'You do not have enough funds in your wallet. Please top up and try again.';
+      } else if (reason.contains('PAYER_NOT_FOUND')) {
+        message = 'Mobile money wallet not found for this phone number. Please check your number.';
+      } else if (reason.contains('PAYER_LIMIT_REACHED')) {
+        message = 'Your wallet has reached its daily or monthly transaction limit.';
+      } else if (reason.contains('COULD_NOT_PERFORM_TRANSACTION')) {
+        message = 'The transaction timed out. Please check your phone and try again.';
+      } else if (reason.contains('PAYEE_NOT_ALLOWED_TO_RECEIVE')) {
+        message = 'Our system is currently unable to receive payments. Please try again later.';
+      } else if (reason.contains('VALIDATION_ERROR')) {
+        message = 'There was a validation error with the payment request. Please contact support.';
+      }
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Payment Failed'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close error dialog
+              _onConfirmPayment(); // Retry
+            },
+            child: const Text('Retry Payment', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+              Navigator.of(context).pop(); // Go back from scheduling
+            },
+            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _goToSuccessScreen() {
+    final pickupController = Provider.of<PickupController>(context, listen: false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PickupSuccessScreen(
+          date: _selectedDate!,
+          time: _selectedTime!,
+          reference: pickupController.activePickup?.reference ?? 'ECO-XXXXXX',
+        ),
+      ),
+    );
   }
 
   void _previousStep() {

@@ -8,6 +8,9 @@ class ApiService {
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
 
+  String? _cachedToken;
+  String? get accessToken => _cachedToken;
+
   late final Dio _dio;
 
   ApiService() {
@@ -26,6 +29,7 @@ class ApiService {
       onRequest: (options, handler) async {
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString(_accessTokenKey);
+        _cachedToken = token;
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }
@@ -39,18 +43,27 @@ class ApiService {
         return handler.next(e);
       },
     ));
+
+    _initCachedToken();
+  }
+
+  Future<void> _initCachedToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _cachedToken = prefs.getString(_accessTokenKey);
   }
 
   Future<void> saveTokens(String accessToken, String refreshToken) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_accessTokenKey, accessToken);
     await prefs.setString(_refreshTokenKey, refreshToken);
+    _cachedToken = accessToken;
   }
 
   Future<void> clearTokens() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_accessTokenKey);
     await prefs.remove(_refreshTokenKey);
+    _cachedToken = null;
   }
 
   Future<dynamic> get(String endpoint) async {
