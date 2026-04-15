@@ -126,6 +126,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logIn => 'Se connecter';
 
   @override
+  String get orContinueWith => 'Ou continuer avec';
+
+  @override
   String get dontHaveAccount => 'Vous n\'avez pas de compte ? ';
 
   @override
@@ -733,4 +736,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cancelledStatus => 'Cancelled';
+
+  @override
+  String get cancel => 'Cancel';
 }

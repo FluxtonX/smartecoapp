@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "334193579863",
+    "project_id": "smarteco-app",
+    "storage_bucket": "smarteco-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334193579863:android:1b42e5d13afc813f195012",
+        "android_client_info": {
+          "package_name": "com.fluxtonx.smarteco"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuZfhDO_UKsVwqnO9RF68ceDwH2k0al8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

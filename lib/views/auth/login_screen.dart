@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import '../account_setup/account_type_screen.dart';
 import '../../controller/auth_controller.dart';
 import '../../core/providers/locale_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
+import '../../core/widgets/social_auth_button.dart';
 import 'create_account_screen.dart';
 import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
@@ -50,13 +52,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _checkBiometrics() async {
+    final authController = Provider.of<AuthController>(context, listen: false);
     final enabled = await _biometricService.isBiometricsEnabled();
+    final hasStoredSession = await authController.hasStoredSession;
+    if (!mounted) return;
     setState(() {
-      _isBiometricsEnabled = enabled;
+      _isBiometricsEnabled = enabled && hasStoredSession;
     });
     
     // Auto-prompt if enabled
-    if (enabled) {
+    if (_isBiometricsEnabled) {
       // Small delay to let screen settle
       Future.delayed(const Duration(milliseconds: 500), _onBiometricLogin);
     }
@@ -68,25 +73,22 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (authenticated && mounted) {
-      final token = await _biometricService.getStoredToken();
-      if (token != null) {
-        final authController = Provider.of<AuthController>(context, listen: false);
-        final success = await authController.loginWithToken(token);
-        
-        if (success && mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const MainLayout()),
-            (route) => false,
-          );
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(authController.error ?? 'Biometric login failed'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+      final authController = Provider.of<AuthController>(context, listen: false);
+      final success = await authController.tryAutoLogin();
+
+      if (success && mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const MainLayout()),
+          (route) => false,
+        );
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authController.error ?? 'Biometric login failed'),
+            backgroundColor: AppColors.error,
+          ),
+        );
       }
     }
   }
@@ -243,6 +245,47 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _onLogin,
                 text: AppLocalizations.of(context)!.logIn,
                 isLoading: authController.isLoading,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.2))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      AppLocalizations.of(context)!.orContinueWith,
+                      style: TextStyle(color: AppColors.textSecondary.withOpacity(0.5), fontSize: 13),
+                    ),
+                  ),
+                  Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.2))),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SocialAuthButton(
+                onPressed: () async {
+                  final success = await authController.signInWithGoogle();
+                  if (success && mounted) {
+                    if (authController.user?.userType == null) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
+                        (route) => false,
+                      );
+                    } else {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MainLayout()),
+                        (route) => false,
+                      );
+                    }
+                  } else if (mounted && authController.error != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(authController.error!), backgroundColor: AppColors.error),
+                    );
+                  }
+                },
+                icon: 'assets/google.svg',
+                label: 'Google',
               ),
               const SizedBox(height: 24),
               Center(

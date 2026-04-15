@@ -7,8 +7,13 @@ import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/providers/locale_provider.dart';
 import '../auth/login_screen.dart';
-
+import 'about_screen.dart';
+import 'addresses_screen.dart';
+import 'help_support_screen.dart';
+import 'personal_information_screen.dart';
+import 'phone_number_screen.dart';
 import 'security_settings_screen.dart';
+import '../notifications/notifications_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -39,16 +44,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildSection(
               title: AppLocalizations.of(context)!.account,
               items: [
-                _buildListItem(Icons.person_outline, AppLocalizations.of(context)!.personalInformation),
-                _buildListItem(Icons.location_on_outlined, AppLocalizations.of(context)!.addresses),
-                _buildListItem(Icons.phone_outlined, AppLocalizations.of(context)!.phoneNumber),
+                _buildListItem(
+                  Icons.person_outline,
+                  AppLocalizations.of(context)!.personalInformation,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonalInformationScreen())),
+                ),
+                _buildListItem(
+                  Icons.location_on_outlined,
+                  AppLocalizations.of(context)!.addresses,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddressesScreen())),
+                ),
+                _buildListItem(
+                  Icons.phone_outlined,
+                  AppLocalizations.of(context)!.phoneNumber,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PhoneNumberScreen())),
+                ),
               ],
             ),
             const SizedBox(height: 24),
             _buildSection(
               title: AppLocalizations.of(context)!.preferences,
               items: [
-                _buildListItem(Icons.notifications_none, AppLocalizations.of(context)!.notifications),
+                _buildListItem(
+                  Icons.notifications_none,
+                  AppLocalizations.of(context)!.notifications,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                  ),
+                ),
                 _buildListItem(
                   Icons.security_outlined, 
                   AppLocalizations.of(context)!.privacySecurity,
@@ -74,8 +98,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildSection(
               title: AppLocalizations.of(context)!.support,
               items: [
-                _buildListItem(Icons.help_outline, AppLocalizations.of(context)!.helpSupport),
-                _buildListItem(Icons.info_outline, AppLocalizations.of(context)!.aboutSmartEco),
+                _buildListItem(Icons.help_outline, AppLocalizations.of(context)!.helpSupport,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen())),
+                ),
+                _buildListItem(
+                  Icons.info_outline,
+                  AppLocalizations.of(context)!.aboutSmartEco,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AboutScreen()),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 24),

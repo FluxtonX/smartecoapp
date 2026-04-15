@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/biometric_service.dart';
-import '../account_setup/biometrics_screen.dart';
-import 'package:provider/provider.dart';
-import '../../controller/auth_controller.dart';
 
 class SecuritySettingsScreen extends StatefulWidget {
   const SecuritySettingsScreen({super.key});
@@ -53,31 +50,15 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       );
 
       if (authenticated) {
-        final authController = Provider.of<AuthController>(context, listen: false);
-        final token = authController.accessToken;
-        
-        if (token != null) {
-          await _biometricService.storeToken(token);
-          await _biometricService.setBiometricsEnabled(true);
-          await _loadStatus();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Fingerprint login enabled successfully!'),
-                backgroundColor: AppColors.primary,
-              ),
-            );
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Unable to enable biometrics: No active session found. Please log in again.'),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-          await _loadStatus();
+        await _biometricService.setBiometricsEnabled(true);
+        await _loadStatus();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Fingerprint login enabled successfully!'),
+              backgroundColor: AppColors.primary,
+            ),
+          );
         }
       } else {
         // Auth failed or cancelled

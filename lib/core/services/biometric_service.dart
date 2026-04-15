@@ -7,7 +7,6 @@ class BiometricService {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   static const String _biometricsEnabledKey = 'biometrics_enabled';
-  static const String _userTokenKey = 'stored_user_token';
 
   /// Check if the device has biometric hardware (like Fingerprint sensor)
   Future<bool> isBiometricAvailable() async {
@@ -57,19 +56,8 @@ class BiometricService {
     return value == 'true';
   }
 
-  /// Securely store the user's auth token
-  Future<void> storeToken(String token) async {
-    await _storage.write(key: _userTokenKey, value: token);
-  }
-
-  /// Retrieve the stored token after successful biometric auth
-  Future<String?> getStoredToken() async {
-    return await _storage.read(key: _userTokenKey);
-  }
-
   /// Clear biometric data on logout
   Future<void> clearBiometricData() async {
     await _storage.delete(key: _biometricsEnabledKey);
-    await _storage.delete(key: _userTokenKey);
   }
 }

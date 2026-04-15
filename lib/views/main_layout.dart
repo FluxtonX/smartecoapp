@@ -19,13 +19,16 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _currentIndex = 0;
 
+  void _navigateTo(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   late final List<Widget> _screens = [
     HomeScreen(
-      onViewAllBins: () {
-        setState(() {
-          _currentIndex = 1;
-        });
-      },
+      onViewAllBins: () => _navigateTo(1),
+      onNavigateTo: _navigateTo,
     ),
     const BinsScreen(),
     const ScanTabScreen(),

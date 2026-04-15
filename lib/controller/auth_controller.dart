@@ -1,12 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../model/user_model.dart';
+import '../repositories/user_repository_impl.dart';
 import '../services/api_service.dart';
 import '../core/constants/api_constants.dart';
 import '../core/errors/app_exceptions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../core/services/biometric_service.dart';
 
 class AuthController extends ChangeNotifier {
   final ApiService _apiService = ApiService();
+  final BiometricService _biometricService = BiometricService();
   
   bool _isLoading = false;
   String? _error;
@@ -27,7 +32,6 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 1. Send OTP
   Future<bool> sendOtp(String phone, {bool isLogin = true}) async {
     _setLoading(true);
     _setError(null);
@@ -46,7 +50,6 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  // 2. Verify OTP
   Future<bool> verifyOtp(String phone, String code, {String? referralCode, String? fcmToken}) async {
     _setLoading(true);
     _setError(null);
@@ -60,14 +63,12 @@ class AuthController extends ChangeNotifier {
 
       if (response['success'] == true && response['data'] != null) {
         final data = response['data'];
-        final accessToken = data['accessToken'];
-        final refreshToken = data['refreshToken'];
-        
-        await _apiService.saveTokens(accessToken, refreshToken);
-        
-        if (data['user'] != null) {
-          _user = UserModel.fromJson(data['user']);
-        }
+        _user = data['user'] != null ? UserModel.fromJson(data['user']) : null;
+        await _apiService.saveSession(
+          accessToken: data['accessToken'],
+          refreshToken: data['refreshToken'] ?? '',
+          user: _user,
+        );
         
         _setLoading(false);
         return true;
@@ -83,7 +84,6 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  // 3. Complete Profile
   Future<bool> completeProfile(String phone, String firstName, String email) async {
     _setLoading(true);
     _setError(null);
@@ -96,6 +96,7 @@ class AuthController extends ChangeNotifier {
 
       if (response['success'] == true && response['data'] != null) {
         _user = UserModel.fromJson(response['data']);
+        await _apiService.saveUser(_user);
         _setLoading(false);
         return true;
       } else {
@@ -110,7 +111,6 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  // 3. Logout
   Future<void> logout() async {
     _setLoading(true);
     try {
@@ -118,50 +118,161 @@ class AuthController extends ChangeNotifier {
     } catch (e) {
       // Ignored since we are logging out locally anyway
     } finally {
-      await _apiService.clearTokens();
+      await _apiService.clearSession();
+      await _biometricService.clearBiometricData();
       _user = null;
       _setLoading(false);
     }
   }
 
-  // Auto Login check
   Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
-    
-    if (token == null) {
+    _setError(null);
+    _user = await _apiService.getStoredUser();
+
+    final hasValidSession = await _apiService.validateOrRefreshSession();
+    if (!hasValidSession) {
+      _user = null;
+      notifyListeners();
       return false;
     }
 
-    // Ideally, make a call to /auth/me or similar if provided by backend, 
-    // or just assume logged in and let subsequent API calls fail with 401.
-    return true;
+    try {
+      final repo = UserRepositoryImpl();
+      _user = await repo.getProfile();
+      await _apiService.saveUser(_user);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      await _apiService.clearSession();
+      _user = null;
+      _setError(e is AppException ? e.message : 'Session expired. Please log in again.');
+      return false;
+    }
   }
 
   String? get accessToken => _apiService.accessToken;
+  Future<bool> get hasStoredSession => _apiService.hasStoredSession();
 
-  Future<bool> loginWithToken(String token) async {
+  /// Sync local user state after external profile updates
+  void updateLocalUser(UserModel updated) {
+    _user = updated;
+    unawaited(_apiService.saveUser(updated));
+    notifyListeners();
+  }
+
+  /// Re-fetch profile from server (e.g. after phone change)
+  Future<void> refreshProfile() async {
+    try {
+      final repo = UserRepositoryImpl();
+      _user = await repo.getProfile();
+      await _apiService.saveUser(_user);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<bool> signInWithGoogle() async {
     _setLoading(true);
     _setError(null);
+
     try {
-      // First, set the token in ApiService
-      await _apiService.saveTokens(token, ''); // We might not have a refresh token here
+      final googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize(
+        serverClientId: ApiConstants.googleServerClientId,
+      );
+
+      final completer = Completer<GoogleSignInAccount?>();
       
-      // Then fetch profile to verify it's still valid
-      final response = await _apiService.get('/users/me');
-      
-      if (response['success'] == true && response['data'] != null) {
-        _user = UserModel.fromJson(response['data']);
-        _setLoading(false);
-        return true;
+      final subscription = googleSignIn.authenticationEvents.listen((event) {
+        final dynamic e = event;
+        try {
+          if (e.user != null) {
+            if (!completer.isCompleted) completer.complete(e.user);
+          } else {
+            if (!completer.isCompleted) completer.complete(null);
+          }
+        } catch (_) {
+          if (event.runtimeType.toString().contains('SignOut')) {
+             if (!completer.isCompleted) completer.complete(null);
+          }
+        }
+      }, onError: (err) {
+        if (!completer.isCompleted) completer.completeError(err);
+      });
+
+      if (googleSignIn.supportsAuthenticate()) {
+        await googleSignIn.authenticate();
       } else {
-        _setError('Session expired. Please log in again.');
+        _setError("Platform not supported");
+        subscription.cancel();
         _setLoading(false);
         return false;
       }
+
+      final googleUser = await completer.future.timeout(
+        const Duration(minutes: 2),
+        onTimeout: () => null,
+      ).catchError((_) => null);
+      
+      subscription.cancel();
+
+      if (googleUser == null) {
+        _setLoading(false);
+        return false;
+      }
+
+      // Get Identity Token from authentication AND Access Token from authorizeScopes
+      final dynamic googleAuth = googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+      
+      final authorization = await googleUser.authorizationClient.authorizeScopes([
+        'email',
+        'profile',
+      ]);
+      final String accessToken = authorization.accessToken;
+
+      if (idToken == null) {
+        _setError("Google ID token missing");
+        _setLoading(false);
+        return false;
+      }
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        final String? firebaseIdToken = await firebaseUser.getIdToken();
+
+        final response = await _apiService.post(ApiConstants.googleLogin, {
+          'idToken': firebaseIdToken,
+          'email': firebaseUser.email,
+          'displayName': firebaseUser.displayName,
+          'photoUrl': firebaseUser.photoURL,
+        });
+
+        if (response['success'] == true && response['data'] != null) {
+          final data = response['data'];
+          _user = data['user'] != null ? UserModel.fromJson(data['user']) : null;
+          await _apiService.saveSession(
+            accessToken: data['accessToken'],
+            refreshToken: data['refreshToken'] ?? '',
+            user: _user,
+          );
+          _setLoading(false);
+          return true;
+        }
+      }
+
+      _setError("Authentication failed");
+      _setLoading(false);
+      return false;
     } catch (e) {
       _setLoading(false);
-      _setError(e is AppException ? e.message : e.toString());
+      _setError(e.toString());
       return false;
     }
   }

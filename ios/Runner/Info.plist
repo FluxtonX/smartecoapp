@@ -53,5 +53,22 @@
 	<string>SmartEco needs access to your location to notify you when a waste collector is nearby for your scheduled pickup.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>SmartEco uses biometrics to provide a secure and fast login experience without needing OTP every time.</string>
+	<key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+        	<string>com.googleusercontent.apps.334193579863-cjk7qck720l8ktctamdiiq7ajq8002po</string>
+        </array>
+      </dict>
+    </array>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>google</string>
+      <string>com.googleusercontent.apps</string>
+    </array>
 </dict>
 </plist>

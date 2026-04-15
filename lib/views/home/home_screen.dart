@@ -14,8 +14,9 @@ import '../../model/pickup_model.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onViewAllBins;
+  final void Function(int index)? onNavigateTo;
 
-  const HomeScreen({super.key, this.onViewAllBins});
+  const HomeScreen({super.key, this.onViewAllBins, this.onNavigateTo});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,7 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PickupController>(context, listen: false).fetchActivePickup();
+      final ctrl = Provider.of<PickupController>(context, listen: false);
+      ctrl.fetchActivePickup();
+      ctrl.fetchHistory();
     });
   }
 
@@ -168,17 +171,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      AppSvgs.profileImage,
-                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                      width: 24,
-                      height: 24,
+                  GestureDetector(
+                    onTap: () => widget.onNavigateTo?.call(4),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        AppSvgs.profileImage,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        width: 24,
+                        height: 24,
+                      ),
                     ),
                   ),
                 ],
@@ -321,54 +327,109 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
-    final actions = [
-      {'svg': AppSvgs.calenderImage, 'label': (context) => AppLocalizations.of(context)!.schedule, 'color': Colors.green},
-      {'svg': AppSvgs.mapImage, 'label': (context) => AppLocalizations.of(context)!.track, 'color': Colors.blue},
-      {'svg': AppSvgs.binImage, 'label': (context) => AppLocalizations.of(context)!.smartBins, 'color': Colors.grey},
-      {'svg': AppSvgs.giftImage, 'label': (context) => AppLocalizations.of(context)!.rewards, 'color': Colors.orange},
-    ];
+  void _onTrackPressed(BuildContext context) {
+    final controller = Provider.of<PickupController>(context, listen: false);
+    if (controller.activePickup != null) {
+      // Active pickup exists — go to tracking screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SchedulePickupScreen()),
+      );
+    } else if (controller.pickupHistory.isNotEmpty) {
+      // No active pickup but history exists — show latest pickup in tracking screen
+      // Temporarily set activePickup-like state by pushing tracking screen
+      // which will show "No active pickup" with previous info via history
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SchedulePickupScreen()),
+      );
+    } else {
+      // No pickup at all
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No active or previous pickup found.'),
+          backgroundColor: AppColors.primary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
+  }
 
+  Widget _buildQuickActions(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: actions.map((action) {
-        return Expanded(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: (action['color'] as Color).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: SvgPicture.asset(
-                  action['svg'] as String,
-                  colorFilter: ColorFilter.mode(
-                    action['color'] as Color,
-                    BlendMode.srcIn,
-                  ),
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Builder(
-                builder: (context) => Text(
-                  (action['label'] as String Function(BuildContext))(context),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
+      children: [
+        _buildQuickActionItem(
+          svg: AppSvgs.calenderImage,
+          label: AppLocalizations.of(context)!.schedule,
+          color: Colors.green,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PickupSchedulingScreen()),
           ),
-        );
-      }).toList(),
+        ),
+        _buildQuickActionItem(
+          svg: AppSvgs.mapImage,
+          label: AppLocalizations.of(context)!.track,
+          color: Colors.blue,
+          onTap: () => _onTrackPressed(context),
+        ),
+        _buildQuickActionItem(
+          svg: AppSvgs.binImage,
+          label: AppLocalizations.of(context)!.smartBins,
+          color: Colors.grey,
+          onTap: () => widget.onNavigateTo?.call(1),
+        ),
+        _buildQuickActionItem(
+          svg: AppSvgs.giftImage,
+          label: AppLocalizations.of(context)!.rewards,
+          color: Colors.orange,
+          onTap: () => widget.onNavigateTo?.call(3),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionItem({
+    required String svg,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SvgPicture.asset(
+                svg,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                width: 24,
+                height: 24,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

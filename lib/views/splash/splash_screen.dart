@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../controller/auth_controller.dart';
 import '../onboarding/onboarding_screen.dart';
-import '../auth/create_account_screen.dart';
+import '../auth/login_screen.dart';
 import '../main_layout.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else if (isLoggedIn) {
       nextScreen = const MainLayout();
     } else {
-      nextScreen = const CreateAccountScreen();
+      nextScreen = const LoginScreen();
     }
 
     if (!mounted) return;

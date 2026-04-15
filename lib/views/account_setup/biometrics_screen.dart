@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import 'welcome_screen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/services/biometric_service.dart';
-import '../../controller/auth_controller.dart';
 
 class BiometricsScreen extends StatefulWidget {
   final bool fromSettings;
@@ -35,13 +33,7 @@ class _BiometricsScreenState extends State<BiometricsScreen> {
     );
 
     if (authenticated) {
-      final authController = Provider.of<AuthController>(context, listen: false);
-      final token = authController.accessToken;
-      
-      if (token != null) {
-        await _biometricService.storeToken(token);
-        await _biometricService.setBiometricsEnabled(true);
-      }
+      await _biometricService.setBiometricsEnabled(true);
 
       if (mounted) {
         if (widget.fromSettings) {

@@ -126,6 +126,9 @@ class AppLocalizationsRw extends AppLocalizations {
   String get logIn => 'Injira';
 
   @override
+  String get orContinueWith => 'Cyangwa ukoreshe';
+
+  @override
   String get dontHaveAccount => 'Ntabwo ufite konti? ';
 
   @override
@@ -730,4 +733,7 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get cancelledStatus => 'Cancelled';
+
+  @override
+  String get cancel => 'Cancel';
 }

@@ -45,6 +45,7 @@
   "welcomeBack": "Welcome Back",
   "loginToContinue": "Log in to continue your smart waste journey",
   "logIn": "Log In",
+  "orContinueWith": "Or continue with",
   "dontHaveAccount": "Don't have an account? ",
   "signUp": "Sign Up",
   "createAccount": "Create Account",
@@ -232,5 +233,6 @@
   "confirmedStatus": "Confirmed",
   "collectorAssignedStatus": "Collector Assigned",
   "completedStatus": "Completed",
-  "cancelledStatus": "Cancelled"
+  "cancelledStatus": "Cancelled",
+  "cancel": "Cancel"
 }

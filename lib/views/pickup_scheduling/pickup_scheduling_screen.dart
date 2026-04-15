@@ -36,7 +36,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   // String _selectedAddress = "Home"; // Default
   String? _selectedPaymentMethod;
   LatLng? _selectedLocation;
-  String _addressText = 'Kg 123 St, Kigali, Gasabo District, Rwanda';
+  String _addressText = ''; // Removed hardcoded Rwanda address
+  final TextEditingController _addressController = TextEditingController();
   GoogleMapController? _mapController;
   bool _isLoadingLocation = true;
 
@@ -74,7 +75,8 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     }
 
     if (status.isPermanentlyDenied) {
-      openAppSettings();
+      // Don't force open settings. Let the user enter address manually instead.
+      debugPrint("Location permission permanently denied.");
       setState(() => _isLoadingLocation = false);
       return;
     }
@@ -109,8 +111,10 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
       );
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
+        final address = "${place.street}, ${place.locality}, ${place.subAdministrativeArea}, ${place.country}";
         setState(() {
-          _addressText = "${place.street}, ${place.locality}, ${place.subAdministrativeArea}, ${place.country}";
+          _addressText = address;
+          _addressController.text = address;
         });
       }
     } catch (e) {
@@ -118,6 +122,126 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     }
   }
 
+  Future<void> _searchAddress(String query) async {
+    if (query.isEmpty) return;
+    try {
+      List<Location> locations = await locationFromAddress(query);
+      if (locations.isNotEmpty) {
+        final loc = locations.first;
+        final latLng = LatLng(loc.latitude, loc.longitude);
+        setState(() {
+          _selectedLocation = latLng;
+        });
+        _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+        _getAddressFromLatLng(latLng);
+      }
+    } catch (e) {
+      _showToast("Address not found. Please try again.", isError: true);
+    }
+  }
+
+  void _showAddressEditSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SingleChildScrollView(
+                controller: scrollController,
+                padding: EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 24,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 24, // 🔥 KEY FIX
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Edit Address',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Enter your address or a nearby landmark to update your pickup location.',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    ),
+                    const SizedBox(height: 24),
+                    TextField(
+                      controller: _addressController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: 'Search for address...',
+                        prefixIcon: const Icon(Icons.search, color: AppColors.primary),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onSubmitted: (val) {
+                        _searchAddress(val);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        _searchAddress(_addressController.text);
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        minimumSize: const Size(double.infinity, 56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        'Confirm New Address',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
   void _nextStep() {
     // Validation
     if (_currentStep == 0 && _selectedWasteType == null) {
@@ -130,6 +254,10 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     }
     if (_currentStep == 2 && _selectedTime == null) {
       _showToast(AppLocalizations.of(context)!.errSelectTime, isError: true);
+      return;
+    }
+    if (_currentStep == 3 && (_selectedLocation == null || _addressText.isEmpty)) {
+      _showToast("Please confirm your pickup location", isError: true);
       return;
     }
     if (_currentStep == 4) {
@@ -718,7 +846,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   : GoogleMap(
                   onMapCreated: (controller) => _mapController = controller,
                   initialCameraPosition: CameraPosition(
-                    target: _selectedLocation ?? const LatLng(33.6844, 73.0479), // Islamabad, Pakistan
+                    target: _selectedLocation ?? const LatLng(33.6844, 73.0479), // Islamabad
                     zoom: 14.0,
                   ),
                   onCameraMove: (position) {
@@ -772,7 +900,11 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                         ),
                       ),
                       Text(
-                        _addressText,
+                        _addressText.isEmpty 
+                          ? (_isLoadingLocation ? 'Locating...' : 'Tap Edit to enter address') 
+                          : _addressText,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
@@ -782,9 +914,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // Logic to toggle editing if needed, but the map is already interactive
-                  },
+                  onPressed: _showAddressEditSheet,
                   child: Text(
                     AppLocalizations.of(context)!.edit,
                     style: const TextStyle(color: AppColors.primary),
@@ -992,22 +1122,3 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
     );
   }
 }
-
-// class _MapGridPainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..color = Colors.grey.shade300
-//       ..strokeWidth = 1.0;
-//
-//     for (double i = 0; i < size.width; i += 20) {
-//       canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-//     }
-//     for (double i = 0; i < size.height; i += 20) {
-//       canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-//     }
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-// }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../controller/auth_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
@@ -221,49 +225,148 @@ class _RewardsScreenState extends State<RewardsScreen> {
         
         const SizedBox(height: 24),
         // Invite Friends container
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.group_add_outlined, color: AppColors.primary, size: 32),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.inviteFriends, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
-                    const SizedBox(height: 4),
-                    Text.rich(
-                      TextSpan(
-                        text: AppLocalizations.of(context)!.shareYourCode,
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
-                        children: const [
-                          TextSpan(text: 'RAHMAT2024', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(120, 36),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        elevation: 0,
-                      ),
-                      child: Text(AppLocalizations.of(context)!.shareCode),
-                    ),
-                  ],
-                ),
+        Consumer<AuthController>(
+          builder: (context, auth, _) {
+            final referralCode = auth.user?.referralCode ?? '—';
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
               ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  const Icon(Icons.group_add_outlined, color: AppColors.primary, size: 32),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(AppLocalizations.of(context)!.inviteFriends, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary)),
+                        const SizedBox(height: 4),
+                        Text.rich(
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.shareYourCode,
+                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                            children: [
+                              TextSpan(text: referralCode, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () => _showShareBottomSheet(context, referralCode),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(120, 36),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            elevation: 0,
+                          ),
+                          child: Text(AppLocalizations.of(context)!.shareCode),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
+    );
+  }
+
+  void _showShareBottomSheet(BuildContext context, String code) {
+    final shareText = 'Join SmartEco and earn eco points! Use my referral code: $code\nhttps://smarteco.app/invite';
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40, height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text('Share Your Code', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text('Invite friends and both of you earn +150 pts', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+                const SizedBox(height: 20),
+                // Code display box
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(code, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary, letterSpacing: 2)),
+                      GestureDetector(
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: code));
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Code copied to clipboard!'),
+                              backgroundColor: AppColors.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        child: const Row(
+                          children: [
+                            Icon(Icons.copy, size: 18, color: AppColors.primary),
+                            SizedBox(width: 4),
+                            Text('Copy', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      Share.share(shareText, subject: 'Join SmartEco with my referral code!');
+                    },
+                    icon: const Icon(Icons.share, color: Colors.white),
+                    label: const Text('Share via Apps', style: TextStyle(color: Colors.white, fontSize: 15)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

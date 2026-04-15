@@ -125,6 +125,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logIn => 'Log In';
 
   @override
+  String get orContinueWith => 'Or continue with';
+
+  @override
   String get dontHaveAccount => 'Don\'t have an account? ';
 
   @override
@@ -723,4 +726,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelledStatus => 'Cancelled';
+
+  @override
+  String get cancel => 'Cancel';
 }

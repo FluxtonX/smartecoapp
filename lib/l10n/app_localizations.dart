@@ -328,6 +328,12 @@ abstract class AppLocalizations {
   /// **'Log In'**
   String get logIn;
 
+  /// No description provided for @orContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Or continue with'**
+  String get orContinueWith;
+
   /// No description provided for @dontHaveAccount.
   ///
   /// In en, this message translates to:
@@ -1455,6 +1461,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled'**
   String get cancelledStatus;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

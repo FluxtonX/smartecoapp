@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,7 @@ import 'controller/auth_controller.dart';
 import 'controller/user_controller.dart';
 import 'controller/bin_controller.dart';
 import 'controller/pickup_controller.dart';
+import 'core/navigation/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'views/splash/splash_screen.dart';
 
@@ -43,7 +45,9 @@ class FallbackCupertinoLocalizationDelegate extends LocalizationsDelegate<Cupert
   bool shouldReload(FallbackCupertinoLocalizationDelegate old) => false;
 }
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     MultiProvider(
       providers: [
@@ -69,6 +73,7 @@ class SmartEcoApp extends StatelessWidget {
     final localeProvider = Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
+      navigatorKey: AppRouter.navigatorKey,
       title: 'SmartEco',
       theme: AppTheme.lightTheme,
       // Localization setup
@@ -90,4 +95,3 @@ class SmartEcoApp extends StatelessWidget {
     );
   }
 }
-

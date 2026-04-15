@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import '../account_setup/account_type_screen.dart';
 import '../../core/providers/locale_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+import '../../core/widgets/social_auth_button.dart';
 import 'login_screen.dart';
 import 'verify_phone_screen.dart';
+import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
 import '../../controller/auth_controller.dart';
 
@@ -206,6 +209,47 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 onPressed: _onContinue,
                 text: AppLocalizations.of(context)!.continueText,
                 isLoading: authController.isLoading,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.2))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      AppLocalizations.of(context)!.orContinueWith,
+                      style: TextStyle(color: AppColors.textSecondary.withOpacity(0.5), fontSize: 13),
+                    ),
+                  ),
+                  Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.2))),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SocialAuthButton(
+                onPressed: () async {
+                  final success = await authController.signInWithGoogle();
+                  if (success && mounted) {
+                    if (authController.user?.userType == null) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
+                        (route) => false,
+                      );
+                    } else {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MainLayout()),
+                        (route) => false,
+                      );
+                    }
+                  } else if (mounted && authController.error != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(authController.error!), backgroundColor: AppColors.error),
+                    );
+                  }
+                },
+                icon: 'assets/google.svg',
+                label: 'Google',
               ),
               const SizedBox(height: 16),
               Center(
