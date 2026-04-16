@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
@@ -26,6 +27,72 @@ class VerifyPhoneScreen extends StatefulWidget {
 class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+  
+  Timer? _timer;
+  int _secondsRemaining = 60;
+  int _resendAttempts = 0;
+  static const int _maxAttempts = 3;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _startTimer() {
+    setState(() {
+      _secondsRemaining = 60;
+    });
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
+  Future<void> _onResend() async {
+    if (_resendAttempts >= _maxAttempts) return;
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final success = await authController.sendOtp(widget.phoneNumber, isLogin: widget.isLogin);
+
+    if (success && mounted) {
+      setState(() {
+        _resendAttempts++;
+      });
+      _startTimer();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Verification code resent successfully'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Failed to resend code. Please try again.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
 
   Future<void> _onVerify() async {
     final code = _controllers.map((c) => c.text).join();
@@ -133,11 +200,34 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ),
               const SizedBox(height: 24),
               Center(
-                child: Text(
-                  AppLocalizations.of(context)!.resendCodeIn('08'),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                child: Column(
+                  children: [
+                    if (_secondsRemaining > 0)
+                      Text(
+                        AppLocalizations.of(context)!.resendCodeIn(_secondsRemaining.toString().padLeft(2, '0')),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                      )
+                    else if (_resendAttempts < _maxAttempts)
+                      TextButton(
+                        onPressed: authController.isLoading ? null : _onResend,
+                        child: Text(
+                          AppLocalizations.of(context)!.resendCode,
+                          style: TextStyle(
+                            color: authController.isLoading ? AppColors.textSecondary : AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        AppLocalizations.of(context)!.maxAttemptsReached,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.error,
+                            ),
                       ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),

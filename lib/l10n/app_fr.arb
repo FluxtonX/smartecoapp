@@ -98,6 +98,8 @@
   "verifyPhone": "Vérifier le téléphone",
   "enterCodeSent": "Entrez le code à 6 chiffres envoyé au\n{phone}",
   "resendCodeIn": "Renvoyer le code dans {seconds}s",
+  "resendCode": "Renvoyer le code",
+  "maxAttemptsReached": "Nombre maximal de tentatives de réenvoi atteint",
   "verifyTip": "Conseil : Vérifiez vos messages pour un code de ",
   "verify": "Vérifier",
   "accountType": "Type de compte",

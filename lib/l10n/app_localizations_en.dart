@@ -298,6 +298,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get resendCode => 'Resend Code';
+
+  @override
+  String get maxAttemptsReached => 'Maximum resend attempts reached';
+
+  @override
   String get verifyTip => 'Tip: Check your messages for a code from ';
 
   @override

@@ -6,9 +6,9 @@ class ApiConstants {
   static String get _debugBaseUrl {
     if (!kIsWeb && Platform.isAndroid) {
 
-      return 'http://192.168.1.12:3000/api/v1';
+      return 'http://192.168.1.27:3000/api/v1';
     }
-    return 'http://192.168.1.12:3000/api/v1';
+    return 'http://192.168.1.27:3000/api/v1';
     //return 'http://127.0.0.1:3000/api/v1';
   }
   

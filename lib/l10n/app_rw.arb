@@ -146,6 +146,8 @@
   "verifyPhone": "Wemeze telefone",
   "enterCodeSent": "Injira kode y'imibare 6 yoherejwe kuri\n{phone}",
   "resendCodeIn": "Ongera wohereze kode mu gihe cya {seconds}s",
+  "resendCode": "Ongera wohereze kode",
+  "maxAttemptsReached": "Warengeje inshuro zemewe zo kongera kohererezwa kode",
   "verifyTip": "Inama: Reba ubutumwa bwawe bwo kuri kode ya ",
   "verify": "Wemeze",
   "unreadNotifications": "{count} integuza nshya",

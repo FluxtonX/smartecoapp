@@ -646,6 +646,18 @@ abstract class AppLocalizations {
   /// **'Resend code in {seconds}s'**
   String resendCodeIn(Object seconds);
 
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get resendCode;
+
+  /// No description provided for @maxAttemptsReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum resend attempts reached'**
+  String get maxAttemptsReached;
+
   /// No description provided for @verifyTip.
   ///
   /// In en, this message translates to:

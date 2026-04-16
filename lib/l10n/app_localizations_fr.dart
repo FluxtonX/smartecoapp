@@ -299,6 +299,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get resendCode => 'Renvoyer le code';
+
+  @override
+  String get maxAttemptsReached =>
+      'Nombre maximal de tentatives de réenvoi atteint';
+
+  @override
   String get verifyTip => 'Conseil : Vérifiez vos messages pour un code de ';
 
   @override

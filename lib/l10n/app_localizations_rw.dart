@@ -300,6 +300,13 @@ class AppLocalizationsRw extends AppLocalizations {
   }
 
   @override
+  String get resendCode => 'Ongera wohereze kode';
+
+  @override
+  String get maxAttemptsReached =>
+      'Warengeje inshuro zemewe zo kongera kohererezwa kode';
+
+  @override
   String get verifyTip => 'Inama: Reba ubutumwa bwawe bwo kuri kode ya ';
 
   @override

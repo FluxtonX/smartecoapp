@@ -15,7 +15,8 @@ import 'package:intl/intl.dart';
 import 'pickup_success_screen.dart';
 
 class PickupSchedulingScreen extends StatefulWidget {
-  const PickupSchedulingScreen({super.key});
+  final String? initialWasteType;
+  const PickupSchedulingScreen({super.key, this.initialWasteType});
 
   @override
   State<PickupSchedulingScreen> createState() => _PickupSchedulingScreenState();
@@ -44,6 +45,7 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
   @override
   void initState() {
     super.initState();
+    _selectedWasteType = widget.initialWasteType;
     _getCurrentLocation();
   }
 

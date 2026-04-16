@@ -12,6 +12,7 @@ class BinStatusDialog extends StatelessWidget {
   final String lastEmptied;
   final String avgFillRate;
   final String appSvg;
+  final String? wasteTypeId;
 
   const BinStatusDialog({
     super.key,
@@ -23,6 +24,7 @@ class BinStatusDialog extends StatelessWidget {
     required this.lastEmptied,
     required this.avgFillRate,
     required this.appSvg,
+    this.wasteTypeId,
   });
 
   @override
@@ -204,7 +206,11 @@ class BinStatusDialog extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const PickupSchedulingScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => PickupSchedulingScreen(
+                          initialWasteType: wasteTypeId,
+                        ),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -252,6 +258,7 @@ void showBinStatusDialog(
   required String lastEmptied,
   required String avgFillRate,
   required String appSvg,
+  String? wasteTypeId,
 }) {
   showDialog(
     context: context,
@@ -265,6 +272,7 @@ void showBinStatusDialog(
         lastEmptied: lastEmptied,
         avgFillRate: avgFillRate,
         appSvg: appSvg,
+        wasteTypeId: wasteTypeId,
       );
     },
   );

@@ -570,15 +570,15 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.compost, AppLocalizations.of(context)!.organicWaste, 0.45, AppColors.compost, AppSvgs.leafImage, '50L', AppLocalizations.of(context)!.daysAgo('3'), '15% per day'),
+              _buildBinStatusItem(context, AppLocalizations.of(context)!.compost, AppLocalizations.of(context)!.organicWaste, 0.45, AppColors.compost, AppSvgs.leafImage, '50L', AppLocalizations.of(context)!.daysAgo('3'), '15% per day', wasteTypeId: 'ORGANIC'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.recyclable, AppLocalizations.of(context)!.recyclableMaterials, 0.78, AppColors.recyclable, AppSvgs.recyclableImage, '75L', AppLocalizations.of(context)!.daysAgo('5'), '16% per day'),
+              _buildBinStatusItem(context, AppLocalizations.of(context)!.recyclable, AppLocalizations.of(context)!.recyclableMaterials, 0.78, AppColors.recyclable, AppSvgs.recyclableImage, '75L', AppLocalizations.of(context)!.daysAgo('5'), '16% per day', wasteTypeId: 'RECYCLABLE'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.eWaste, AppLocalizations.of(context)!.electronicsBatteries, 0.20, AppColors.eWaste, AppSvgs.eWasteImage, '30L', AppLocalizations.of(context)!.daysAgo('10'), '2% per day'),
+              _buildBinStatusItem(context, AppLocalizations.of(context)!.eWaste, AppLocalizations.of(context)!.electronicsBatteries, 0.20, AppColors.eWaste, AppSvgs.eWasteImage, '30L', AppLocalizations.of(context)!.daysAgo('10'), '2% per day', wasteTypeId: 'EWASTE'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.landfill, AppLocalizations.of(context)!.generalWasteCollection, 0.98, AppColors.landfill, AppSvgs.landfillImage, '100L', AppLocalizations.of(context)!.daysAgo('6'), '15% per day', isAlert: true),
+              _buildBinStatusItem(context, AppLocalizations.of(context)!.landfill, AppLocalizations.of(context)!.generalWasteCollection, 0.98, AppColors.landfill, AppSvgs.landfillImage, '100L', AppLocalizations.of(context)!.daysAgo('6'), '15% per day', isAlert: true, wasteTypeId: 'GENERAL'),
               const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.hazardous, AppLocalizations.of(context)!.hazardousMaterials, 0.15, AppColors.hazardous, AppSvgs.hazardousImage, '20L', AppLocalizations.of(context)!.daysAgo('15'), '1% per day'),
+              _buildBinStatusItem(context, AppLocalizations.of(context)!.hazardous, AppLocalizations.of(context)!.hazardousMaterials, 0.15, AppColors.hazardous, AppSvgs.hazardousImage, '20L', AppLocalizations.of(context)!.daysAgo('15'), '1% per day', wasteTypeId: 'GLASS'),
             ],
           ),
         ),
@@ -586,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBinStatusItem(BuildContext context, String label, String subtitle, double percentage, Color color, String svgPath, String capacity, String lastEmptied, String avgFillRate, {bool isAlert = false}) {
+  Widget _buildBinStatusItem(BuildContext context, String label, String subtitle, double percentage, Color color, String svgPath, String capacity, String lastEmptied, String avgFillRate, {bool isAlert = false, String? wasteTypeId}) {
     return GestureDetector(
       onTap: () {
         showBinStatusDialog(
@@ -599,6 +599,7 @@ class _HomeScreenState extends State<HomeScreen> {
           lastEmptied: lastEmptied,
           avgFillRate: avgFillRate,
           appSvg: svgPath,
+          wasteTypeId: wasteTypeId,
         );
       },
       child: Column(
