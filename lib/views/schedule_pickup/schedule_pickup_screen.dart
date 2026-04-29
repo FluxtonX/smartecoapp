@@ -92,22 +92,22 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
                         position: LatLng(pickup.latitude!, pickup.longitude!),
                         infoWindow: const InfoWindow(title: 'Pickup Location'),
                       ),
-                    if (collector?.latitude != null && collector?.longitude != null)
+                    if (collector != null && collector.latitude != null && collector.longitude != null)
                       Marker(
                         markerId: const MarkerId('collector'),
-                        position: LatLng(collector!.latitude!, collector!.longitude!),
+                        position: LatLng(collector.latitude!, collector.longitude!),
                         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
                         infoWindow: const InfoWindow(title: 'Collector Location'),
                       ),
                   },
                   polylines: {
-                    if (collector?.latitude != null && pickup.latitude != null)
+                    if (collector != null && collector.latitude != null && pickup.latitude != null)
                       Polyline(
                         polylineId: const PolylineId('route'),
                         color: AppColors.primary,
                         width: 5,
                         points: [
-                          LatLng(collector!.latitude!, collector!.longitude!),
+                          LatLng(collector.latitude!, collector.longitude!),
                           LatLng(pickup.latitude!, pickup.longitude!),
                         ],
                         patterns: [PatternItem.dash(10), PatternItem.gap(5)],

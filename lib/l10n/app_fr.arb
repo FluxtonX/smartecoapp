@@ -228,5 +228,16 @@
   "fifteenPercentPerDay": "15% par jour",
   "sixteenPercentPerDay": "16% par jour",
   "fiftyL": "50L",
-  "seventyFiveL": "75L"
+  "seventyFiveL": "75L",
+  "userSignupText": "S'inscrire comme utilisateur",
+  "collectorSignupText": "S'inscrire comme collecteur",
+  "confirmPayment": "Confirmer le paiement",
+  "noSlotsAvailableTomorrow": "Aucun créneau disponible pour demain. Veuillez choisir une autre date.",
+
+  "pendingStatus": "En attente",
+  "confirmedStatus": "Confirmé",
+  "collectorAssignedStatus": "Collecteur assigné",
+  "completedStatus": "Terminé",
+  "cancelledStatus": "Annulé",
+  "cancel": "Annuler"
 }

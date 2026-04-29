@@ -38,7 +38,7 @@ class PickupModel {
   final int? estimatedPoints;
   final String? cancellationReason;
   final CollectorModel? collector;
-  final Map<String, dynamic>? eta;
+  Map<String, dynamic>? eta;
   final Map<String, dynamic>? payment;
   final DateTime createdAt;
 
@@ -97,8 +97,8 @@ class CollectorModel {
   final String? avatarUrl;
   final String vehiclePlate;
   final double rating;
-  final double? latitude;
-  final double? longitude;
+  double? latitude;
+  double? longitude;
 
   CollectorModel({
     required this.id,

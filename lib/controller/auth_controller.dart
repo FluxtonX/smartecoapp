@@ -8,6 +8,8 @@ import '../services/api_service.dart';
 import '../core/constants/api_constants.dart';
 import '../core/errors/app_exceptions.dart';
 import '../core/services/biometric_service.dart';
+import '../services/tracking_socket_service.dart';
+import '../services/location_service.dart';
 
 class AuthController extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -120,6 +122,11 @@ class AuthController extends ChangeNotifier {
     } finally {
       await _apiService.clearSession();
       await _biometricService.clearBiometricData();
+      
+      // Stop any active tracking/sockets
+      LocationService().stopTracking();
+      TrackingSocketService().disconnect();
+
       _user = null;
       _setLoading(false);
     }

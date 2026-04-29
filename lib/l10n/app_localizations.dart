@@ -382,6 +382,18 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueText;
 
+  /// No description provided for @userSignupText.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a User'**
+  String get userSignupText;
+
+  /// No description provided for @collectorSignupText.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a Collector'**
+  String get collectorSignupText;
+
   /// No description provided for @byContinuingAgree.
   ///
   /// In en, this message translates to:

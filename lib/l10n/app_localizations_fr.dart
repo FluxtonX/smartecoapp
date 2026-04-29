@@ -154,6 +154,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get continueText => 'Continuer';
 
   @override
+  String get userSignupText => 'S\'inscrire comme utilisateur';
+
+  @override
+  String get collectorSignupText => 'S\'inscrire comme collecteur';
+
+  @override
   String get byContinuingAgree => 'En continuant, vous acceptez nos ';
 
   @override
@@ -700,10 +706,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noSlotsAvailableTomorrow =>
-      'No slots available for tomorrow. Please choose another date.';
+      'Aucun créneau disponible pour demain. Veuillez choisir une autre date.';
 
   @override
-  String get confirmPayment => 'Confirm Payment';
+  String get confirmPayment => 'Confirmer le paiement';
 
   @override
   String get scanningQRCode => 'Numérisation du code QR...';
@@ -730,20 +736,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get seventyFiveL => '75L';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'En attente';
 
   @override
-  String get confirmedStatus => 'Confirmed';
+  String get confirmedStatus => 'Confirmé';
 
   @override
-  String get collectorAssignedStatus => 'Collector Assigned';
+  String get collectorAssignedStatus => 'Collecteur assigné';
 
   @override
-  String get completedStatus => 'Completed';
+  String get completedStatus => 'Terminé';
 
   @override
-  String get cancelledStatus => 'Cancelled';
+  String get cancelledStatus => 'Annulé';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Annuler';
 }

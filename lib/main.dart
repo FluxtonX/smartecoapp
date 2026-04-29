@@ -11,6 +11,7 @@ import 'controller/auth_controller.dart';
 import 'controller/user_controller.dart';
 import 'controller/bin_controller.dart';
 import 'controller/pickup_controller.dart';
+import 'controller/collector_controller.dart';
 import 'core/navigation/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'views/splash/splash_screen.dart';
@@ -56,6 +57,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserController()),
         ChangeNotifierProvider(create: (_) => BinController()),
         ChangeNotifierProvider(create: (_) => PickupController()),
+        ChangeNotifierProvider(create: (_) => CollectorController()),
       ],
       child: DevicePreview(
         enabled: !kReleaseMode,

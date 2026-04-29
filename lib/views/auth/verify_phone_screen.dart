@@ -5,17 +5,21 @@ import '../../core/widgets/custom_button.dart';
 import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
 import 'complete_profile_screen.dart';
+import '../../core/utils/navigation_utils.dart';
+import 'collector_details_screen.dart';
 
 import 'package:provider/provider.dart';
 import '../../controller/auth_controller.dart';
 
 class VerifyPhoneScreen extends StatefulWidget {
   final bool isLogin;
+  final bool isCollectorSignUp;
   final String phoneNumber;
   final String? referralCode;
   const VerifyPhoneScreen({
     super.key, 
     this.isLogin = false, 
+    this.isCollectorSignUp = false,
     required this.phoneNumber, 
     this.referralCode,
   });
@@ -107,11 +111,18 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
 
     if (success && mounted) {
       if (widget.isLogin) {
-        // If login, go to Home
+        // If login, go to Layout
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const MainLayout()),
+          MaterialPageRoute(builder: (_) => getLayoutForUser(authController.user)),
           (route) => false,
+        );
+      } else if (widget.isCollectorSignUp) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CollectorDetailsScreen(),
+          ),
         );
       } else {
         // If signup, go to Complete Profile

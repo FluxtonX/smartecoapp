@@ -119,8 +119,7 @@ class AppLocalizationsRw extends AppLocalizations {
   String get welcomeBack => 'Murakaza neza';
 
   @override
-  String get loginToContinue =>
-      'Injira kugira ngo ukomeze urugendo rwawe rwo gucunga imyanda mu buryo bw\'ubwenge';
+  String get loginToContinue => 'Injira kugirango ukomeze urugendo rwawe';
 
   @override
   String get logIn => 'Injira';
@@ -152,6 +151,12 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get continueText => 'Komeza';
+
+  @override
+  String get userSignupText => 'Register as a User';
+
+  @override
+  String get collectorSignupText => 'Register as a Collector';
 
   @override
   String get byContinuingAgree => 'Mu gukomeza, wemeye ';
@@ -307,7 +312,7 @@ class AppLocalizationsRw extends AppLocalizations {
       'Warengeje inshuro zemewe zo kongera kohererezwa kode';
 
   @override
-  String get verifyTip => 'Inama: Reba ubutumwa bwawe bwo kuri kode ya ';
+  String get verifyTip => 'Inama: Reba ubutumwa bwawe';
 
   @override
   String get verify => 'Wemeze';
@@ -697,10 +702,10 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get noSlotsAvailableTomorrow =>
-      'No slots available for tomorrow. Please choose another date.';
+      'Nta masaha ahari ejo. Nyamuneka hitamo indi tariki.';
 
   @override
-  String get confirmPayment => 'Confirm Payment';
+  String get confirmPayment => 'Emeza kwishyura';
 
   @override
   String get scanningQRCode => 'Gusoma QR Code...';
@@ -727,20 +732,20 @@ class AppLocalizationsRw extends AppLocalizations {
   String get seventyFiveL => '75L';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'Itegereje';
 
   @override
-  String get confirmedStatus => 'Confirmed';
+  String get confirmedStatus => 'Byemejwe';
 
   @override
-  String get collectorAssignedStatus => 'Collector Assigned';
+  String get collectorAssignedStatus => 'Umutwara imyanda yashyizweho';
 
   @override
-  String get completedStatus => 'Completed';
+  String get completedStatus => 'Byarangiye';
 
   @override
-  String get cancelledStatus => 'Cancelled';
+  String get cancelledStatus => 'Byahagaritswe';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Hagarika';
 }

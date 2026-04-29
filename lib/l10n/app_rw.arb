@@ -228,5 +228,15 @@
   "fifteenPercentPerDay": "15% ku munsi",
   "sixteenPercentPerDay": "16% ku munsi",
   "fiftyL": "50L",
-  "seventyFiveL": "75L"
+  "seventyFiveL": "75L",
+  "noSlotsAvailableTomorrow": "Nta masaha ahari ejo. Nyamuneka hitamo indi tariki.",
+  "confirmPayment": "Emeza kwishyura",
+  "pendingStatus": "Itegereje",
+  "confirmedStatus": "Byemejwe",
+  "collectorAssignedStatus": "Umutwara imyanda yashyizweho",
+  "completedStatus": "Byarangiye",
+  "cancelledStatus": "Byahagaritswe",
+  "cancel": "Hagarika",
+  "loginToContinue": "Injira kugirango ukomeze urugendo rwawe",
+  "verifyTip": "Inama: Reba ubutumwa bwawe"
 }

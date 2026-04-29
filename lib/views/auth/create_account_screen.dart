@@ -13,6 +13,7 @@ import 'verify_phone_screen.dart';
 import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
 import '../../controller/auth_controller.dart';
+import '../../core/utils/navigation_utils.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -62,6 +63,43 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         MaterialPageRoute(
           builder: (_) => VerifyPhoneScreen(
             isLogin: false,
+            phoneNumber: fullPhone,
+            referralCode: _referralController.text.trim().isNotEmpty 
+                ? _referralController.text.trim() 
+                : null,
+          ),
+        ),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Failed to send OTP'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onCollectorSignUp() async {
+    if (_fullPhoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid phone number'), backgroundColor: AppColors.error),
+      );
+      return;
+    }
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final fullPhone = _fullPhoneNumber;
+
+    final success = await authController.sendOtp(fullPhone, isLogin: false);
+
+    if (success && mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => VerifyPhoneScreen(
+            isLogin: false,
+            isCollectorSignUp: true,
             phoneNumber: fullPhone,
             referralCode: _referralController.text.trim().isNotEmpty 
                 ? _referralController.text.trim() 
@@ -207,8 +245,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 32),
               CustomButton(
                 onPressed: _onContinue,
-                text: AppLocalizations.of(context)!.continueText,
+                text: AppLocalizations.of(context)!.userSignupText,
                 isLoading: authController.isLoading,
+              ),
+              const SizedBox(height: 16),
+              CustomButton(
+                onPressed: _onCollectorSignUp,
+                text: AppLocalizations.of(context)!.collectorSignupText,
+                isLoading: authController.isLoading,
+                isOutlined: true,
               ),
               const SizedBox(height: 16),
               Row(
@@ -238,7 +283,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     } else {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (_) => const MainLayout()),
+                        MaterialPageRoute(builder: (_) => getLayoutForUser(authController.user)),
                         (route) => false,
                       );
                     }

@@ -54,6 +54,8 @@
   "email": "Email Address",
   "referralCode": "Referral Code (Optional)",
   "continueText": "Continue",
+  "userSignupText":"Register as a User",
+  "collectorSignupText":"Register as a Collector",
   "byContinuingAgree": "By continuing, you agree to our ",
   "termsOfService": "Terms of Service",
   "and": " and\n",

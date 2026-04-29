@@ -13,6 +13,7 @@ import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/services/biometric_service.dart';
 import '../main_layout.dart';
+import '../../core/utils/navigation_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success && mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const MainLayout()),
+          MaterialPageRoute(builder: (_) => getLayoutForUser(authController.user)),
           (route) => false,
         );
       } else if (mounted) {
@@ -274,7 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     } else {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (_) => const MainLayout()),
+                        MaterialPageRoute(builder: (_) => getLayoutForUser(authController.user)),
                         (route) => false,
                       );
                     }

@@ -153,6 +153,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueText => 'Continue';
 
   @override
+  String get userSignupText => 'Register as a User';
+
+  @override
+  String get collectorSignupText => 'Register as a Collector';
+
+  @override
   String get byContinuingAgree => 'By continuing, you agree to our ';
 
   @override

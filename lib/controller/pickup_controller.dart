@@ -3,6 +3,8 @@ import 'dart:async';
 import '../model/pickup_model.dart';
 import '../repositories/pickup_repository.dart';
 import '../repositories/payment_repository.dart';
+import '../services/tracking_socket_service.dart';
+import '../services/api_service.dart';
 
 class PickupController extends ChangeNotifier {
   final PickupRepository _pickupRepository = PickupRepositoryImpl();
@@ -12,7 +14,9 @@ class PickupController extends ChangeNotifier {
   PickupModel? _activePickup;
   bool _isLoading = false;
   String? _error;
-  Timer? _trackingTimer;
+  
+  StreamSubscription? _locationSub;
+  StreamSubscription? _statusSub;
 
   List<PickupModel> get pickupHistory => _pickupHistory;
   PickupModel? get activePickup => _activePickup;
@@ -49,22 +53,41 @@ class PickupController extends ChangeNotifier {
   }
 
   void startTracking() {
-    _trackingTimer?.cancel();
-    _trackingTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (_activePickup != null && 
-          (_activePickup!.status == PickupStatus.COLLECTOR_ASSIGNED || 
-           _activePickup!.status == PickupStatus.EN_ROUTE ||
-           _activePickup!.status == PickupStatus.ARRIVED)) {
-        fetchActivePickup();
-      } else {
-        stopTracking();
-      }
-    });
+    if (_activePickup == null) return;
+    
+    final token = ApiService().accessToken;
+    if (token != null) {
+      TrackingSocketService().connect(token);
+      TrackingSocketService().joinPickupRoom(_activePickup!.id);
+
+      _locationSub?.cancel();
+      _locationSub = TrackingSocketService().locationUpdates.listen((data) {
+        if (_activePickup != null && data['collectorId'] == _activePickup!.collector?.id) {
+          // Update collector location and ETA
+          _activePickup!.collector?.latitude = data['latitude'];
+          _activePickup!.collector?.longitude = data['longitude'];
+          _activePickup!.eta = data['eta'];
+          notifyListeners();
+        }
+      });
+
+      _statusSub?.cancel();
+      _statusSub = TrackingSocketService().statusUpdates.listen((data) {
+        if (_activePickup != null && data['pickupId'] == _activePickup!.id) {
+          fetchActivePickup(); // Refresh full data on status change
+        }
+      });
+    }
   }
 
   void stopTracking() {
-    _trackingTimer?.cancel();
-    _trackingTimer = null;
+    if (_activePickup != null) {
+      TrackingSocketService().leavePickupRoom(_activePickup!.id);
+    }
+    _locationSub?.cancel();
+    _locationSub = null;
+    _statusSub?.cancel();
+    _statusSub = null;
   }
 
   @override
