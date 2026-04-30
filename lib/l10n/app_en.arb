@@ -238,5 +238,6 @@
   "collectorAssignedStatus": "Collector Assigned",
   "completedStatus": "Completed",
   "cancelledStatus": "Cancelled",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "register": "Register"
 }

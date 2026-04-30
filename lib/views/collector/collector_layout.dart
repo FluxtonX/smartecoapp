@@ -41,11 +41,22 @@ class _CollectorLayoutState extends State<CollectorLayout> {
           return const PendingApprovalScreen();
         }
 
-        return Scaffold(
-          body: IndexedStack(
-            index: _currentIndex,
-            children: _screens,
-          ),
+        return PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            if (_currentIndex != 0) {
+              setState(() {
+                _currentIndex = 0;
+              });
+            }
+          },
+          child: Scaffold(
+            body: IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            ),
+
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -71,6 +82,7 @@ class _CollectorLayoutState extends State<CollectorLayout> {
                 ),
               ),
             ),
+          ),
           ),
         );
       },

@@ -16,16 +16,18 @@ class CompleteProfileScreen extends StatefulWidget {
 }
 
 class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
 
   Future<void> _onComplete() async {
-    final name = _nameController.text.trim();
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
 
-    if (name.isEmpty) {
+    if (firstName.isEmpty || lastName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your full name'), backgroundColor: AppColors.error),
+        const SnackBar(content: Text('Please enter your first and last name'), backgroundColor: AppColors.error),
       );
       return;
     }
@@ -38,7 +40,11 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     }
 
     final authController = Provider.of<AuthController>(context, listen: false);
-    final success = await authController.completeProfile(widget.phoneNumber, name, email);
+    final success = await authController.completeProfileV2(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+    );
 
     if (success && mounted) {
       Navigator.pushAndRemoveUntil(
@@ -81,9 +87,16 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
               const SizedBox(height: 32),
               CustomTextField(
-                controller: _nameController,
-                labelText: AppLocalizations.of(context)!.fullName,
-                hintText: 'John Doe',
+                controller: _firstNameController,
+                labelText: 'First Name',
+                hintText: 'John',
+                prefixIcon: Icons.person_outline,
+              ),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _lastNameController,
+                labelText: 'Last Name',
+                hintText: 'Doe',
                 prefixIcon: Icons.person_outline,
               ),
               const SizedBox(height: 16),

@@ -23,6 +23,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const int _championThreshold = 5000;
+
+  String _tierLabel(BuildContext context, String? tier) {
+    switch (tier) {
+      case 'ECO_CHAMPION':
+        return AppLocalizations.of(context)!.ecoChampion;
+      case 'ECO_WARRIOR':
+        return AppLocalizations.of(context)!.ecoWarrior;
+      case 'ECO_STARTER':
+      default:
+        return AppLocalizations.of(context)!.ecoStarter;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -225,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Consumer<AuthController>(
                       builder: (context, auth, _) {
                         return Text(
-                          auth.user?.ecoPoints?.toString() ?? '2,450',
+                          (auth.user?.ecoPoints ?? 0).toString(),
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -257,33 +271,50 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: Text(
-                  AppLocalizations.of(context)!.ecoWarrior,
+                  _tierLabel(context, Provider.of<AuthController>(context, listen: false).user?.ecoTier),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(
-                '2,450 / 5,000',
-                style: TextStyle(color: Colors.white, fontSize: 14),
+              Consumer<AuthController>(
+                builder: (context, auth, _) {
+                  final points = auth.user?.ecoPoints ?? 0;
+                  return Text(
+                    '${points.toString()} / $_championThreshold',
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  );
+                },
               ),
             ],
           ),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: const LinearProgressIndicator(
-              value: 0.49,
-              backgroundColor: Colors.white30,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-              minHeight: 8,
+            child: Consumer<AuthController>(
+              builder: (context, auth, _) {
+                final points = auth.user?.ecoPoints ?? 0;
+                final progress = (points / _championThreshold).clamp(0.0, 1.0);
+                return LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.white30,
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                  minHeight: 8,
+                );
+              },
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            AppLocalizations.of(context)!.pointsToTier('550'),
-            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          Consumer<AuthController>(
+            builder: (context, auth, _) {
+              final points = auth.user?.ecoPoints ?? 0;
+              final remaining = (_championThreshold - points).clamp(0, _championThreshold);
+              return Text(
+                AppLocalizations.of(context)!.pointsToTier(remaining.toString()),
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              );
+            },
           ),
         ],
       ),

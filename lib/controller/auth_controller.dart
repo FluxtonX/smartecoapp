@@ -52,7 +52,13 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  Future<bool> verifyOtp(String phone, String code, {String? referralCode, String? fcmToken}) async {
+  Future<bool> verifyOtp(
+    String phone,
+    String code, {
+    String? referralCode,
+    String? fcmToken,
+    String? signupRole,
+  }) async {
     _setLoading(true);
     _setError(null);
     try {
@@ -61,6 +67,7 @@ class AuthController extends ChangeNotifier {
         'otp': code,
         if (referralCode != null) 'referralCode': referralCode,
         if (fcmToken != null) 'fcmToken': fcmToken,
+        if (signupRole != null) 'signupRole': signupRole,
       });
 
       if (response['success'] == true && response['data'] != null) {
@@ -93,6 +100,37 @@ class AuthController extends ChangeNotifier {
       // The user is already authenticated at this point after verifyOtp
       final response = await _apiService.patch('/users/me', {
         'firstName': firstName,
+        'email': email,
+      });
+
+      if (response['success'] == true && response['data'] != null) {
+        _user = UserModel.fromJson(response['data']);
+        await _apiService.saveUser(_user);
+        _setLoading(false);
+        return true;
+      } else {
+        _setError('Failed to update profile');
+        _setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      _setLoading(false);
+      _setError(e is AppException ? e.message : e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> completeProfileV2({
+    required String firstName,
+    required String lastName,
+    required String email,
+  }) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiService.patch('/users/me', {
+        'firstName': firstName,
+        'lastName': lastName,
         'email': email,
       });
 
@@ -177,7 +215,7 @@ class AuthController extends ChangeNotifier {
     } catch (_) {}
   }
 
-  Future<bool> signInWithGoogle() async {
+  Future<bool> signInWithGoogle({String? signupRole}) async {
     _setLoading(true);
     _setError(null);
 
@@ -259,6 +297,7 @@ class AuthController extends ChangeNotifier {
           'email': firebaseUser.email,
           'displayName': firebaseUser.displayName,
           'photoUrl': firebaseUser.photoURL,
+          if (signupRole != null) 'signupRole': signupRole,
         });
 
         if (response['success'] == true && response['data'] != null) {

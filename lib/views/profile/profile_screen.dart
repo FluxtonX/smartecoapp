@@ -33,125 +33,128 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final tier = user?.ecoTier ?? 'Eco Warrior';
     final initials = name.isNotEmpty ? name[0].toUpperCase() : 'U';
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeader(context, initials, name, phone, tier, points),
-            const SizedBox(height: 56), 
-            const SizedBox(height: 16),
-            _buildSection(
-              title: AppLocalizations.of(context)!.account,
-              items: [
-                _buildListItem(
-                  Icons.person_outline,
-                  AppLocalizations.of(context)!.personalInformation,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonalInformationScreen())),
-                ),
-                _buildListItem(
-                  Icons.location_on_outlined,
-                  AppLocalizations.of(context)!.addresses,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddressesScreen())),
-                ),
-                _buildListItem(
-                  Icons.phone_outlined,
-                  AppLocalizations.of(context)!.phoneNumber,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PhoneNumberScreen())),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _buildSection(
-              title: AppLocalizations.of(context)!.preferences,
-              items: [
-                _buildListItem(
-                  Icons.notifications_none,
-                  AppLocalizations.of(context)!.notifications,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildHeader(context, initials, name, phone, tier, points),
+              const SizedBox(height: 56), 
+              const SizedBox(height: 16),
+              _buildSection(
+                title: AppLocalizations.of(context)!.account,
+                items: [
+                  _buildListItem(
+                    Icons.person_outline,
+                    AppLocalizations.of(context)!.personalInformation,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonalInformationScreen())),
                   ),
-                ),
-                _buildListItem(
-                  Icons.security_outlined, 
-                  AppLocalizations.of(context)!.privacySecurity,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SecuritySettingsScreen()),
-                    );
-                  },
-                ),
-                _buildListItem(
-                  Icons.language, 
-                  AppLocalizations.of(context)!.language,
-                  onTap: () => _showLanguageDialog(context),
-                  trailing: Text(
-                    _getLanguageName(Provider.of<LocaleProvider>(context, listen: false).locale?.languageCode ?? 'en', context),
-                    style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  _buildListItem(
+                    Icons.location_on_outlined,
+                    AppLocalizations.of(context)!.addresses,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddressesScreen())),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _buildSection(
-              title: AppLocalizations.of(context)!.support,
-              items: [
-                _buildListItem(Icons.help_outline, AppLocalizations.of(context)!.helpSupport,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen())),
-                ),
-                _buildListItem(
-                  Icons.info_outline,
-                  AppLocalizations.of(context)!.aboutSmartEco,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AboutScreen()),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: _buildListItem(
-                  Icons.logout, 
-                  AppLocalizations.of(context)!.logOut, 
-                  isLogout: true,
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false,
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-            const Center(
-              child: Column(
-                children: [
-                  Text(
-                    'SmartEco v1.0.0',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Made with 💚 for a cleaner Rwanda',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  _buildListItem(
+                    Icons.phone_outlined,
+                    AppLocalizations.of(context)!.phoneNumber,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PhoneNumberScreen())),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 100),
-          ],
+              const SizedBox(height: 24),
+              _buildSection(
+                title: AppLocalizations.of(context)!.preferences,
+                items: [
+                  _buildListItem(
+                    Icons.notifications_none,
+                    AppLocalizations.of(context)!.notifications,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                    ),
+                  ),
+                  _buildListItem(
+                    Icons.security_outlined, 
+                    AppLocalizations.of(context)!.privacySecurity,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SecuritySettingsScreen()),
+                      );
+                    },
+                  ),
+                  _buildListItem(
+                    Icons.language, 
+                    AppLocalizations.of(context)!.language,
+                    onTap: () => _showLanguageDialog(context),
+                    trailing: Text(
+                      _getLanguageName(Provider.of<LocaleProvider>(context, listen: false).locale?.languageCode ?? 'en', context),
+                      style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              _buildSection(
+                title: AppLocalizations.of(context)!.support,
+                items: [
+                  _buildListItem(Icons.help_outline, AppLocalizations.of(context)!.helpSupport,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen())),
+                  ),
+                  _buildListItem(
+                    Icons.info_outline,
+                    AppLocalizations.of(context)!.aboutSmartEco,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AboutScreen()),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: _buildListItem(
+                    Icons.logout, 
+                    AppLocalizations.of(context)!.logOut, 
+                    isLogout: true,
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        (route) => false,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              const Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'SmartEco v1.0.0',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Made with 💚 for a cleaner Rwanda',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 100),
+            ],
+          ),
         ),
       ),
     );
@@ -174,23 +177,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
                   Text(
                     AppLocalizations.of(context)!.profile,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 48), // Match width of IconButton for centering
                 ],
               ),
+
               const SizedBox(height: 16),
               Container(
                 width: 80,

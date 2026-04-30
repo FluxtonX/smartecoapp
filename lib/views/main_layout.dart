@@ -38,11 +38,23 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        // Optional: Implement logic to switch to home tab if not already there
+        if (_currentIndex != 0) {
+          setState(() {
+            _currentIndex = 0;
+          });
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _screens,
+        ),
+
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         padding: EdgeInsets.zero,
@@ -57,6 +69,7 @@ class _MainLayoutState extends State<MainLayout> {
             _buildNavItem(4, AppSvgs.profileImage, AppLocalizations.of(context)!.profile),
           ],
         ),
+      ),
       ),
     );
   }

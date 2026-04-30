@@ -748,4 +748,7 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get cancel => 'Hagarika';
+
+  @override
+  String get register => 'Kwiyandikisha';
 }

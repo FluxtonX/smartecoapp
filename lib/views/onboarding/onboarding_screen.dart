@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_images.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/dot_indicator.dart';
-import '../auth/create_account_screen.dart';
+import '../auth/select_role_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+      MaterialPageRoute(builder: (_) => const SelectRoleScreen()),
     );
   }
 

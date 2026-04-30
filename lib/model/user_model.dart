@@ -13,6 +13,9 @@ class UserModel {
   final int? ecoPoints;
   final String? ecoTier;
   final bool? isNewUser;
+  final String? collectorId;
+  final bool? isCollectorApproved;
+  final String? collectorName;
 
   String get displayFirstName {
     if (firstName != null && firstName!.isNotEmpty) return firstName!;
@@ -35,6 +38,9 @@ class UserModel {
     this.ecoPoints,
     this.ecoTier,
     this.isNewUser,
+    this.collectorId,
+    this.isCollectorApproved,
+    this.collectorName,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -51,6 +57,9 @@ class UserModel {
       ecoPoints: json['ecoPoints'],
       ecoTier: json['ecoTier'],
       isNewUser: json['isNewUser'],
+      collectorId: json['collectorProfile']?['id'],
+      isCollectorApproved: json['collectorProfile']?['isApproved'],
+      collectorName: json['collectorProfile']?['collectorName'],
     );
   }
 
@@ -68,6 +77,11 @@ class UserModel {
       'ecoPoints': ecoPoints,
       'ecoTier': ecoTier,
       'isNewUser': isNewUser,
+      'collectorProfile': collectorId != null ? {
+        'id': collectorId,
+        'isApproved': isCollectorApproved,
+        'collectorName': collectorName,
+      } : null,
     };
   }
 }

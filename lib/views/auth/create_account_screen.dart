@@ -10,13 +10,14 @@ import '../../core/widgets/custom_text_field.dart';
 import '../../core/widgets/social_auth_button.dart';
 import 'login_screen.dart';
 import 'verify_phone_screen.dart';
-import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
 import '../../controller/auth_controller.dart';
 import '../../core/utils/navigation_utils.dart';
+import 'collector_details_screen.dart';
 
 class CreateAccountScreen extends StatefulWidget {
-  const CreateAccountScreen({super.key});
+  final bool isCollector;
+  const CreateAccountScreen({super.key, this.isCollector = false});
 
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
@@ -63,6 +64,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         MaterialPageRoute(
           builder: (_) => VerifyPhoneScreen(
             isLogin: false,
+            isCollectorSignUp: widget.isCollector,
             phoneNumber: fullPhone,
             referralCode: _referralController.text.trim().isNotEmpty 
                 ? _referralController.text.trim() 
@@ -80,42 +82,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
-  Future<void> _onCollectorSignUp() async {
-    if (_fullPhoneNumber.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid phone number'), backgroundColor: AppColors.error),
-      );
-      return;
-    }
-
-    final authController = Provider.of<AuthController>(context, listen: false);
-    final fullPhone = _fullPhoneNumber;
-
-    final success = await authController.sendOtp(fullPhone, isLogin: false);
-
-    if (success && mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => VerifyPhoneScreen(
-            isLogin: false,
-            isCollectorSignUp: true,
-            phoneNumber: fullPhone,
-            referralCode: _referralController.text.trim().isNotEmpty 
-                ? _referralController.text.trim() 
-                : null,
-          ),
-        ),
-      );
-    } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authController.error ?? 'Failed to send OTP'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +120,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 48),
               Center(
                 child: Text(
-                  AppLocalizations.of(context)!.createAccount,
+                  widget.isCollector 
+                      ? AppLocalizations.of(context)!.collectorSignupText
+                      : AppLocalizations.of(context)!.createAccount,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
@@ -245,15 +213,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 32),
               CustomButton(
                 onPressed: _onContinue,
-                text: AppLocalizations.of(context)!.userSignupText,
+                text: AppLocalizations.of(context)!.register,
                 isLoading: authController.isLoading,
-              ),
-              const SizedBox(height: 16),
-              CustomButton(
-                onPressed: _onCollectorSignUp,
-                text: AppLocalizations.of(context)!.collectorSignupText,
-                isLoading: authController.isLoading,
-                isOutlined: true,
               ),
               const SizedBox(height: 16),
               Row(
@@ -272,8 +233,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               const SizedBox(height: 16),
               SocialAuthButton(
                 onPressed: () async {
-                  final success = await authController.signInWithGoogle();
+                  final success = await authController.signInWithGoogle(
+                    signupRole: widget.isCollector ? 'COLLECTOR' : 'USER',
+                  );
                   if (success && mounted) {
+                    if (widget.isCollector) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CollectorDetailsScreen()),
+                        (route) => false,
+                      );
+                      return;
+                    }
+
                     if (authController.user?.userType == null) {
                       Navigator.pushAndRemoveUntil(
                         context,

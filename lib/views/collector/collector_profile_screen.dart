@@ -64,51 +64,55 @@ class _CollectorProfileScreenState extends State<CollectorProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'My Profile',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-      ),
-      body: Consumer<CollectorController>(
-        builder: (context, controller, _) {
-          final profile = controller.profile;
-          final stats = controller.stats;
-
-          if (profile == null) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            );
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _buildProfileCard(profile),
-                const SizedBox(height: 16),
-                _buildRatingCard(profile),
-                const SizedBox(height: 16),
-                if (stats != null) _buildStatsCard(stats),
-                const SizedBox(height: 16),
-                _buildInfoCard(profile),
-                const SizedBox(height: 24),
-                _buildLogoutButton(),
-                const SizedBox(height: 40),
-              ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: const Text(
+            'My Profile',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
             ),
-          );
-        },
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: Consumer<CollectorController>(
+          builder: (context, controller, _) {
+            final profile = controller.profile;
+            final stats = controller.stats;
+    
+            if (profile == null) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
+    
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _buildProfileCard(profile),
+                  const SizedBox(height: 16),
+                  _buildRatingCard(profile),
+                  const SizedBox(height: 16),
+                  if (stats != null) _buildStatsCard(stats),
+                  const SizedBox(height: 16),
+                  _buildInfoCard(profile),
+                  const SizedBox(height: 24),
+                  _buildLogoutButton(),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
+
   }
 
   Widget _buildProfileCard(dynamic profile) {

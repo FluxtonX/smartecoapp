@@ -10,8 +10,22 @@ class LocationService {
 
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isTracking = false;
+  DateTime? _lastSentAt;
 
   bool get isTracking => _isTracking;
+
+  Future<Position?> getCurrentLocation() async {
+    final hasPermission = await requestPermission();
+    if (!hasPermission) return null;
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+      );
+    } catch (e) {
+      debugPrint('Error getting current location: $e');
+      return null;
+    }
+  }
 
   Future<bool> requestPermission() async {
     bool serviceEnabled;
@@ -56,6 +70,13 @@ class LocationService {
     _positionStreamSubscription = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
       (Position position) {
         debugPrint('Location update: ${position.latitude}, ${position.longitude}');
+
+        // Simple throttle to reduce socket spam & battery drain
+        final now = DateTime.now();
+        if (_lastSentAt != null && now.difference(_lastSentAt!) < const Duration(seconds: 3)) {
+          return;
+        }
+        _lastSentAt = now;
         
         // Broadcast location via WebSocket
         TrackingSocketService().sendLocationUpdate(
@@ -73,5 +94,6 @@ class LocationService {
     _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
     _isTracking = false;
+    _lastSentAt = null;
   }
 }

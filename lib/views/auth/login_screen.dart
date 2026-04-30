@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/social_auth_button.dart';
 import 'create_account_screen.dart';
+import 'select_role_screen.dart';
 import 'verify_phone_screen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/services/biometric_service.dart';
@@ -296,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+                          MaterialPageRoute(builder: (_) => const SelectRoleScreen()),
                         );
                       },
                       child: RichText(

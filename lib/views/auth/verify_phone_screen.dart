@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
-import '../main_layout.dart';
 import '../../l10n/app_localizations.dart';
 import 'complete_profile_screen.dart';
 import '../../core/utils/navigation_utils.dart';
@@ -107,10 +106,15 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
       widget.phoneNumber, 
       code,
       referralCode: widget.referralCode,
+      signupRole: widget.isLogin
+          ? null
+          : (widget.isCollectorSignUp ? 'COLLECTOR' : 'USER'),
     );
 
     if (success && mounted) {
       if (widget.isLogin) {
+        // Always re-fetch full profile so role/collector approval state is correct
+        await authController.refreshProfile();
         // If login, go to Layout
         Navigator.pushAndRemoveUntil(
           context,

@@ -239,5 +239,6 @@
   "collectorAssignedStatus": "Collecteur assigné",
   "completedStatus": "Terminé",
   "cancelledStatus": "Annulé",
-  "cancel": "Annuler"
+  "cancel": "Annuler",
+  "register": "S'inscrire"
 }
