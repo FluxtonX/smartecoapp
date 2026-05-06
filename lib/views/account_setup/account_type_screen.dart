@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
 import 'biometrics_screen.dart';
+import '../../l10n/app_localizations.dart';
+
+import 'package:provider/provider.dart';
+import '../../controller/user_controller.dart';
 
 class AccountTypeScreen extends StatefulWidget {
   const AccountTypeScreen({super.key});
@@ -11,13 +15,25 @@ class AccountTypeScreen extends StatefulWidget {
 }
 
 class _AccountTypeScreenState extends State<AccountTypeScreen> {
-  String _selectedType = 'residential'; // 'residential' or 'business'
+  String _selectedType = 'RESIDENTIAL'; // 'RESIDENTIAL' or 'BUSINESS'
 
-  void _onContinue() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const BiometricsScreen()),
-    );
+  Future<void> _onContinue() async {
+    final userController = Provider.of<UserController>(context, listen: false);
+    
+    await userController.updateProfile({'userType': _selectedType});
+
+    if (mounted) {
+      if (userController.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(userController.error ?? 'Failed to update type')),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const BiometricsScreen()),
+        );
+      }
+    }
   }
 
   Widget _buildTypeCard({
@@ -83,7 +99,14 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.check, color: AppColors.success, size: 16),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check, color: AppColors.success, size: 12),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         benefit,
@@ -110,51 +133,60 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Account Type',
-                style: Theme.of(context).textTheme.headlineMedium,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.accountType,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.chooseTypeNeeds,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 32),
+                    _buildTypeCard(
+                      type: 'RESIDENTIAL',
+                      title: AppLocalizations.of(context)!.residential,
+                      subtitle: AppLocalizations.of(context)!.residentialDesc,
+                      icon: Icons.home_outlined,
+                      benefits: [
+                        AppLocalizations.of(context)!.weeklyPickups,
+                        AppLocalizations.of(context)!.upTo3Bins,
+                        AppLocalizations.of(context)!.basicEcoPoints,
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTypeCard(
+                      type: 'BUSINESS',
+                      title: AppLocalizations.of(context)!.businessAccount,
+                      subtitle: AppLocalizations.of(context)!.businessDesc,
+                      icon: Icons.domain,
+                      benefits: [
+                        AppLocalizations.of(context)!.dailyPickups,
+                        AppLocalizations.of(context)!.unlimitedBins,
+                        AppLocalizations.of(context)!.twoXEcoPoints,
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    const SizedBox(height: 16), // Extra space for scrolling
+                    CustomButton(
+                      onPressed: _onContinue,
+                      text: AppLocalizations.of(context)!.continueText,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Choose the type that best fits your needs',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 32),
-              _buildTypeCard(
-                type: 'residential',
-                title: 'Residential',
-                subtitle: 'For individual households and families',
-                icon: Icons.home_outlined,
-                benefits: [
-                  'Weekly pickups',
-                  'Up to 3 bins',
-                  'Basic EcoPoints',
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildTypeCard(
-                type: 'business',
-                title: 'Business',
-                subtitle: 'For businesses and commercial properties',
-                icon: Icons.domain,
-                benefits: [
-                  'Daily pickups',
-                  'Unlimited bins',
-                  '2x EcoPoints',
-                ],
-              ),
-              const Spacer(),
-              CustomButton(
-                onPressed: _onContinue,
-                text: 'Continue',
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

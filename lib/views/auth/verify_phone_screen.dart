@@ -1,10 +1,27 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_button.dart';
-import '../account_setup/account_type_screen.dart';
+import '../../l10n/app_localizations.dart';
+import 'complete_profile_screen.dart';
+import '../../core/utils/navigation_utils.dart';
+import 'collector_details_screen.dart';
+
+import 'package:provider/provider.dart';
+import '../../controller/auth_controller.dart';
 
 class VerifyPhoneScreen extends StatefulWidget {
-  const VerifyPhoneScreen({super.key});
+  final bool isLogin;
+  final bool isCollectorSignUp;
+  final String phoneNumber;
+  final String? referralCode;
+  const VerifyPhoneScreen({
+    super.key, 
+    this.isLogin = false, 
+    this.isCollectorSignUp = false,
+    required this.phoneNumber, 
+    this.referralCode,
+  });
 
   @override
   State<VerifyPhoneScreen> createState() => _VerifyPhoneScreenState();
@@ -13,23 +30,134 @@ class VerifyPhoneScreen extends StatefulWidget {
 class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+  
+  Timer? _timer;
+  int _secondsRemaining = 60;
+  int _resendAttempts = 0;
+  static const int _maxAttempts = 3;
 
-  void _onVerify() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const AccountTypeScreen()),
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _startTimer() {
+    setState(() {
+      _secondsRemaining = 60;
+    });
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
+  Future<void> _onResend() async {
+    if (_resendAttempts >= _maxAttempts) return;
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final success = await authController.sendOtp(widget.phoneNumber, isLogin: widget.isLogin);
+
+    if (success && mounted) {
+      setState(() {
+        _resendAttempts++;
+      });
+      _startTimer();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Verification code resent successfully'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Failed to resend code. Please try again.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onVerify() async {
+    final code = _controllers.map((c) => c.text).join();
+    if (code.length < 6) return;
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final success = await authController.verifyOtp(
+      widget.phoneNumber, 
+      code,
+      referralCode: widget.referralCode,
+      signupRole: widget.isLogin
+          ? null
+          : (widget.isCollectorSignUp ? 'COLLECTOR' : 'USER'),
     );
+
+    if (success && mounted) {
+      if (widget.isLogin) {
+        // Always re-fetch full profile so role/collector approval state is correct
+        await authController.refreshProfile();
+        // If login, go to Layout
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => getLayoutForUser(authController.user)),
+          (route) => false,
+        );
+      } else if (widget.isCollectorSignUp) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CollectorDetailsScreen(),
+          ),
+        );
+      } else {
+        // If signup, go to Complete Profile
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompleteProfileScreen(phoneNumber: widget.phoneNumber),
+          ),
+        );
+      }
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authController.error ?? 'Invalid OTP. Please try again.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Back'),
+        title: Text(AppLocalizations.of(context)!.back),
         titleSpacing: 0,
         centerTitle: false,
       ),
@@ -40,12 +168,12 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Verify Phone',
+                AppLocalizations.of(context)!.verifyPhone,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 8),
               Text(
-                'Enter the 6-digit code sent to\n+250 788 XXX XXX',
+                AppLocalizations.of(context)!.enterCodeSent(widget.phoneNumber),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 32),
@@ -66,7 +194,6 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                           _focusNodes[index + 1].requestFocus();
                         }
                         if (index == 5 && value.isNotEmpty) {
-                          // Auto complete or verify
                           _onVerify();
                         }
                       },
@@ -88,44 +215,70 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ),
               const SizedBox(height: 24),
               Center(
-                child: Text(
-                  'Resend code in 08s',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                child: Column(
+                  children: [
+                    if (_secondsRemaining > 0)
+                      Text(
+                        AppLocalizations.of(context)!.resendCodeIn(_secondsRemaining.toString().padLeft(2, '0')),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                      )
+                    else if (_resendAttempts < _maxAttempts)
+                      TextButton(
+                        onPressed: authController.isLoading ? null : _onResend,
+                        child: Text(
+                          AppLocalizations.of(context)!.resendCode,
+                          style: TextStyle(
+                            color: authController.isLoading ? AppColors.textSecondary : AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        AppLocalizations.of(context)!.maxAttemptsReached,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.error,
+                            ),
                       ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
               Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.primary.withAlpha(50)),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.message, color: AppColors.primary, size: 16),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Tap: Check your messages for a code from SmartEco',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
+                  child: Text.rich(
+                    TextSpan(
+                      text: AppLocalizations.of(context)!.verifyTip,
+                      children: [
+                        const TextSpan(
+                          text: 'SmartEco',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 11,
+                        ),
                   ),
                 ),
               ),
               const Spacer(),
               CustomButton(
                 onPressed: _onVerify,
-                text: 'Verify',
+                text: AppLocalizations.of(context)!.verify,
+                isLoading: authController.isLoading,
               ),
             ],
           ),

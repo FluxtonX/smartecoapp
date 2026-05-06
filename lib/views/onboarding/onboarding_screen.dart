@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/theme/app_images.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/dot_indicator.dart';
-import '../auth/create_account_screen.dart';
+import '../auth/select_role_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,32 +18,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, dynamic>> _onboardingData = [
-    {
-      'title': 'Smart Waste Management',
-      'description': 'Schedule pickups, track collectors, and manage waste efficiently with our innovative platform.',
-      'icon': Icons.eco_outlined,
-      'color': const Color(0xFFE8F5E9),
-      'iconColor': AppColors.primary,
-    },
-    {
-      'title': 'Real-Time Tracking',
-      'description': 'Monitor your waste collector in real-time with live GPS tracking and accurate ETAs.',
-      'icon': Icons.location_on_outlined,
-      'color': const Color(0xFFE3F2FD),
-      'iconColor': Colors.blue,
-    },
-    {
-      'title': 'Earn EcoPoints',
-      'description': 'Get rewarded for proper waste management. Redeem points for exciting rewards and benefits.',
-      'icon': Icons.card_giftcard,
-      'color': const Color(0xFFFFF3E0),
-      'iconColor': Colors.orange,
-    },
-  ];
+  List<Map<String, dynamic>> _getOnboardingData(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {
+        'title': l10n.onboarding1Title,
+        'description': l10n.onboarding1Desc,
+        'image': AppSvgs.leafImage,
+        'color': const Color(0xFFE8F5E9),
+      },
+      {
+        'title': l10n.onboarding2Title,
+        'description': l10n.onboarding2Desc,
+        'image': AppSvgs.mapImage,
+        'color': const Color(0xFFE3F2FD),
+      },
+      {
+        'title': l10n.onboarding3Title,
+        'description': l10n.onboarding3Desc,
+        'image': AppSvgs.giftImage,
+        'color': const Color(0xFFFFF3E0),
+      },
+    ];
+  }
 
-  void _onNext() {
-    if (_currentPage < _onboardingData.length - 1) {
+  void _onNext(int dataLength) {
+    if (_currentPage < dataLength - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -50,15 +53,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _goToAuth() {
+  void _goToAuth() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenOnboarding', true);
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+      MaterialPageRoute(builder: (_) => const SelectRoleScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final onboardingData = _getOnboardingData(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -71,9 +81,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     _currentPage = index;
                   });
                 },
-                itemCount: _onboardingData.length,
+                itemCount: onboardingData.length,
                 itemBuilder: (context, index) {
-                  final data = _onboardingData[index];
+                  final data = onboardingData[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
@@ -85,10 +95,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: data['color'] as Color,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Icon(
-                            data['icon'] as IconData,
-                            size: 64,
-                            color: data['iconColor'] as Color,
+                          child: SvgPicture.asset(
+                            data['image'] as String,
+                            width: 140,
+                            height: 140,
+                            fit: BoxFit.contain,
                           ),
                         ),
                         const SizedBox(height: 48),
@@ -103,6 +114,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: 32),
+                        DotIndicator(
+                          totalDots: onboardingData.length,
+                          currentIndex: _currentPage,
+                        ),
                       ],
                     ),
                   );
@@ -113,22 +129,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  DotIndicator(
-                    totalDots: _onboardingData.length,
-                    currentIndex: _currentPage,
-                  ),
-                  const SizedBox(height: 32),
                   CustomButton(
-                    onPressed: _onNext,
-                    text: _currentPage == _onboardingData.length - 1
-                        ? 'Get Started'
-                        : 'Next >',
+                    onPressed: () => _onNext(onboardingData.length),
+                    text: _currentPage == onboardingData.length - 1
+                        ? l10n.getStarted
+                        : l10n.next,
                   ),
-                  if (_currentPage != _onboardingData.length - 1) ...[
+                  if (_currentPage != onboardingData.length - 1) ...[
                     const SizedBox(height: 16),
                     CustomButton(
                       onPressed: _goToAuth,
-                      text: 'Skip',
+                      text: l10n.skip,
                       isOutlined: true,
                     ),
                   ] else ...[

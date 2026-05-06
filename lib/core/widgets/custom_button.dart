@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'custom_loader.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -23,7 +24,7 @@ class CustomButton extends StatelessWidget {
             ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CustomLoader(size: 20, strokeWidth: 2),
               )
             : Text(text),
       );
@@ -35,7 +36,7 @@ class CustomButton extends StatelessWidget {
           ? const SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              child: CustomLoader(size: 20, strokeWidth: 2, color: Colors.white),
             )
           : Text(text),
     );

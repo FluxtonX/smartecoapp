@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
+import '../../controller/auth_controller.dart';
 import '../onboarding/onboarding_screen.dart';
+import '../auth/login_screen.dart';
+import '../../core/utils/navigation_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,13 +18,35 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      );
-    });
+    _handleNavigation();
+  }
+
+  Future<void> _handleNavigation() async {
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final bool isLoggedIn = await authController.tryAutoLogin();
+
+    Widget nextScreen;
+
+    if (!hasSeenOnboarding) {
+      nextScreen = const OnboardingScreen();
+    } else if (isLoggedIn) {
+      nextScreen = getLayoutForUser(authController.user);
+    } else {
+      nextScreen = const LoginScreen();
+    }
+
+    if (!mounted) return;
+    
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => nextScreen),
+    );
   }
 
   @override
