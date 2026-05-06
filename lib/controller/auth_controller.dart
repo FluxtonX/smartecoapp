@@ -10,6 +10,7 @@ import '../core/errors/app_exceptions.dart';
 import '../core/services/biometric_service.dart';
 import '../services/tracking_socket_service.dart';
 import '../services/location_service.dart';
+import '../services/push_notification_service.dart';
 
 class AuthController extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -79,6 +80,7 @@ class AuthController extends ChangeNotifier {
           user: _user,
         );
         
+        PushNotificationService.instance.syncToken();
         _setLoading(false);
         return true;
       } else {
@@ -185,6 +187,7 @@ class AuthController extends ChangeNotifier {
       final repo = UserRepositoryImpl();
       _user = await repo.getProfile();
       await _apiService.saveUser(_user);
+      PushNotificationService.instance.syncToken();
       notifyListeners();
       return true;
     } catch (e) {
@@ -308,6 +311,7 @@ class AuthController extends ChangeNotifier {
             refreshToken: data['refreshToken'] ?? '',
             user: _user,
           );
+          PushNotificationService.instance.syncToken();
           _setLoading(false);
           return true;
         }

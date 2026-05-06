@@ -108,9 +108,9 @@ class ApiService {
     return _refreshAccessToken();
   }
 
-  Future<dynamic> get(String endpoint) async {
+  Future<dynamic> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
     try {
-      final response = await _dio.get(endpoint);
+      final response = await _dio.get(endpoint, queryParameters: queryParameters);
       return response.data;
     } on DioException catch (e) {
       throw _handleDioError(e);

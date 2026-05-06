@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../controller/auth_controller.dart';
+import '../../controller/eco_points_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
 import '../../l10n/app_localizations.dart';
@@ -26,12 +27,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthController>(context);
+    final ecoPointsCtrl = Provider.of<EcoPointsController>(context);
+    
     final user = auth.user;
     final name = user?.displayFirstName ?? 'User';
     final phone = user?.phone ?? '+250 000 000 000';
-    final points = user?.ecoPoints?.toString() ?? '0';
-    final tier = user?.ecoTier ?? 'Eco Warrior';
+    final tier = ecoPointsCtrl.balance?.tier.replaceAll('_', ' ') ?? user?.ecoTier ?? 'Eco Warrior';
     final initials = name.isNotEmpty ? name[0].toUpperCase() : 'U';
+    
+    final totalPickups = ecoPointsCtrl.balance?.totalPickups.toString() ?? '0';
+    final totalPoints = ecoPointsCtrl.balance?.totalPoints.toString() ?? '0';
+    final totalWeight = '${ecoPointsCtrl.balance?.totalWeightKg ?? 0}kg';
 
     return PopScope(
       canPop: false,
@@ -40,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildHeader(context, initials, name, phone, tier, points),
+              _buildHeader(context, initials, name, phone, tier, totalPoints, totalPickups, totalWeight),
               const SizedBox(height: 56), 
               const SizedBox(height: 16),
               _buildSection(
@@ -160,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, String initials, String name, String phone, String tier, String points) {
+  Widget _buildHeader(BuildContext context, String initials, String name, String phone, String tier, String points, String pickups, String weight) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -269,11 +275,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: Row(
               children: [
-                Expanded(child: _buildStatItem('24', AppLocalizations.of(context)!.pickups)),
+                Expanded(child: _buildStatItem(pickups, AppLocalizations.of(context)!.pickups)),
                 Container(width: 1, height: 40, color: AppColors.border),
                 Expanded(child: _buildStatItem(points, AppLocalizations.of(context)!.ecoPoints)),
                 Container(width: 1, height: 40, color: AppColors.border),
-                Expanded(child: _buildStatItem('156kg', AppLocalizations.of(context)!.recycled)),
+                Expanded(child: _buildStatItem(weight, AppLocalizations.of(context)!.recycled)),
               ],
             ),
           ),

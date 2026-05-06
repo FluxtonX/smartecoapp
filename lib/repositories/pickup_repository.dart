@@ -22,19 +22,11 @@ class PickupRepositoryImpl implements PickupRepository {
 
   @override
   Future<List<PickupModel>> getPickupHistory({String? status, String? wasteType}) async {
-    final Map<String, String> queryParams = {};
+    final Map<String, dynamic> queryParams = {};
     if (status != null) queryParams['status'] = status;
     if (wasteType != null) queryParams['wasteType'] = wasteType;
     
-    // In current ApiService there's no way to pass query params to get
-    // but we can append them manually or add them to the service.
-    // For now appending manually.
-    String query = '';
-    if (queryParams.isNotEmpty) {
-      query = '?${queryParams.entries.map((e) => '${e.key}=${e.value}').join('&')}';
-    }
-
-    final response = await _apiService.get('/pickups$query');
+    final response = await _apiService.get('/pickups', queryParameters: queryParams);
     if (response['success'] == true && response['data'] != null) {
       final List<dynamic> data = response['data'];
       return data.map((json) => PickupModel.fromJson(json)).toList();

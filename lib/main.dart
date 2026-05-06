@@ -12,9 +12,11 @@ import 'controller/user_controller.dart';
 import 'controller/bin_controller.dart';
 import 'controller/pickup_controller.dart';
 import 'controller/collector_controller.dart';
+import 'controller/eco_points_controller.dart';
 import 'core/navigation/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'views/splash/splash_screen.dart';
+import 'services/push_notification_service.dart';
 
 class FallbackLocalizationDelegate extends LocalizationsDelegate<MaterialLocalizations> {
   const FallbackLocalizationDelegate();
@@ -49,6 +51,7 @@ class FallbackCupertinoLocalizationDelegate extends LocalizationsDelegate<Cupert
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await PushNotificationService.instance.initialize();
   runApp(
     MultiProvider(
       providers: [
@@ -58,6 +61,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => BinController()),
         ChangeNotifierProvider(create: (_) => PickupController()),
         ChangeNotifierProvider(create: (_) => CollectorController()),
+        ChangeNotifierProvider(create: (_) => EcoPointsController()),
       ],
       child: DevicePreview(
         enabled: !kReleaseMode,

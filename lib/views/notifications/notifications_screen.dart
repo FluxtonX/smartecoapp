@@ -118,20 +118,22 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ],
         ),
         actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: GestureDetector(
-                onTap: _unreadCount > 0 ? _markAllAsRead : null,
-                child: Text(
-                  l10n.markAllRead,
-                  style: const TextStyle(
-                    color: AppColors.primary,
+          if (_unreadCount > 0)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: GestureDetector(
+                  onTap: _markAllAsRead,
+                  child: Text(
+                    l10n.markAllRead,
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
       body: _isLoading
@@ -221,7 +223,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isUnread ? AppColors.primary.withOpacity(0.05) : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isUnread ? AppColors.primary : AppColors.border,
@@ -254,10 +256,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         Expanded(
                           child: Text(
                             title,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
+                            style: TextStyle(
+                              color: isUnread ? AppColors.textPrimary : AppColors.textSecondary,
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: isUnread ? FontWeight.bold : FontWeight.w500,
                             ),
                           ),
                         ),

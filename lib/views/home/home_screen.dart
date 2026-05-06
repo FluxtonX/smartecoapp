@@ -11,6 +11,9 @@ import '../schedule_pickup/schedule_pickup_screen.dart';
 import 'widgets/bin_status_dialog.dart';
 import '../../controller/pickup_controller.dart';
 import '../../model/pickup_model.dart';
+import '../../controller/bin_controller.dart';
+import '../../model/bin_model.dart';
+import '../../services/api_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onViewAllBins;
@@ -24,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const int _championThreshold = 5000;
+  int _unreadNotifications = 0;
 
   String _tierLabel(BuildContext context, String? tier) {
     switch (tier) {
@@ -44,7 +48,21 @@ class _HomeScreenState extends State<HomeScreen> {
       final ctrl = Provider.of<PickupController>(context, listen: false);
       ctrl.fetchActivePickup();
       ctrl.fetchHistory();
+      final binCtrl = Provider.of<BinController>(context, listen: false);
+      binCtrl.fetchMyBins();
+      _fetchUnreadCount();
     });
+  }
+
+  Future<void> _fetchUnreadCount() async {
+    try {
+      final response = await ApiService().get('/notifications', queryParameters: {'limit': 1});
+      if (mounted) {
+        setState(() {
+          _unreadNotifications = (response['unreadCount'] as num?)?.toInt() ?? 0;
+        });
+      }
+    } catch (_) {}
   }
 
   @override
@@ -146,13 +164,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const NotificationsScreen(),
                         ),
                       );
+                      _fetchUnreadCount(); // Refresh count when returning
                     },
                     child: Stack(
                       children: [
@@ -169,18 +188,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 24,
                           ),
                         ),
-                        Positioned(
-                          right: 4,
-                          top: 4,
-                          child: Container(
-                            height: 8,
-                            width: 8,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
+                        if (_unreadNotifications > 0)
+                          Positioned(
+                            right: 4,
+                            top: 4,
+                            child: Container(
+                              height: 8,
+                              width: 8,
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -571,49 +591,120 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSmartBinsStatus(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Consumer<BinController>(
+      builder: (context, controller, child) {
+        if (controller.isLoading && controller.bins.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Column(
           children: [
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.smartBinsStatus,
-                style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.smartBinsStatus,
+                    style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                TextButton(
+                  onPressed: widget.onViewAllBins ?? () {},
+                  child: Text(
+                    AppLocalizations.of(context)!.viewAll,
+                    style: const TextStyle(color: AppColors.primary),
+                  ),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: widget.onViewAllBins ?? () {},
-              child: Text(
-                AppLocalizations.of(context)!.viewAll,
-                style: const TextStyle(color: AppColors.primary),
+            const SizedBox(height: 16),
+            if (controller.bins.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'No bin present for this user',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
+                ),
+              )
+            else
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                clipBehavior: Clip.none,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: controller.bins.map((bin) {
+                    String label;
+                    String subtitle;
+                    Color color;
+                    String svgPath;
+                    
+                    switch (bin.wasteType) {
+                      case BinWasteType.ORGANIC:
+                        label = AppLocalizations.of(context)!.compost;
+                        subtitle = AppLocalizations.of(context)!.organicWaste;
+                        color = AppColors.compost;
+                        svgPath = AppSvgs.leafImage;
+                        break;
+                      case BinWasteType.RECYCLABLE:
+                        label = AppLocalizations.of(context)!.recyclable;
+                        subtitle = AppLocalizations.of(context)!.recyclableMaterials;
+                        color = AppColors.recyclable;
+                        svgPath = AppSvgs.recyclableImage;
+                        break;
+                      case BinWasteType.EWASTE:
+                        label = AppLocalizations.of(context)!.eWaste;
+                        subtitle = AppLocalizations.of(context)!.electronicsBatteries;
+                        color = AppColors.eWaste;
+                        svgPath = AppSvgs.eWasteImage;
+                        break;
+                      case BinWasteType.GENERAL:
+                        label = AppLocalizations.of(context)!.landfill;
+                        subtitle = AppLocalizations.of(context)!.generalWasteCollection;
+                        color = AppColors.landfill;
+                        svgPath = AppSvgs.landfillImage;
+                        break;
+                      case BinWasteType.HAZARDOUS:
+                      default:
+                        label = AppLocalizations.of(context)!.hazardous;
+                        subtitle = AppLocalizations.of(context)!.hazardousMaterials;
+                        color = AppColors.hazardous;
+                        svgPath = AppSvgs.hazardousImage;
+                        break;
+                    }
+                    
+                    final percentage = bin.fillLevel / 100;
+                    final isAlert = bin.fillLevel >= 80;
+                    final lastEmptiedStr = bin.lastEmptiedAt != null 
+                      ? AppLocalizations.of(context)!.daysAgo(DateTime.now().difference(bin.lastEmptiedAt!).inDays.toString())
+                      : 'Never';
+
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: _buildBinStatusItem(
+                        context,
+                        label,
+                        subtitle,
+                        percentage,
+                        color,
+                        svgPath,
+                        '50L',
+                        lastEmptiedStr,
+                        '15% per day',
+                        isAlert: isAlert,
+                        wasteTypeId: bin.wasteType.name,
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
           ],
-        ),
-        const SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.compost, AppLocalizations.of(context)!.organicWaste, 0.45, AppColors.compost, AppSvgs.leafImage, '50L', AppLocalizations.of(context)!.daysAgo('3'), '15% per day', wasteTypeId: 'ORGANIC'),
-              const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.recyclable, AppLocalizations.of(context)!.recyclableMaterials, 0.78, AppColors.recyclable, AppSvgs.recyclableImage, '75L', AppLocalizations.of(context)!.daysAgo('5'), '16% per day', wasteTypeId: 'RECYCLABLE'),
-              const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.eWaste, AppLocalizations.of(context)!.electronicsBatteries, 0.20, AppColors.eWaste, AppSvgs.eWasteImage, '30L', AppLocalizations.of(context)!.daysAgo('10'), '2% per day', wasteTypeId: 'EWASTE'),
-              const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.landfill, AppLocalizations.of(context)!.generalWasteCollection, 0.98, AppColors.landfill, AppSvgs.landfillImage, '100L', AppLocalizations.of(context)!.daysAgo('6'), '15% per day', isAlert: true, wasteTypeId: 'GENERAL'),
-              const SizedBox(width: 16),
-              _buildBinStatusItem(context, AppLocalizations.of(context)!.hazardous, AppLocalizations.of(context)!.hazardousMaterials, 0.15, AppColors.hazardous, AppSvgs.hazardousImage, '20L', AppLocalizations.of(context)!.daysAgo('15'), '1% per day', wasteTypeId: 'GLASS'),
-            ],
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_images.dart';
+import 'package:provider/provider.dart';
+import '../../controller/bin_controller.dart';
+import '../../model/bin_model.dart';
 import 'bin_scanner_screen.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -11,8 +14,10 @@ class BinsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
+      child: Consumer<BinController>(
+        builder: (context, controller, _) {
+          return Column(
+            children: [
           // Custom App Bar
           Container(
             color: Colors.white,
@@ -34,84 +39,116 @@ class BinsScreen extends StatelessWidget {
 
           // Body
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Top Card - Total Fill Rate
-                  _buildTopCard(context),
-                  const SizedBox(height: 16),
+            child: controller.isLoading && controller.bins.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        // Top Card - Total Fill Rate
+                        _buildTopCard(context, controller.bins),
+                        const SizedBox(height: 16),
 
-                  // Bin Cards
-                  // Bin Cards
-                  _buildBinCard(
-                    context,
-                    title: AppLocalizations.of(context)!.compostBin,
-                    subtitle: AppLocalizations.of(context)!.organicWaste,
-                    appSvg: AppSvgs.leafImage,
-                    color: AppColors.compost,
-                    fillLevel: 45,
-                    status: AppLocalizations.of(context)!.statusOk,
-                    lastEmptied: AppLocalizations.of(context)!.daysAgo('3'),
-                  ),
-                  _buildBinCard(
-                    context,
-                    title: AppLocalizations.of(context)!.recyclingBin,
-                    subtitle: AppLocalizations.of(context)!.recyclableMaterials,
-                    appSvg: AppSvgs.recyclableImage,
-                    color: AppColors.recyclable,
-                    fillLevel: 78,
-                    status: AppLocalizations.of(context)!.statusNearlyFull,
-                    lastEmptied: AppLocalizations.of(context)!.daysAgo('5'),
-                    isAlert: true,
-                  ),
-                  _buildBinCard(
-                    context,
-                    title: AppLocalizations.of(context)!.eWasteBin,
-                    subtitle: AppLocalizations.of(context)!.electronicsBatteries,
-                    appSvg: AppSvgs.eWasteImage,
-                    color: AppColors.eWaste,
-                    fillLevel: 20,
-                    status: AppLocalizations.of(context)!.statusOk,
-                    lastEmptied: AppLocalizations.of(context)!.daysAgo('10'),
-                  ),
-                  _buildBinCard(
-                    context,
-                    title: AppLocalizations.of(context)!.landfillBin,
-                    subtitle: AppLocalizations.of(context)!.generalWasteCollection,
-                    appSvg: AppSvgs.landfillImage,
-                    color: AppColors.landfill,
-                    fillLevel: 92,
-                    status: AppLocalizations.of(context)!.statusFull,
-                    lastEmptied: AppLocalizations.of(context)!.daysAgo('6'),
-                    isAlert: true,
-                  ),
-                  _buildBinCard(
-                    context,
-                    title: AppLocalizations.of(context)!.hazardousBin,
-                    subtitle: AppLocalizations.of(context)!.hazardousMaterials,
-                    appSvg: AppSvgs.hazardousImage,
-                    color: AppColors.hazardous,
-                    fillLevel: 15,
-                    status: AppLocalizations.of(context)!.statusOk,
-                    lastEmptied: AppLocalizations.of(context)!.daysAgo('15'),
-                  ),
+                        if (controller.bins.isEmpty)
+                          const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 32.0),
+                              child: Text(
+                                'No bin present for this user',
+                                style: TextStyle(color: AppColors.textSecondary),
+                              ),
+                            ),
+                          )
+                        else
+                          ...controller.bins.map((bin) {
+                            String title;
+                            String subtitle;
+                            Color color;
+                            String svgPath;
+                            
+                            switch (bin.wasteType) {
+                              case BinWasteType.ORGANIC:
+                                title = AppLocalizations.of(context)!.compostBin;
+                                subtitle = AppLocalizations.of(context)!.organicWaste;
+                                color = AppColors.compost;
+                                svgPath = AppSvgs.leafImage;
+                                break;
+                              case BinWasteType.RECYCLABLE:
+                                title = AppLocalizations.of(context)!.recyclingBin;
+                                subtitle = AppLocalizations.of(context)!.recyclableMaterials;
+                                color = AppColors.recyclable;
+                                svgPath = AppSvgs.recyclableImage;
+                                break;
+                              case BinWasteType.EWASTE:
+                                title = AppLocalizations.of(context)!.eWasteBin;
+                                subtitle = AppLocalizations.of(context)!.electronicsBatteries;
+                                color = AppColors.eWaste;
+                                svgPath = AppSvgs.eWasteImage;
+                                break;
+                              case BinWasteType.GENERAL:
+                                title = AppLocalizations.of(context)!.landfillBin;
+                                subtitle = AppLocalizations.of(context)!.generalWasteCollection;
+                                color = AppColors.landfill;
+                                svgPath = AppSvgs.landfillImage;
+                                break;
+                              case BinWasteType.HAZARDOUS:
+                              default:
+                                title = AppLocalizations.of(context)!.hazardousBin;
+                                subtitle = AppLocalizations.of(context)!.hazardousMaterials;
+                                color = AppColors.hazardous;
+                                svgPath = AppSvgs.hazardousImage;
+                                break;
+                            }
 
-                  const SizedBox(height: 16),
+                            final isAlert = bin.fillLevel >= 80;
+                            final status = bin.fillLevel >= 100 
+                                ? AppLocalizations.of(context)!.statusFull 
+                                : bin.fillLevel >= 80 
+                                    ? AppLocalizations.of(context)!.statusNearlyFull 
+                                    : AppLocalizations.of(context)!.statusOk;
 
-                  // Smart Tip
-                  _buildSmartTip(context),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
+                            final lastEmptiedStr = bin.lastEmptiedAt != null 
+                              ? AppLocalizations.of(context)!.daysAgo(DateTime.now().difference(bin.lastEmptiedAt!).inDays.toString())
+                              : 'Never';
+
+                            return _buildBinCard(
+                              context,
+                              title: title,
+                              subtitle: subtitle,
+                              appSvg: svgPath,
+                              color: color,
+                              fillLevel: bin.fillLevel.toInt(),
+                              status: status,
+                              lastEmptied: lastEmptiedStr,
+                              isAlert: isAlert,
+                            );
+                          }),
+
+                        const SizedBox(height: 16),
+
+                        // Smart Tip
+                        _buildSmartTip(context),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
           ),
         ],
+      );
+      },
       ),
     );
   }
 
-  Widget _buildTopCard(BuildContext context) {
+  Widget _buildTopCard(BuildContext context, List<BinModel> bins) {
+    double totalFillLevel = 0;
+    if (bins.isNotEmpty) {
+      for (var bin in bins) {
+        totalFillLevel += bin.fillLevel;
+      }
+      totalFillLevel /= bins.length;
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -130,9 +167,9 @@ class BinsScreen extends StatelessWidget {
                 style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
               ),
               const SizedBox(height: 4),
-              const Text(
-                '50%',
-                style: TextStyle(
+              Text(
+                '${totalFillLevel.toInt()}%',
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
