@@ -44,6 +44,7 @@ dependencies:
   intl_phone_field: ^3.2.0
   google_maps_flutter: ^2.14.2
   dio: ^5.9.2
+  file_picker: ^10.3.8
   geolocator: ^13.0.2
   geocoding: ^3.0.0
   permission_handler: ^11.3.1
@@ -78,4 +79,3 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/logo.png"
-

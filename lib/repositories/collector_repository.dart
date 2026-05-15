@@ -95,17 +95,46 @@ class CollectorRepository {
 
   // ─── Register as Collector ──────────────────────
   Future<bool> registerAsCollector({
+    required String collectorName,
     required String vehiclePlate,
     required String zone,
     String? photoUrl,
+    String? licenseDocumentUrl,
+    String? licenseDocumentKey,
+    String? idDocumentUrl,
+    String? idDocumentKey,
+    List<Map<String, double>>? zonePolygon,
+    double? latitude,
+    double? longitude,
   }) async {
     final body = <String, dynamic>{
+      'collectorName': collectorName,
       'vehiclePlate': vehiclePlate,
       'zone': zone,
     };
     if (photoUrl != null) body['photoUrl'] = photoUrl;
+    if (licenseDocumentUrl != null) body['licenseDocumentUrl'] = licenseDocumentUrl;
+    if (licenseDocumentKey != null) body['licenseDocumentKey'] = licenseDocumentKey;
+    if (idDocumentUrl != null) body['idDocumentUrl'] = idDocumentUrl;
+    if (idDocumentKey != null) body['idDocumentKey'] = idDocumentKey;
+    if (zonePolygon != null) body['zonePolygon'] = zonePolygon;
+    if (latitude != null) body['latitude'] = latitude;
+    if (longitude != null) body['longitude'] = longitude;
 
     final response = await _api.post('/collectors/register-me', body);
     return response['success'] == true;
+  }
+
+  Future<Map<String, dynamic>> createDocumentUploadUrl({
+    required String documentType,
+    required String contentType,
+    required String fileName,
+  }) async {
+    final response = await _api.post('/collectors/me/document-upload-url', {
+      'documentType': documentType,
+      'contentType': contentType,
+      'fileName': fileName,
+    });
+    return Map<String, dynamic>.from(response['data'] ?? {});
   }
 }

@@ -2,13 +2,14 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 
+import '../core/constants/api_constants.dart';
+
 class TrackingSocketService {
   static final TrackingSocketService _instance = TrackingSocketService._internal();
   factory TrackingSocketService() => _instance;
   TrackingSocketService._internal();
 
   io.Socket? _socket;
-  final String _socketUrl = 'http://10.0.2.2:3000/tracking'; // Adjust for production
 
   // Stream controllers for different events
   final _locationUpdatesController = StreamController<Map<String, dynamic>>.broadcast();
@@ -22,7 +23,8 @@ class TrackingSocketService {
   void connect(String token) {
     if (isConnected) return;
 
-    final url = kIsWeb ? 'http://localhost:3000/tracking' : _socketUrl;
+    final apiBase = ApiConstants.baseUrl.replaceFirst('/api/v1', '');
+    final url = '$apiBase/tracking';
 
     _socket = io.io(url, <String, dynamic>{
       'transports': ['websocket'],
