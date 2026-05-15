@@ -50,6 +50,8 @@
 	<string>SmartEco needs access to your location to notify you when a waste collector is nearby for your scheduled pickup.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>SmartEco needs access to your location to help you pin the exact collection point for waste pickups.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SmartEco needs access to your photo library when you choose to upload a profile photo or supporting pickup-related image.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
