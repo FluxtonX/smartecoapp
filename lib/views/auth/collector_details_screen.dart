@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -11,6 +15,18 @@ import '../../services/location_service.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils/navigation_utils.dart';
 import 'location_selection_screen.dart';
+
+class _UploadedCollectorDocument {
+  final String fileName;
+  final String url;
+  final String key;
+
+  const _UploadedCollectorDocument({
+    required this.fileName,
+    required this.url,
+    required this.key,
+  });
+}
 
 class CollectorDetailsScreen extends StatefulWidget {
   const CollectorDetailsScreen({super.key});
@@ -31,6 +47,10 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
   
   bool _isLoading = false;
   bool _isGettingLocation = false;
+  bool _isUploadingLicense = false;
+  bool _isUploadingId = false;
+  _UploadedCollectorDocument? _licenseDocument;
+  _UploadedCollectorDocument? _idDocument;
   Position? _currentPosition;
   String? _currentAddress;
 
@@ -141,6 +161,101 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
     }
   }
 
+  String? _contentTypeFor(String fileName) {
+    final lower = fileName.toLowerCase();
+    if (lower.endsWith('.pdf')) return 'application/pdf';
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    return null;
+  }
+
+  Future<void> _uploadDocument(String documentType) async {
+    final isLicense = documentType == 'LICENSE';
+
+    setState(() {
+      if (isLicense) {
+        _isUploadingLicense = true;
+      } else {
+        _isUploadingId = true;
+      }
+    });
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp'],
+        allowMultiple: false,
+        withData: false,
+      );
+
+      final picked = result?.files.single;
+      final path = picked?.path;
+      if (picked == null || path == null) return;
+
+      final contentType = _contentTypeFor(picked.name);
+      if (contentType == null) {
+        throw Exception('Only PDF, JPEG, PNG, and WebP documents are allowed');
+      }
+
+      final uploadData = await ApiService().post('/collectors/me/document-upload-url', {
+        'documentType': documentType,
+        'contentType': contentType,
+        'fileName': picked.name,
+      });
+
+      final data = Map<String, dynamic>.from(uploadData['data'] ?? {});
+      final uploadUrl = data['uploadUrl'] as String?;
+      final publicUrl = data['publicUrl'] as String?;
+      final key = data['key'] as String?;
+
+      if (uploadUrl == null || publicUrl == null || key == null) {
+        throw Exception('Upload URL response is missing required fields');
+      }
+
+      final file = File(path);
+      await Dio().put(
+        uploadUrl,
+        data: await file.readAsBytes(),
+        options: Options(
+          contentType: contentType,
+          headers: {'Content-Type': contentType},
+        ),
+      );
+
+      final uploaded = _UploadedCollectorDocument(
+        fileName: picked.name,
+        url: publicUrl,
+        key: key,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        if (isLicense) {
+          _licenseDocument = uploaded;
+        } else {
+          _idDocument = uploaded;
+        }
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          if (isLicense) {
+            _isUploadingLicense = false;
+          } else {
+            _isUploadingId = false;
+          }
+        });
+      }
+    }
+  }
+
   double? _tryParseCoord(String raw) {
     final v = double.tryParse(raw.trim());
     if (v == null) return null;
@@ -198,6 +313,13 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
       return;
     }
 
+    if (_licenseDocument == null || _idDocument == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload your license and ID documents')),
+      );
+      return;
+    }
+
     // If manual coordinates were provided, apply them before submit
     if (_latitudeController.text.trim().isNotEmpty || _longitudeController.text.trim().isNotEmpty) {
       final lat = _tryParseCoord(_latitudeController.text);
@@ -235,6 +357,11 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
         'zone': zone,
         'latitude': _currentPosition?.latitude,
         'longitude': _currentPosition?.longitude,
+        'licenseDocumentUrl': _licenseDocument!.url,
+        'licenseDocumentKey': _licenseDocument!.key,
+        'idDocumentUrl': _idDocument!.url,
+        'idDocumentKey': _idDocument!.key,
+        if (_currentPosition != null) 'zonePolygon': _buildZonePolygon(_currentPosition!),
       });
 
       if (response['success'] == true) {
@@ -264,6 +391,81 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
         });
       }
     }
+  }
+
+  List<Map<String, double>> _buildZonePolygon(Position center) {
+    const delta = 0.01;
+    return [
+      {'latitude': center.latitude - delta, 'longitude': center.longitude - delta},
+      {'latitude': center.latitude - delta, 'longitude': center.longitude + delta},
+      {'latitude': center.latitude + delta, 'longitude': center.longitude + delta},
+      {'latitude': center.latitude + delta, 'longitude': center.longitude - delta},
+    ];
+  }
+
+  Widget _buildDocumentUploadCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required _UploadedCollectorDocument? document,
+    required bool isUploading,
+    required VoidCallback onUpload,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: document == null
+              ? AppColors.border
+              : AppColors.primary.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(
+                  document?.fileName ?? subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: document == null ? AppColors.textSecondary : AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          TextButton.icon(
+            onPressed: isUploading || _isLoading ? null : onUpload,
+            icon: isUploading
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(document == null ? Icons.upload_file : Icons.refresh, size: 18),
+            label: Text(document == null ? 'Upload' : 'Replace'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -322,6 +524,29 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
                 labelText: 'Operating Zone',
                 hintText: 'e.g. Kigali-Central',
               ),
+              const SizedBox(height: 16),
+              const Text(
+                'Verification Documents',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              _buildDocumentUploadCard(
+                title: 'License Document',
+                subtitle: 'PDF, JPG, PNG, or WebP',
+                icon: Icons.badge_outlined,
+                document: _licenseDocument,
+                isUploading: _isUploadingLicense,
+                onUpload: () => _uploadDocument('LICENSE'),
+              ),
+              const SizedBox(height: 12),
+              _buildDocumentUploadCard(
+                title: 'ID Document',
+                subtitle: 'PDF, JPG, PNG, or WebP',
+                icon: Icons.credit_card,
+                document: _idDocument,
+                isUploading: _isUploadingId,
+                onUpload: () => _uploadDocument('ID'),
+              ),
               const SizedBox(height: 24),
               const Text(
                 'Operating Location',
@@ -331,9 +556,11 @@ class _CollectorDetailsScreenState extends State<CollectorDetailsScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryLight.withOpacity(0.1),
+                  color: AppColors.primaryLight.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   children: [

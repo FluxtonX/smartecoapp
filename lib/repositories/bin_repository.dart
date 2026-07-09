@@ -21,9 +21,15 @@ class BinRepositoryImpl implements BinRepository {
 
   @override
   Future<BinModel> updateFillLevel(String binId, double level) async {
-    final response = await _apiService.patch('/bins/$binId/fill-level', {'fillLevel': level});
-    if (response['success'] == true && response['data'] != null) {
-      return BinModel.fromJson(response['data']);
+    final normalizedLevel = level.round().clamp(0, 100);
+    final response = await _apiService.post('/bins/$binId/fill-level', {
+      'fillLevel': normalizedLevel,
+    });
+    if (response['success'] == true) {
+      final refreshed = await _apiService.get('/bins/$binId');
+      if (refreshed['success'] == true && refreshed['data'] != null) {
+        return BinModel.fromJson(refreshed['data']);
+      }
     }
     throw Exception('Failed to update fill level');
   }
