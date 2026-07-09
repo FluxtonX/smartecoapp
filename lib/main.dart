@@ -64,7 +64,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => EcoPointsController()),
       ],
       child: DevicePreview(
-        enabled: !kReleaseMode,
+        enabled: false,//!kReleaseMode,
         builder: (context) => const SmartEcoApp(),
       ),
     ),

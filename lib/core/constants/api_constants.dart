@@ -12,7 +12,8 @@ class ApiConstants {
     }
 
     // iOS Simulator / Physical Device / Desktop
-    return 'http://192.168.1.16:3000/api/v1';
+    return 'https://api.smarteco.rw/api/v1';
+    //return 'http://192.168.1.16:3000/api/v1';
   }
 
   // =========================
