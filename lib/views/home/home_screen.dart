@@ -26,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   static const int _championThreshold = 5000;
   int _unreadNotifications = 0;
 

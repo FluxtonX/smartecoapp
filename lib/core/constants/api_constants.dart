@@ -12,8 +12,7 @@ class ApiConstants {
     }
 
     // iOS Simulator / Physical Device / Desktop
-    return 'https://api.smarteco.rw/api/v1';
-    //return 'http://192.168.1.16:3000/api/v1';
+    return 'http://192.168.1.16:3000/api/v1';
   }
 
   // =========================
@@ -25,8 +24,8 @@ class ApiConstants {
   // =========================
   // ACTIVE BASE URL
   // =========================
-  static String get baseUrl =>
-      kReleaseMode ? _productionBaseUrl : _debugBaseUrl;
+  static String get baseUrl => _productionBaseUrl;
+  //static String get baseUrl => kReleaseMode ? _productionBaseUrl : _debugBaseUrl;
 
   // =========================
   // AUTH ENDPOINTS
