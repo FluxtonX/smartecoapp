@@ -231,8 +231,10 @@ class CollectorPickupModel {
         return 'Glass';
       case 'HAZARDOUS':
         return 'Hazardous';
+      case 'LANDFILL':
+        return 'Landfill';
       default:
-        return wasteType;
+        return wasteType.isNotEmpty ? wasteType : 'General';
     }
   }
 }

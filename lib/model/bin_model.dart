@@ -3,7 +3,9 @@ enum BinWasteType {
   RECYCLABLE,
   EWASTE,
   GENERAL,
+  GLASS,
   HAZARDOUS,
+  LANDFILL,
 }
 
 class BinModel {

@@ -664,17 +664,29 @@ class _HomeScreenState extends State<HomeScreen> {
                         svgPath = AppSvgs.eWasteImage;
                         break;
                       case BinWasteType.GENERAL:
+                      case BinWasteType.LANDFILL:
                         label = AppLocalizations.of(context)!.landfill;
                         subtitle = AppLocalizations.of(context)!.generalWasteCollection;
                         color = AppColors.landfill;
                         svgPath = AppSvgs.landfillImage;
                         break;
+                      case BinWasteType.GLASS:
+                        label = 'Glass';
+                        subtitle = 'Glass Bottles & Containers';
+                        color = AppColors.glass;
+                        svgPath = AppSvgs.recyclableImage;
+                        break;
                       case BinWasteType.HAZARDOUS:
-                      default:
                         label = AppLocalizations.of(context)!.hazardous;
                         subtitle = AppLocalizations.of(context)!.hazardousMaterials;
                         color = AppColors.hazardous;
                         svgPath = AppSvgs.hazardousImage;
+                        break;
+                      default:
+                        label = AppLocalizations.of(context)!.landfill;
+                        subtitle = AppLocalizations.of(context)!.generalWasteCollection;
+                        color = AppColors.general;
+                        svgPath = AppSvgs.landfillImage;
                         break;
                     }
                     

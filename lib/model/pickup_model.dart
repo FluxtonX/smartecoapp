@@ -14,7 +14,9 @@ enum WasteType {
   RECYCLABLE,
   EWASTE,
   GENERAL,
+  GLASS,
   HAZARDOUS,
+  LANDFILL,
 }
 
 enum TimeSlot {

@@ -86,17 +86,29 @@ class BinsScreen extends StatelessWidget {
                                 svgPath = AppSvgs.eWasteImage;
                                 break;
                               case BinWasteType.GENERAL:
+                              case BinWasteType.LANDFILL:
                                 title = AppLocalizations.of(context)!.landfillBin;
                                 subtitle = AppLocalizations.of(context)!.generalWasteCollection;
                                 color = AppColors.landfill;
                                 svgPath = AppSvgs.landfillImage;
                                 break;
+                              case BinWasteType.GLASS:
+                                title = 'Glass Bin';
+                                subtitle = 'Glass Bottles & Containers';
+                                color = AppColors.glass;
+                                svgPath = AppSvgs.recyclableImage;
+                                break;
                               case BinWasteType.HAZARDOUS:
-                              default:
                                 title = AppLocalizations.of(context)!.hazardousBin;
                                 subtitle = AppLocalizations.of(context)!.hazardousMaterials;
                                 color = AppColors.hazardous;
                                 svgPath = AppSvgs.hazardousImage;
+                                break;
+                              default:
+                                title = AppLocalizations.of(context)!.landfillBin;
+                                subtitle = AppLocalizations.of(context)!.generalWasteCollection;
+                                color = AppColors.general;
+                                svgPath = AppSvgs.landfillImage;
                                 break;
                             }
 

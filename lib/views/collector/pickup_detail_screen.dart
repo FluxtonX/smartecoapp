@@ -744,9 +744,13 @@ class _PickupDetailScreenState extends State<PickupDetailScreen> {
       case 'RECYCLABLE':
         return Colors.blue;
       case 'EWASTE':
-        return Colors.orange;
-      case 'HAZARDOUS':
+        return Colors.purple;
+      case 'GENERAL':
+        return Colors.grey;
+      case 'LANDFILL':
         return Colors.red;
+      case 'HAZARDOUS':
+        return Colors.deepOrange;
       case 'GLASS':
         return Colors.cyan;
       default:

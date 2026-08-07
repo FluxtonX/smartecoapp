@@ -568,6 +568,13 @@ class _PickupSchedulingScreenState extends State<PickupSchedulingScreen> {
         'color': AppColors.general,
       },
       {
+        'id': 'LANDFILL',
+        'title': 'Landfill Waste',
+        'desc': 'Non-recyclable & general municipal waste',
+        'svg': AppSvgs.landfillImage,
+        'color': AppColors.landfill,
+      },
+      {
         'id': 'EWASTE',
         'title': AppLocalizations.of(context)!.eWasteTitle,
         'desc': AppLocalizations.of(context)!.eWasteDesc,
