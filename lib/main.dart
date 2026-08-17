@@ -18,7 +18,8 @@ import 'core/theme/app_theme.dart';
 import 'views/splash/splash_screen.dart';
 import 'services/push_notification_service.dart';
 
-class FallbackLocalizationDelegate extends LocalizationsDelegate<MaterialLocalizations> {
+class FallbackLocalizationDelegate
+    extends LocalizationsDelegate<MaterialLocalizations> {
   const FallbackLocalizationDelegate();
 
   @override
@@ -33,7 +34,8 @@ class FallbackLocalizationDelegate extends LocalizationsDelegate<MaterialLocaliz
   bool shouldReload(FallbackLocalizationDelegate old) => false;
 }
 
-class FallbackCupertinoLocalizationDelegate extends LocalizationsDelegate<CupertinoLocalizations> {
+class FallbackCupertinoLocalizationDelegate
+    extends LocalizationsDelegate<CupertinoLocalizations> {
   const FallbackCupertinoLocalizationDelegate();
 
   @override
@@ -64,7 +66,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => EcoPointsController()),
       ],
       child: DevicePreview(
-        enabled: true,//!kReleaseMode,
+        enabled: !kReleaseMode,
         builder: (context) => const SmartEcoApp(),
       ),
     ),
