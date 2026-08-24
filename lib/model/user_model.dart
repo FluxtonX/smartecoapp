@@ -13,6 +13,8 @@ class UserModel {
   final int? ecoPoints;
   final String? ecoTier;
   final bool? isNewUser;
+  final bool? isActive;
+  final bool? isApproved;
   final String? collectorId;
   final bool? isCollectorApproved;
   final String? collectorName;
@@ -38,6 +40,8 @@ class UserModel {
     this.ecoPoints,
     this.ecoTier,
     this.isNewUser,
+    this.isActive,
+    this.isApproved,
     this.collectorId,
     this.isCollectorApproved,
     this.collectorName,
@@ -57,6 +61,8 @@ class UserModel {
       ecoPoints: json['ecoPoints'],
       ecoTier: json['ecoTier'],
       isNewUser: json['isNewUser'],
+      isActive: json['isActive'],
+      isApproved: json['isApproved'] ?? json['isActive'] ?? true,
       collectorId: json['collectorProfile']?['id'],
       isCollectorApproved: json['collectorProfile']?['isApproved'],
       collectorName: json['collectorProfile']?['collectorName'],
