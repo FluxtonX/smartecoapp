@@ -1,4 +1,4 @@
-package com.fluxtonx.smarteco
+package com.smarteco.smartecoai
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

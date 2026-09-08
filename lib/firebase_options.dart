@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAuZfhDO_UKsVwqnO9RF68ceDwH2k0al8c',
-    appId: '1:334193579863:android:1b42e5d13afc813f195012',
+    appId: '1:334193579863:android:08a20222e5a244c8195012',
     messagingSenderId: '334193579863',
     projectId: 'smarteco-app',
     storageBucket: 'smarteco-app.firebasestorage.app',
@@ -59,10 +59,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBGpSn9gWrOzsDcK5JTV72cP52mZGYrAeo',
-    appId: '1:334193579863:ios:8ea4daf49b058759195012',
+    appId: '1:334193579863:ios:feac77db09414230195012',
     messagingSenderId: '334193579863',
     projectId: 'smarteco-app',
     storageBucket: 'smarteco-app.firebasestorage.app',
-    iosBundleId: 'com.fluxtonx.smarteco',
+    androidClientId: '334193579863-97mlgtclhcjp6r25dptb4inv1ikodkel.apps.googleusercontent.com',
+    iosClientId: '334193579863-9lk9kmjr3k5ah0ab0obmq27brtjm7fri.apps.googleusercontent.com',
+    iosBundleId: 'com.smarteco.smartecoai',
   );
+
 }

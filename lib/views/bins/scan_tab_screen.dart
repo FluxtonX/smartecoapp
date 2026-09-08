@@ -69,7 +69,7 @@ class _ScanTabScreenState extends State<ScanTabScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Scan the QR code on any SmartEco bin to view its status and earn points.',
+                'Scan the QR code on any SmartEco AI bin to view its status and earn points.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

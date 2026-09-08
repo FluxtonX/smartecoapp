@@ -74,7 +74,7 @@ class AppLocalizationsRw extends AppLocalizations {
   String get helpSupport => 'Ubufasha';
 
   @override
-  String get aboutSmartEco => 'Ibijyanye na SmartEco';
+  String get aboutSmartEco => 'Ibijyanye na SmartEco AI';
 
   @override
   String get logOut => 'Sohoka';
@@ -377,7 +377,7 @@ class AppLocalizationsRw extends AppLocalizations {
   String get earnedFirstEcoPoints => 'Watsindiye EcoPoints zawe za mbere';
 
   @override
-  String get startUsingSmartEco => 'Tangira gukoresha SmartEco';
+  String get startUsingSmartEco => 'Tangira gukoresha SmartEco AI';
 
   @override
   String get rewardsTitle => 'Ibihembo bya EcoPoints';

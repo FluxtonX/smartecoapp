@@ -317,7 +317,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
   }
 
   void _showShareBottomSheet(BuildContext context, String code) {
-    final shareText = 'Join SmartEco and earn eco points! Use my referral code: $code\nhttps://smarteco.app/invite';
+    final shareText = 'Join SmartEco AI and earn eco points! Use my referral code: $code\nhttps://smarteco.app/invite';
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -389,7 +389,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pop(ctx);
-                      Share.share(shareText, subject: 'Join SmartEco with my referral code!');
+                      Share.share(shareText, subject: 'Join SmartEco AI with my referral code!');
                     },
                     icon: const Icon(Icons.share, color: Colors.white),
                     label: const Text('Share via Apps', style: TextStyle(color: Colors.white, fontSize: 15)),

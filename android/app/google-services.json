@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:334193579863:android:1b42e5d13afc813f195012",
+        "mobilesdk_app_id": "1:334193579863:android:08a20222e5a244c8195012",
         "android_client_info": {
-          "package_name": "com.fluxtonx.smarteco"
+          "package_name": "com.smarteco.smartecoai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "334193579863-9rrqapd4a2f1lg01ba1hehbte7jred6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAuZfhDO_UKsVwqnO9RF68ceDwH2k0al8c"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334193579863-9rrqapd4a2f1lg01ba1hehbte7jred6v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "334193579863-cjk7qck720l8ktctamdiiq7ajq8002po.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fluxtonx.smarteco"
+              }
+            }
+          ]
         }
       }
     }

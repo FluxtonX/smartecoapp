@@ -12,7 +12,7 @@ class AboutScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text('About SmartEco', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('About SmartEco AI', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -36,7 +36,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'SmartEco',
+                    'SmartEco AI',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                   ),
                   const SizedBox(height: 4),
@@ -60,7 +60,7 @@ class AboutScreen extends StatelessWidget {
 
             _buildSection(
               title: 'Our Solution',
-              body: 'The SmartEco platform features an AI-powered waste sorting tool and a mobile app that streamlines waste management, making recycling easy, collection efficient, and environmental impact measurable.',
+              body: 'The SmartEco AI platform features an AI-powered waste sorting tool and a mobile app that streamlines waste management, making recycling easy, collection efficient, and environmental impact measurable.',
             ),
             const SizedBox(height: 20),
 
@@ -107,7 +107,7 @@ class AboutScreen extends StatelessWidget {
             // Tagline
             Center(
               child: Text(
-                'SmartEco: Smarter waste. Cleaner future.',
+                'SmartEco AI: Smarter waste. Cleaner future.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontStyle: FontStyle.italic,

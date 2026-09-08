@@ -17,8 +17,8 @@ class HelpSupportScreen extends StatelessWidget {
       scheme: 'mailto',
       path: _email,
       queryParameters: {
-        'subject': 'SmartEco Support Request',
-        'body': 'Hi SmartEco Support Team,\n\n',
+        'subject': 'SmartEco AI Support Request',
+        'body': 'Hi SmartEco AI Support Team,\n\n',
       },
     );
     try {
@@ -33,7 +33,7 @@ class HelpSupportScreen extends StatelessWidget {
   }
 
   Future<void> _launchWhatsApp(String number, BuildContext context) async {
-    final uri = Uri.parse('https://wa.me/$number?text=Hello%20SmartEco%20Support');
+    final uri = Uri.parse('https://wa.me/$number?text=Hello%20SmartEco%20AI%20Support');
     try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (_) {

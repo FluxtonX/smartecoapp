@@ -82,7 +82,7 @@ class SmartEcoApp extends StatelessWidget {
 
     return MaterialApp(
       navigatorKey: AppRouter.navigatorKey,
-      title: 'SmartEco',
+      title: 'SmartEco AI',
       theme: AppTheme.lightTheme,
       // Localization setup
       localizationsDelegates: const [

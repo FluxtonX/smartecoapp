@@ -1,4 +1,4 @@
-# smarteco
+# SmartEco AI
 
 A new Flutter project.
 

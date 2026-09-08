@@ -49,7 +49,7 @@ class SelectRoleScreen extends StatelessWidget {
               const SizedBox(height: 12),
               Center(
                 child: Text(
-                  'Choose how you want to join SmartEco',
+                  'Choose how you want to join SmartEco AI',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,

@@ -147,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'SmartEco v1.0.0',
+                      'SmartEco AI v1.0.0',
                       style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
                     ),
                     SizedBox(height: 4),

@@ -108,7 +108,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ),
                   const SizedBox(width: 12),
                   const Text(
-                    'SmartEco',
+                    'SmartEco AI',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
